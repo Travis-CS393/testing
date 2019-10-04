@@ -1,2 +1,27 @@
-{'d'}
+{"name": 15}
+{"name": "12"}
+{"name": "Cinderella"}
+{"name": "Pocahontas"}
+{"name": "Snow White"}
+{"name": {"name": 1}}
+{"name": {"name": "Aurora"}}
+{"name": {"name": "Belle"}}
+{"name": {"name": "Mulan"}}
+{"name": {"name": {"name": 3}}}
 
+{"name": "Ariel"}
+{"name": "Tiana"}
+{"name": {"name": 9}}
+{"name": {"name": 17}}
+{"name": {"name": "Merida"}}
+{"name": {"name": "Rapunzel"}}
+{"name": {"name": {"name": "Anna"}}}
+{"name": {"name": {"name": "Moana"}}}
+{"name": {"name": {"name": {"name": 22}}}}
+{"name": {"name": {"name": {"name": {"name": "Elsa"}}}}}
+
+{"name": 3}
+{"name": {"name": 85}}
+{"name": {"name": "Jasmine"}}
+{"name": {"name": {"name": 63}}}
+{"name": {"name": {"name": {"name": 47}}}}
