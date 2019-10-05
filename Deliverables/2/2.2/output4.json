@@ -8,7 +8,6 @@
 {"name": {"name": "Belle"}}
 {"name": {"name": "Mulan"}}
 {"name": {"name": {"name": 3}}}
-
 {"name": "Ariel"}
 {"name": "Tiana"}
 {"name": {"name": 9}}
@@ -19,7 +18,6 @@
 {"name": {"name": {"name": "Moana"}}}
 {"name": {"name": {"name": {"name": 22}}}}
 {"name": {"name": {"name": {"name": {"name": "Elsa"}}}}}
-
 {"name": 3}
 {"name": {"name": 85}}
 {"name": {"name": "Jasmine"}}
