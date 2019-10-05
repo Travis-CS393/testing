@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
 # run.sh: runs the actual submission
 
-python my-submission.py some arguments
+
+python tests.py
