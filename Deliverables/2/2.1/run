@@ -4,4 +4,4 @@
 # run.sh: runs the actual submission
 
 
-python backend.py
+python ../Deliverables/2/2.1/backend.py
