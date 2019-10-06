@@ -1,4 +1,4 @@
-import json 
+import json
 import sys
 import BackEndComponent
 
@@ -7,13 +7,13 @@ class FrontEndComponent():
 		"""
 		This class implements a front-end component that reads in special JSON
 		objects from STDIN, passes lists of 10 JSON objects to the back-end
-		component to be sorted, and returns the array of arrays of 10 sorted 
+		component to be sorted, and returns the array of arrays of 10 sorted
 		special JSON objects with STDOUT.
 
 		Arguments:
 			lst (list): List of the special JSON objects. Used to partition
 			and send the special JSON objects in lists of 10 to back-end
-			component for sorting. 
+			component for sorting.
 		"""
 
 		self.lst = [] if lst is None else lst
@@ -41,13 +41,17 @@ class FrontEndComponent():
 			tens.append(self.lst[start:end])
 			start += 10
 			end += 10
-        
+
+        '''
+		# frontend should not pass lists that are not length 10 to backend
+		# output should be perfect lists of 10
         if (len(self.lst) % 10 > 0):
 			tens.append(self.lst[start:len(self.lst)])
+		'''
 
 		return tens
 
-	# Sends each set of 10 special JSON objects to back-end for sorting 
+	# Sends each set of 10 special JSON objects to back-end for sorting
 	# and stores sorted list in to array or arrays of special JSON objects
 	def process(self):
 		sorted_lsts = []
@@ -57,6 +61,3 @@ class FrontEndComponent():
 			sorted_lsts.append(back_service.sort(lst))
 
 		sys.standout.write(sorted_lsts)
-
-
-		
