@@ -78,7 +78,7 @@ def test_driver():
 '''
 def test_driver():
 	special_obj = []
-	data = json.load(sys.stdin)
+	data = json.load(sys.stdin.readlines())
 	count = 0
 	for element in data:
 		if count < 10:
