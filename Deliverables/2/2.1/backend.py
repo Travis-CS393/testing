@@ -50,7 +50,7 @@ class BackEndComponent():
 
 		casted_str_lst = []
 		for element in sorted(str_lst):
-			casted_str_lst.append(yaml.safe_load(json.dumps(element)))
+			casted_str_lst.append(str(yaml.safe_load(json.dumps(element))))
 
 		return sorted(num_lst) + casted_str_lst + self.obj_sort(obj_lst)
 
