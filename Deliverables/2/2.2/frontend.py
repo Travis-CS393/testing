@@ -72,5 +72,5 @@ class FrontEndComponent():
 		for lst in partitioned_lst:
 			sorted_lsts.append(back_service.sort(lst))
 
-		#sys.standout.write(sorted_lsts)
+		#sys.stdout.write(sorted_lsts)
 		print(sorted_lsts)
