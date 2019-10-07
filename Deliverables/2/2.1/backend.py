@@ -36,7 +36,6 @@ class BackEndComponent():
 		num_lst = []
 		str_lst = []
 		obj_lst = []
-		print(lst)
 		for s_obj in lst:
 			if isinstance(s_obj, int):
 				num_lst.append(s_obj)
@@ -45,7 +44,7 @@ class BackEndComponent():
 			elif isinstance(s_obj, dict):
 				obj_lst.append(s_obj)
 			else:
-				print("Type Error: Special JSON object is one of int, str, or JSON obj}")
+				print("Type Error: Special JSON object is one of int, str, or JSON obj")
 
 		return sorted(num_lst) + sorted(str_lst) + self.obj_sort(obj_lst)
 
