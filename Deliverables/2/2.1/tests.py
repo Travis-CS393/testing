@@ -73,8 +73,9 @@ def test_driver():
 
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
-     
+
     print("hello")
 	print(sorted_ten)
-
+	sys.stdout.write("stdout")
+	
 test_driver()
