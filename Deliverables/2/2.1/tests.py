@@ -74,7 +74,9 @@ def test_driver():
 	back_service = BackEndComponent()
 	# sorted_ten = back_service.sort(special_obj)
 	a, b, c = back_service.sort(special_obj)
-	print(c)
+	for bs in b:
+		a.append(bs)
+	print(a)
 
 	# print(sorted_ten)
 """
