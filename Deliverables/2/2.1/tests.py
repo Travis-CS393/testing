@@ -108,6 +108,7 @@ def test_driver():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 
-	print(sorted_ten)
+	#print(sorted_ten)
+	sys.stdout.write(sorted_ten)
 	
 test_driver()
