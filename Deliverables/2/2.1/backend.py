@@ -39,7 +39,7 @@ class BackEndComponent():
 		str_lst = []
 		obj_lst = []
 		for s_obj in lst:
-			if isinstance(s_obj, int):
+			if (isinstance(s_obj, int) or isinstance(s_obj,float)):
 				num_lst.append(s_obj)
 			elif (isinstance(s_obj, str) or isinstance(s_obj, unicode)):
 				str_lst.append(s_obj)
@@ -49,7 +49,8 @@ class BackEndComponent():
 				print("Type Error: Special JSON object is one of int, str, or JSON obj")
 				print(type(s_obj))
 
-		return list(sorted(num_lst)) + list(sorted(str_lst)) + list(self.obj_sort(obj_lst))
+		sorted_lst = list(sorted(num_lst)) + list(sorted(str_lst)) + list(self.obj_sort(obj_lst))
+		return json.dumps(sorted_lst)
 
 		'''
 		num_lst = sorted(num_lst)
