@@ -76,6 +76,8 @@ def test_driver():
 	a, b, c = back_service.sort(special_obj)
 	for bs in b:
 		a.append(bs)
+	for cs in c:
+		a.append(cs)
 	print(a)
 
 	# print(sorted_ten)
