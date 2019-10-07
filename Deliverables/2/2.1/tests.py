@@ -60,7 +60,7 @@ def testFive():
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
 
-
+'''
 def test_driver():
 	special_obj = []
 	count = 0
@@ -80,6 +80,7 @@ def test_driver():
 	print(a)
 
 	# print(sorted_ten)
+	'''
 """
 def test_driver1():
 	special_obj = []
@@ -98,7 +99,7 @@ def test_driver1():
 	print(sorted_ten)
 """
 
-<<<<<<< HEAD
+
 def test_driver():
 	special_obj = []
 	sorted_ten = []
@@ -116,7 +117,7 @@ def test_driver():
 	print(sorted_ten, end='')
 	#sys.stdout.write(sorted_ten)
 	
-=======
+
 # def test_driver():
 # 	special_obj = []
 # 	count = 0
@@ -133,5 +134,4 @@ def test_driver():
 # 	#print(sorted_ten)
 # 	sys.stdout.write(sorted_ten)
 
->>>>>>> cf26017ca3c4ee1cb358268bd0139a1fae9ba652
 test_driver()
