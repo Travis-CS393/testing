@@ -39,3 +39,13 @@ def testThree():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
+
+def testFour():
+	with open('input4') as file:
+		input = json.load(file)
+	with open('output4') as file:
+		output = json.load(file)
+
+	back_service = BackEndComponent()
+	sorted_ten = back_service.sort(input)
+	assert(sorted_ten == output)
