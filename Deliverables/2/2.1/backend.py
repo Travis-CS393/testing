@@ -28,7 +28,7 @@ class BackEndComponent():
 		
 		sorted_obj_lst = []
 		for i in range(len(obj_lst)):
-			sorted_obj_lst.append(obj_lst[next_layer[i][3]])
+			sorted_obj_lst.append(json.dumps(obj_lst[next_layer[i][3]]))
 
 		return sorted_obj_lst
 
@@ -42,9 +42,9 @@ class BackEndComponent():
 			if isinstance(s_obj, int):
 				num_lst.append(s_obj)
 			elif (isinstance(s_obj, str) or isinstance(s_obj, unicode)):
-				str_lst.append(json.dumps(s_obj))
+				str_lst.append(s_obj)
 			elif isinstance(s_obj, dict):
-				obj_lst.append(json.dumps(s_obj))
+				obj_lst.append(s_obj)
 			else:
 				print("Type Error: Special JSON object is one of int, str, or JSON obj")
 				print(type(s_obj))
