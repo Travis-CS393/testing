@@ -60,6 +60,7 @@ def testFive():
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
 
+"""
 def test_driver():
 	special_obj = []
 	count = 0
@@ -91,5 +92,21 @@ def test_driver1():
 	sorted_ten = back_service.sort(special_obj)
 
 	print(sorted_ten)
+"""
 
+def test_driver():
+	special_obj = []
+	count = 0
+	for line in sys.stdin.readlines():
+		if count < 10:
+			special_obj.append(json.JSONDecoder().decode(line))
+			count += 1
+		else:
+			break
+
+	back_service = BackEndComponent()
+	sorted_ten = back_service.sort(special_obj)
+
+	print(sorted_ten)
+	
 test_driver()
