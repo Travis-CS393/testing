@@ -59,12 +59,12 @@ class BackEndComponent():
 
 		sorted_lst = []
 		for element in num_lst:
-			sorted_lst.append(element)
+			sorted_lst.append(json.dumps(element))
 
 		for element in str_lst:
-			sorted_lst.append(element)
+			sorted_lst.append(json.dumps(element))
 
 		for element in obj_lst:
-			sorted_lst.append(element)
+			sorted_lst.append(json.dumps(element))
 
 		return sorted_lst
