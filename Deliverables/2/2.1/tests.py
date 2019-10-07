@@ -1,4 +1,4 @@
-import unittest
+from __future__ import print_function
 from backend import BackEndComponent
 import json
 import sys
@@ -97,6 +97,7 @@ def test_driver1():
 
 def test_driver():
 	special_obj = []
+	sorted_ten = []
 	count = 0
 	for line in sys.stdin.readlines():
 		if count < 10:
@@ -104,11 +105,11 @@ def test_driver():
 			count += 1
 		else:
 			break
-
+     
 	back_service = BackEndComponent()
-	sorted_ten = back_service.sort(special_obj)
+	sorted_ten = back_service.sort(special_obj) 
 
-	#print(sorted_ten)
-	sys.stdout.write(sorted_ten)
+	print(sorted_ten, end='')
+	#sys.stdout.write(sorted_ten)
 	
 test_driver()
