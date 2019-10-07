@@ -73,7 +73,7 @@ def test_driver():
 	back_service = BackEndComponent()
 	# sorted_ten = back_service.sort(special_obj)
 	a, b, c = back_service.sort(special_obj)
-	print(a + b + c)
+	print(b)
 
 	# print(sorted_ten)
 
