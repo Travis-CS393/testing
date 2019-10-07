@@ -66,7 +66,6 @@ def test_driver():
 	for line in sys.stdin.readlines():
 		if count < 10:
 			special_obj.append(json.loads(line))
-			print(json.loads(line))
 			count += 1
 		else:
 			break
