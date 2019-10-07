@@ -1,5 +1,5 @@
 import json
-import numpy
+import numpy as np
 import yaml
 
 class BackEndComponent():
@@ -40,7 +40,7 @@ class BackEndComponent():
 		str_lst = []
 		obj_lst = []
 		sorted_lst = []
-		sorted_lst = numpy.array(sorted_lst)
+		sorted_lst = np.array(sorted_lst)
 		for s_obj in lst:
 			if isinstance(s_obj, int):
 				num_lst.append(s_obj)
