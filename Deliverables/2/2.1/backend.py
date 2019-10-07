@@ -28,7 +28,7 @@ class BackEndComponent():
 		
 		sorted_obj_lst = []
 		for i in range(len(obj_lst)):
-			sorted_obj_lst.append(json.dumps(obj_lst[next_layer[i][3]]))
+			sorted_obj_lst.append(obj_lst[next_layer[i][3]])
 
 		return sorted_obj_lst
 
