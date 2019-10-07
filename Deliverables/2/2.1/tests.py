@@ -59,11 +59,11 @@ def testFive():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
-'''
+
 def test_driver():
 	special_obj = []
 	count = 0
-	for line in sys.stdin.readlines():
+	for line in sys.stdin.read():
 		if count < 10:
 			special_obj.append(json.loads(line))
 			count += 1
@@ -75,11 +75,11 @@ def test_driver():
 
 	print(sorted_ten)
 	# sys.stdout.write("stdout")
-'''
-def test_driver():
+
+def test_driver1():
 	special_obj = []
-	data = json.load(sys.stdin.readlines())
 	count = 0
+	data = json.load(sys.stdin)
 	for element in data:
 		if count < 10:
 			special_obj.append(element)
