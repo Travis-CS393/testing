@@ -51,5 +51,6 @@ class BackEndComponent():
 		# return sorted(num_lst) + sorted(str_lst) + self.obj_sort(obj_lst)
 		num = sorted(num_lst)
 		stri = sorted(str_lst)
+		slist = [x.encode('UTF8') for x in slist]
 		obj = self.obj_sort(obj_lst)
-		return obj
+		return slist
