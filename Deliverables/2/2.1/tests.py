@@ -74,6 +74,8 @@ def test_driver():
 	back_service = BackEndComponent()
 	# sorted_ten = back_service.sort(special_obj)
 	a, b, c = back_service.sort(special_obj)
+	for bs in b:
+		bs = json.dumps(b)
 	a.extend(b)
 	print(a)
 
