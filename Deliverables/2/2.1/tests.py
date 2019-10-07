@@ -64,8 +64,10 @@ def test_driver():
 	special_obj = []
 	count = 0
 	for line in sys.stdin.readlines():
+		print('line ' + line)
 		if count < 10:
 			special_obj.append(json.loads(line))
+			print("loads " + json.loads(line))
 			count += 1
 		else:
 			break
@@ -80,7 +82,6 @@ def test_driver1():
 	special_obj = []
 	count = 0
 	data = json.load(sys.stdin)
-	print(data)
 	for element in data:
 		if count < 10:
 			special_obj.append(element)
