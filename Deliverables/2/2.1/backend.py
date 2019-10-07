@@ -43,7 +43,7 @@ class BackEndComponent():
 			elif isinstance(s_obj, str):
 				str_lst.append(s_obj)
 			elif isinstance(s_obj, dict):
-				obj_lst.append(json.dumps(s_obj))
+				obj_lst.append(s_obj)
 			else:
 				print("Type Error: Special JSON object is one of int, str, or JSON obj}")
 
