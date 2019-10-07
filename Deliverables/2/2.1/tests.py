@@ -76,7 +76,7 @@ def test_driver():
 	a, b, c = back_service.sort(special_obj)
 	for bs in b:
 		print(bs)
-		a.append(bs)
+		a.append(json.dumps(bs))
 	print(a)
 
 	# print(sorted_ten)
