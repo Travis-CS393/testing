@@ -67,7 +67,7 @@ def test_driver():
 		print('line ' + line)
 		if count < 10:
 			special_obj.append(json.loads(line))
-			print("loads " + json.loads(line))
+			print(json.loads(line))
 			count += 1
 		else:
 			break
