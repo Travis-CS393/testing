@@ -1,5 +1,4 @@
 import json
-import numpy as np
 import yaml
 
 class BackEndComponent():
@@ -39,8 +38,6 @@ class BackEndComponent():
 		num_lst = []
 		str_lst = []
 		obj_lst = []
-		sorted_lst = []
-		sorted_lst = np.array(sorted_lst)
 		for s_obj in lst:
 			if isinstance(s_obj, int):
 				num_lst.append(s_obj)
@@ -52,9 +49,7 @@ class BackEndComponent():
 				print("Type Error: Special JSON object is one of int, str, or JSON obj")
 				print(type(s_obj))
 
-		sorted_lst = np.concatenate(sorted(num_lst), json.dumps(sorted(str_lst)))
-		return sorted_lst
-		#return sorted(num_lst), json.dumps(sorted(str_lst)), self.obj_sort(obj_lst)
+		return list(sorted(num_lst)) + list(json.dumps(sorted(str_lst))) + list(self.obj_sort(obj_lst))
 
 		'''
 		num_lst = sorted(num_lst)
