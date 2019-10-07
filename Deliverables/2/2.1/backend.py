@@ -50,8 +50,8 @@ class BackEndComponent():
 
 		# return sorted(num_lst) + sorted(str_lst) + self.obj_sort(obj_lst)
 		num_lst = sorted(num_lst)
-		#stri = sorted(str_lst)
-		#slist = json.dumps(stri)
+		stri = sorted(str_lst)
+		slist = json.dumps(stri)
 		#obj = self.obj_sort(obj_lst)
 		#olist = json.dumps(obj)
 		str_lst = sorted(str_lst)
@@ -61,8 +61,8 @@ class BackEndComponent():
 		for element in num_lst:
 			sorted_lst.append(element)
 
-		for element in str_lst:
-			sorted_lst.append(json.dumps(str(element)))
+		for element in slist:
+			sorted_lst.append(element)
 
 		for element in obj_lst:
 			sorted_lst.append(json.dumps(element))
