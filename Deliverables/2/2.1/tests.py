@@ -1,5 +1,5 @@
 import unittest
-import BackEndComponent
+from backend import BackEndComponent
 import json
 import sys
 
