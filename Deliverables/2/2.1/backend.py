@@ -48,7 +48,9 @@ class BackEndComponent():
 			else:
 				print("Type Error: Special JSON object is one of int, str, or JSON obj")
 
-		# return sorted(num_lst) + sorted(str_lst) + self.obj_sort(obj_lst)
+		return sorted(num_lst), sorted(str_lst), self.obj_sort(obj_lst)
+
+		'''
 		num_lst = sorted(num_lst)
 		stri = sorted(str_lst)
 		slist = json.dumps(stri)
@@ -68,3 +70,4 @@ class BackEndComponent():
 			sorted_lst.append(element)
 
 		return sorted_lst
+		'''
