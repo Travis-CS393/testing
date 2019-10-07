@@ -64,7 +64,7 @@ class BackEndComponent():
 		for element in str_lst:
 			sorted_lst.append(element)
 
-		for element in obj_lst
+		for element in obj_lst:
 			sorted_lst.append(element)
 
 		return sorted_lst
