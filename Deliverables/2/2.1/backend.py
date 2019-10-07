@@ -62,7 +62,7 @@ class BackEndComponent():
 			sorted_lst.append(element)
 
 		for element in str_lst:
-			sorted_lst.append(json.dumps(element))
+			sorted_lst.append(str(element))
 
 		for element in obj_lst:
 			sorted_lst.append(json.dumps(element))
