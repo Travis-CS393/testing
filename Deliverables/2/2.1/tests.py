@@ -5,8 +5,7 @@ import sys
 
 def test1():
 	special_obj = json.load(sys.stdin)
-
-    back_service = BackEndComponent()
+	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 
 	sys.stdout.write(sorted_ten[0])
@@ -77,5 +76,5 @@ def test_driver():
     print("hello")
 	print(sorted_ten)
 	sys.stdout.write("stdout")
-	
+
 test_driver()
