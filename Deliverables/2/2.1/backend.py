@@ -52,4 +52,4 @@ class BackEndComponent():
 		num = sorted(num_lst)
 		str = sorted(str_lst)
 		obj = self.obj_sort(obj_lst)
-		return num.extend(str)
+		return str
