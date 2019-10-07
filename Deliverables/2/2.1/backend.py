@@ -49,4 +49,7 @@ class BackEndComponent():
 				print("Type Error: Special JSON object is one of int, str, or JSON obj")
 
 		# return sorted(num_lst) + sorted(str_lst) + self.obj_sort(obj_lst)
-		return sorted(num_lst).extend(sorted(str_lst))
+		num = sorted(num_lst)
+		str = sorted(str_lst)
+		obj = self.obj_sort(obj_lst)
+		return num.extend(str)
