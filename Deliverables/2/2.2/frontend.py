@@ -35,13 +35,15 @@ class FrontEndComponent():
 	# Reads special JSON objects with STDIN from command line
 	def readCL(self):
 		for line in sys.stdin.readlines():
-			self.lst.append(json.loads(line))
+			if line != "\n":
+				self.lst.append(json.loads(line))
 
 	# Reads special JSON objects with STDIN from file 
 	def readFile(self, filename):
 		with open(filename) as f:
 			for line in f:
-				self.lst.append(json.loads(line))
+				if line != "\n":
+					self.lst.append(json.loads(line))
 
 
 	# Partitions the list of special JSON objects into lists of 10
