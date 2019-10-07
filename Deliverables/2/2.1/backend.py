@@ -54,4 +54,15 @@ class BackEndComponent():
 		slist = json.dumps(stri)
 		obj = self.obj_sort(obj_lst)
 		olist = json.dumps(obj)
-		return num, slist, olist
+
+		sorted_lst = []
+		for element in num:
+			sorted_lst.append(element)
+
+		for element in slist:
+			sorted_lst.append(element)
+
+		for element in olist:
+			sorted_lst.append(element)
+
+		return sorted_lst
