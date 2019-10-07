@@ -36,6 +36,7 @@ class BackEndComponent():
 		num_lst = []
 		str_lst = []
 		obj_lst = []
+		print(lst)
 		for s_obj in lst:
 			if isinstance(s_obj, int):
 				num_lst.append(s_obj)
