@@ -50,6 +50,6 @@ class BackEndComponent():
 
 		# return sorted(num_lst) + sorted(str_lst) + self.obj_sort(obj_lst)
 		num = sorted(num_lst)
-		str = sorted(str_lst)
+		stri = sorted(str_lst)
 		obj = self.obj_sort(obj_lst)
-		return str
+		return stri
