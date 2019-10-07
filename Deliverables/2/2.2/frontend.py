@@ -25,11 +25,23 @@ class FrontEndComponent():
 			data = json.load(file)
 			for j in data:
 				self.lst.append(j)
-	"""
+	
 
 	# Reads array of special JSON objects with STDIN
 	def read(self):
 		self.lst = json.load(sys.stdin)
+	"""
+
+	# Reads special JSON objects with STDIN from command line
+	def readCL(self):
+		for line in sys.stdin.readlines():
+			self.lst.append(json.loads(line))
+
+	# Reads special JSON objects with STDIN from file 
+	def readFile(self, filename):
+		with open(filename) as f:
+			for line in f:
+				self.lst.append(json.loads(line))
 
 
 	# Partitions the list of special JSON objects into lists of 10
@@ -60,4 +72,5 @@ class FrontEndComponent():
 		for lst in partitioned_lst:
 			sorted_lsts.append(back_service.sort(lst))
 
-		sys.standout.write(sorted_lsts)
+		#sys.standout.write(sorted_lsts)
+		print(sorted_lsts)

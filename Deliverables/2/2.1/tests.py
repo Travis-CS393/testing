@@ -1,6 +1,7 @@
 import unittest
 import BackEndComponent
 import json
+import sys
 
 def test1():
 	special_obj = json.load(sys.stdin)
@@ -59,3 +60,20 @@ def testFive():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
+
+def test_driver():
+	special_obj = []
+	count = 0
+	for line in sys.stdin.readlines():
+		if count < 10:
+			special_obj.append(json.loads(line))
+			count += 1
+		else:
+			break
+
+	back_service = BackEndComponent()
+	sorted_ten = back_service.sort(special_obj)
+
+	print(sorted_ten)
+
+test_driver()

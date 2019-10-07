@@ -3,7 +3,7 @@ class BackEndComponent():
 		"""
 		This class implements a back-end component that takes in a list 
 		of 10 special JSON objects from a front-end component, sorts the JSON objects in 
-		asending order, and returns the sorted list of 10 special JSON objects to the 
+		ascending order, and returns the sorted list of 10 special JSON objects to the 
 		front-end component. 
 
 		Special JSON objects are sorted with the following ascending hierarchy:
@@ -44,7 +44,7 @@ class BackEndComponent():
 			elif isinstance(s_obj, dict):
 				obj_lst.append(s_obj)
 			else:
-				print("Tyoe Error: Special JSON object is one of int, str, or JSON obj}")
+				print("Type Error: Special JSON object is one of int, str, or JSON obj}")
 
 		return sorted(num_lst) + sorted(str_lst) + self.obj_sort(obj_lst)
 
