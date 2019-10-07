@@ -32,7 +32,6 @@ class BackEndComponent():
 
 		return sorted_obj_lst
 
-
     # Sorts and returns inputted list of 10 special JSON objects
 	def sort(self, lst):
 		num_lst = []
@@ -48,9 +47,10 @@ class BackEndComponent():
 			else:
 				print("Type Error: Special JSON object is one of int, str, or JSON obj")
 
-		casted_str_lst = []
-		for element in sorted(str_lst):
-			casted_str_lst.append(str(element))
+		# casted_str_lst = []
+		# for element in sorted(str_lst):
+			# casted_str_lst.append(str(element))
+
 
 		return sorted(num_lst) + casted_str_lst + self.obj_sort(obj_lst)
 
