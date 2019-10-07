@@ -63,7 +63,7 @@ def testFive():
 def test_driver():
 	special_obj = []
 	count = 0
-	for line in sys.stdin.read():
+	for line in sys.stdin.readlines():
 		if count < 10:
 			special_obj.append(json.loads(line))
 			count += 1
