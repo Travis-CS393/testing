@@ -95,7 +95,7 @@ def test_driver():
 			json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
 			if(len(special_obj) < 10):
 				special_obj.append(json_obj)
-				reading_frame = reading_frame[idx:]
+				reading_frame = reading_frame[end_idx:]
 			else:
 				break
 		except ValueError:
