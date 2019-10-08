@@ -39,7 +39,7 @@ class BackEndComponent():
 		str_lst = []
 		obj_lst = []
 		for s_obj in lst:
-			if (isinstance(s_obj, int) or isinstance(s_obj,float)):
+			if (isinstance(s_obj, int) or isinstance(s_obj,float) or isinstance(s_obj,long)):
 				num_lst.append(s_obj)
 			elif (isinstance(s_obj, str) or isinstance(s_obj, unicode)):
 				str_lst.append(s_obj)
