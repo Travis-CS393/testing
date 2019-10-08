@@ -153,7 +153,7 @@ def test_driver():
 	hold = sys.stdin.readlines()
 	for line in hold:
 		temp2 = line
-		while(temp2 != ""):
+		while(temp2):
 			if len(special_obj) < 10:
 				try:
 					data, idx = json.JSONDecoder().raw_decode(temp + temp2)
