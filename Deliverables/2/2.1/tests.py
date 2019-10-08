@@ -181,7 +181,7 @@ def test_driver():
 	for line in hold:
 		ln = line.replace("\n","")
 		try:
-			while(!finished):
+			while(finished != True):
 				data, idx = json.JSONDecoder().raw_decode(temp + ln)
 				special_obj.append(data)
 				if (idx + 1 == len(nl)):
