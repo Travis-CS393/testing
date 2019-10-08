@@ -160,7 +160,7 @@ def test_driver():
 				if (idx == len(line)):
 					break
 				temp = temp[idx+1:]
-				line = line[idx:]
+				line = line[idx+1:]
 		except ValueError:
 			temp = temp + line
 	back_service = BackEndComponent()
