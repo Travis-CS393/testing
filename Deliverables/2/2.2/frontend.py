@@ -1,6 +1,7 @@
+from backend import BackEndComponent
 import json
 import sys
-import BackEndComponent
+
 
 class FrontEndComponent():
 	def __init__(self, lst=None):
@@ -25,7 +26,7 @@ class FrontEndComponent():
 			data = json.load(file)
 			for j in data:
 				self.lst.append(j)
-	
+
 
 	# Reads array of special JSON objects with STDIN
 	def read(self):
@@ -38,7 +39,7 @@ class FrontEndComponent():
 			if line != "\n":
 				self.lst.append(json.loads(line))
 
-	# Reads special JSON objects with STDIN from file 
+	# Reads special JSON objects with STDIN from file
 	def readFile(self, filename):
 		with open(filename) as f:
 			for line in f:
@@ -55,13 +56,6 @@ class FrontEndComponent():
 			tens.append(self.lst[start:end])
 			start += 10
 			end += 10
-
-        '''
-		# frontend should not pass lists that are not length 10 to backend
-		# output should be perfect lists of 10
-        if (len(self.lst) % 10 > 0):
-			tens.append(self.lst[start:len(self.lst)])
-		'''
 
 		return tens
 
