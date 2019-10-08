@@ -156,7 +156,6 @@ def test_driver():
 		try:
 			while(line):
 				data, idx = json.JSONDecoder().raw_decode(temp + line)
-				print("index is ", idx)
 				special_obj.append(data)
 				if (idx == len(line)):
 					break
