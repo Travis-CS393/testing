@@ -103,6 +103,6 @@ def test_driver():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 
-	print(json.dumps(sorted)ten, end='')
+	print(json.dumps(sorted_ten), end='')
 
 test_driver()
