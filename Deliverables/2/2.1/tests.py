@@ -182,12 +182,14 @@ def test_driver():
 		ln = line.replace("\n","")
 		try:
 			while(finished != True):
-				data, idx = json.JSONDecoder().raw_decode(temp + ln)
+				ln = temp + ln
+				data, idx = json.JSONDecoder().raw_decode(ln)
 				special_obj.append(data)
-				if (idx + 1 == len(ln)):
-					finished = True
-				temp = temp[idx:]
 				ln = ln[idx:]
+				temp = ""
+				if (idx == len(ln)):
+					finished = True
+
 		except ValueError:
 			temp = temp + ln
 	back_service = BackEndComponent()
