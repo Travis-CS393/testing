@@ -85,8 +85,8 @@ class FrontEndComponent():
 						break
 					temp = temp[idx:]
 					line = line[idx:]
-				except ValueError:
-					temp = temp + line
+			except ValueError:
+				temp = temp + line
 
 		partitioned_lst = self.partition(self.lst)
 		back_service = BackEndComponent()
