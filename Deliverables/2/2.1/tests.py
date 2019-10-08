@@ -94,7 +94,7 @@ def test_driver1():
 
 	print(sorted_ten)
 """
-
+'''
 def test_driver():
 	special_obj = []
 	sorted_ten = []
@@ -111,5 +111,23 @@ def test_driver():
 
 	print(sorted_ten, end='')
 	#sys.stdout.write(sorted_ten)
+'''
+
+def test_driver():
+	special_obj = []
+	all_obj = ""
+	count = 0
+	for line in sys.stdin.readlines():
+		if count < 10:
+			all_obj = all_obj + line
+			count += 1
+		else:
+			break
+  
+	data = json.JSONDecoder.raw_decode(all_obj.replace("\n",""))
+	back_service = BackEndComponent()
+	sorted_ten = back_service.sort(data)
+
+	print(sorted_ten, end='')
 	
 test_driver()
