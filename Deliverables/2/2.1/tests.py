@@ -137,7 +137,7 @@ def test_driver():
 			special_obj.append(result)
 			all_obj = all_obj[index:]
 		except ValueError:
-		    break 
+			break 
 	
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
