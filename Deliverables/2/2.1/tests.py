@@ -184,7 +184,7 @@ def test_driver():
 			while(finished != True):
 				data, idx = json.JSONDecoder().raw_decode(temp + ln)
 				special_obj.append(data)
-				if (idx + 1 == len(nl)):
+				if (idx + 1 == len(ln)):
 					finished = True
 				temp = temp[idx:]
 				ln = ln[idx:]
