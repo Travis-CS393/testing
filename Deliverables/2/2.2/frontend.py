@@ -93,7 +93,7 @@ def test_driver():
 	partitioned_lst = tester.partition()
 	back_service = BackEndComponent()
 	for lst in partitioned_lst:
-		sorted_lsts.append(list(back_service.sort(lst)))
+		sorted_lsts.append(back_service.sort(lst))
 
 	print(json.dumps(sorted_lsts), end='')
 
