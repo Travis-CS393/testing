@@ -1,6 +1,7 @@
+from backend import BackEndComponent
 import json
 import sys
-from backend import BackEndComponent
+
 
 class FrontEndComponent():
 	def __init__(self, lst=None):
