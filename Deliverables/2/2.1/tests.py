@@ -152,15 +152,15 @@ def test_driver():
 	temp = ""
 	hold = sys.stdin.readlines()
 	for line in hold:			
-		line = line.replace("\n","")
+		rmvnl = line.replace("\n","")
 		try:
-			while(line):
-				data, idx = json.JSONDecoder().raw_decode(temp + line)
+			while(rmvnl):
+				data, idx = json.JSONDecoder().raw_decode(temp + rmvnl)
 				special_obj.append(data)
-				if (idx == len(line)):
+				if (idx == len(rmvnl)):
 					break
 				temp = temp[idx+1:]
-				line = line[idx:]
+				rmvnl = rmvnl[idx+1:]
 		except ValueError:
 			temp = temp + line
 	back_service = BackEndComponent()
