@@ -131,6 +131,7 @@ def test_driver():
 			break
   
 	data, idx = json.JSONDecoder().raw_decode(all_obj.replace("\n",""))
+	print(data)
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(data)
 
