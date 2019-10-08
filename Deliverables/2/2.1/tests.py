@@ -90,7 +90,7 @@ def test_driver():
 	special_obj = []
 	reading_frame = ""
 	for line in sys.stdin.readlines():
-		reading_frame += line.rstrip()
+		reading_frame += line
 		try:
 			while(len(reading_frame) != 1):
 				json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
