@@ -1,5 +1,4 @@
 import json
-import yaml
 
 class BackEndComponent():
 	def __init__(self):
@@ -25,8 +24,9 @@ class BackEndComponent():
 				layer_count += 1
 				check_obj = check_obj["name"]
 			next_layer.append((layer_count, isinstance(check_obj["name"],str), check_obj["name"], i))
+		
 		next_layer = sorted(next_layer, key=lambda cond:(cond[0], cond[1], cond[2]))
-
+		
 		sorted_obj_lst = []
 		for i in range(len(obj_lst)):
 			sorted_obj_lst.append(obj_lst[next_layer[i][3]])
@@ -51,32 +51,4 @@ class BackEndComponent():
 
 		sorted_lst = list(sorted(num_lst)) + list(sorted(str_lst)) + list(self.obj_sort(obj_lst))
 		return sorted_lst
-
-		'''
-		num_lst = sorted(num_lst)
-		stri = sorted(str_lst)
-		slist = json.dumps(stri)
-		
-		#obj = self.obj_sort(obj_lst)
-		#olist = json.dumps(obj)
-		str_lst = sorted(str_lst)
-		obj_lst = self.obj_sort(obj_lst)
-
-		sorted_lst = []
-		for element in num_lst:
-			sorted_lst.append(element)
-
-		for element in slist:
-			sorted_lst.append(element)
-
-		for element in obj_lst:
-			sorted_lst.append(element)
-
-		return sorted_lst
-		'''
-		'''
-		obj = self.obj_sort(obj_lst)
-		olist = json.dumps(obj)
-		return num, stri, olist
-		'''
 

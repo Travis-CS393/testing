@@ -60,65 +60,6 @@ def testFive():
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
 
-'''
-def test_driver():
-	special_obj = []
-	count = 0
-	for line in sys.stdin.readlines():
-		if count < 10:
-			special_obj.append(json.loads(line))
-			count += 1
-		else:
-			break
-
-	back_service = BackEndComponent()
-	# sorted_ten = back_service.sort(special_obj)
-	a, b, c = back_service.sort(special_obj)
-	for bs in b:
-		bs = json.dumps(bs)
-	a.extend(b)
-	print(a)
-
-	# print(sorted_ten)
-	'''
-"""
-def test_driver1():
-	special_obj = []
-	count = 0
-	data = json.load(sys.stdin)
-	for element in data:
-		if count < 10:
-			special_obj.append(element)
-			count += 1
-		else:
-			break
-
-	back_service = BackEndComponent()
-	sorted_ten = back_service.sort(special_obj)
-
-	print(sorted_ten)
-"""
-'''
-
-
-def test_driver():
-	special_obj = []
-	sorted_ten = []
-	count = 0
-	for line in sys.stdin.readlines():
-		if count < 10:
-			special_obj.append(json.JSONDecoder().decode(line))
-			count += 1
-		else:
-			break
-     
-	back_service = BackEndComponent()
-	sorted_ten = back_service.sort(special_obj) 
-
-	print(sorted_ten, end='')
-	#sys.stdout.write(sorted_ten)
-'''
-
 """
 def test_driver():
 	special_obj = []
@@ -146,7 +87,6 @@ def test_driver():
 	print(sorted_ten, end='')
 """
 
-"""
 
 def test_driver():
 	special_obj = []
@@ -170,8 +110,8 @@ def test_driver():
 
 	print(json.dumps(sorted_ten), end='')
 
-"""
 
+"""
 def test_driver():
 	special_obj = []
 	count = 0
@@ -201,22 +141,6 @@ def test_driver():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 	print(json.dumps(sorted_ten), end='')
-
-
-# def test_driver():
-# 	special_obj = []
-# 	count = 0
-# 	for line in sys.stdin.readlines():
-# 		if count < 10:
-# 			special_obj.append(json.JSONDecoder().decode(line))
-# 			count += 1
-# 		else:
-# 			break
-#
-# 	back_service = BackEndComponent()
-# 	sorted_ten = back_service.sort(special_obj)
-#
-# 	#print(sorted_ten)
-# 	sys.stdout.write(sorted_ten)
+"""
 
 test_driver()
