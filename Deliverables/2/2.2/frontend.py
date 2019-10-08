@@ -1,6 +1,7 @@
 import json
 import sys
-import BackEndComponent
+sys.path.append('../')
+from backend import BackEndComponent
 
 class FrontEndComponent():
 	def __init__(self, lst=None):
