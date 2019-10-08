@@ -150,8 +150,9 @@ def test_driver():
 	special_obj = []
 	count = 0
 	temp = ""
-	hold = sys.stdin.readlines().replace("\n","")
+	hold = sys.stdin.readlines()
 	for line in hold:			
+		line = line.replace("\n","")
 		try:
 			while(line):
 				data, idx = json.JSONDecoder().raw_decode(temp + line)
