@@ -90,7 +90,7 @@ def test_driver():
 		except ValueError:
 			temp = temp + line
 
-	partitioned_lst = tester.partition(tester.lst)
+	partitioned_lst = tester.partition()
 	back_service = BackEndComponent()
 	for lst in partitioned_lst:
 		sorted_lsts.append(back_service.sort(lst))
