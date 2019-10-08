@@ -3,6 +3,8 @@ from backend import BackEndComponent
 import json
 import sys
 
+"""
+# Testing Input and Output Files
 def test1():
 	special_obj = json.load(sys.stdin)
 	back_service = BackEndComponent()
@@ -59,36 +61,9 @@ def testFive():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
-
-"""
-def test_driver():
-	special_obj = []
-	all_obj = ""
-	count = 0
-	for line in sys.stdin.readlines():
-		if count < 10:
-			all_obj = all_obj + line
-			count += 1
-		else:
-			break
-
-	all_obj = all_obj.replace("\n"," ")
-	while all_obj:
-		try:
-			data, idx = json.JSONDecoder().raw_decode(all_obj)
-			special_obj.append(data)
-			all_obj = all_obj[idx:]
-		except ValueError:
-			break 
-	
-	back_service = BackEndComponent()
-	sorted_ten = back_service.sort(special_obj)
-
-	print(sorted_ten, end='')
 """
 
-
-def test_driver():
+def test_driver_13():
 	special_obj = []
 	count = 0
 	temp = ""
@@ -111,36 +86,23 @@ def test_driver():
 	print(json.dumps(sorted_ten), end='')
 
 
-"""
 def test_driver():
 	special_obj = []
-	count = 0
-	running = True
-	temp = ""
-	hold = []
-	allines = sys.stdin.readlines()
-	for i in range(len(allines)):
-		if allines[i] != ' \n':
-			hold.append(allines[i])
-
-	for line in hold:
-		ln = line.replace("\n","")
+	reading_frame = ""
+	for line in sys.stdin.readlines():
+		reading_frame += line.rstrip()
 		try:
-			while(running):
-				ln = temp + ln
-				data, idx = json.JSONDecoder().raw_decode(ln)
-				special_obj.append(data)
-				ln = ln[idx:]
-				temp = ""
-				if (idx == len(ln)):
-					running = False
-
+			json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
+			if(len(special_obj) < 10):
+				special_obj.append(json_obj)
+				reading_frame = reading_frame[idx:]
+			else:
+				break
 		except ValueError:
-			temp = temp + ln
-
+			pass
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
-	print(json.dumps(sorted_ten), end='')
-"""
+
+	print(json.dumps(sorted)ten, end='')
 
 test_driver()
