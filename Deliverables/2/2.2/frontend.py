@@ -76,3 +76,29 @@ class FrontEndComponent():
 
 		#sys.stdout.write(sorted_lsts)
 		print(sorted_lsts)
+
+	def test_driver():
+		sorted_lsts = []
+		temp = ""
+		hold = sys.stdin.readlines()
+		for line in hold:			
+			line = line.replace("\n","")
+			try:
+				while(line):
+					data, idx = json.JSONDecoder().raw_decode(temp + line)
+					self.lst.append(data)
+					if (idx == len(line)):
+						break
+					temp = temp[idx:]
+					line = line[idx:]
+				except ValueError:
+					temp = temp + line
+
+		partitioned_lst = self.partition(self.lst)
+		back_service = BackEndComponent()
+		for lst in partitioned_lst:
+			sorted_lsts.append(back_service.sort(lst))
+
+		print(sorted_lsts, end='')
+
+test_driver()
