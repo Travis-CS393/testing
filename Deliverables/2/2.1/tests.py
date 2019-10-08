@@ -157,7 +157,7 @@ def test_driver():
 				special_obj.append(data)
 				temp = ""
 			except ValueError:
-				temp = line
+				temp = temp + line
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 
