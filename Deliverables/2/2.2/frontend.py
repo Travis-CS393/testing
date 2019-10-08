@@ -56,13 +56,6 @@ class FrontEndComponent():
 			start += 10
 			end += 10
 
-        '''
-		# frontend should not pass lists that are not length 10 to backend
-		# output should be perfect lists of 10
-        if (len(self.lst) % 10 > 0):
-			tens.append(self.lst[start:len(self.lst)])
-		'''
-
 		return tens
 
 	# Sends each set of 10 special JSON objects to back-end for sorting
