@@ -85,8 +85,8 @@ def test_driver():
 				tester.lst.append(data)
 				if (idx == len(line)):
 					break
-				temp = temp[idx:]
-				line = line[idx:]
+				temp = temp[idx+1:]
+				line = line[idx+1:]
 		except ValueError:
 			temp = temp + line
 
