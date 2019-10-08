@@ -181,10 +181,10 @@ def test_driver():
 	allines = sys.stdin.readlines()
 	for i in range(len(allines)):
 		if allines[i] != ' \n':
-			hold.append(allines[i].replace("\n",""))
+			hold.append(allines[i])
 
 	for line in hold:
-		#ln = line.replace("\n","")
+		ln = line.replace("\n","")
 		try:
 			while(running):
 				ln = temp + ln
@@ -197,7 +197,7 @@ def test_driver():
 
 		except ValueError:
 			temp = temp + ln
-			
+
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 	print(json.dumps(sorted_ten), end='')
