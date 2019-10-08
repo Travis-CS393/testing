@@ -152,13 +152,15 @@ def test_driver():
 	temp = ""
 	hold = sys.stdin.readlines()
 	for line in hold:
-		if len(special_obj) < 10:
-			try:
-				data, idx = json.JSONDecoder().raw_decode(temp + line)
-				special_obj.append(data)
-				temp = ""
-			except ValueError:
-				temp = temp + line
+		while(line):
+			if len(special_obj) < 10:
+				try:
+					data, idx = json.JSONDecoder().raw_decode(temp + line)
+					special_obj.append(data)
+					temp = ""
+					line = line[idx:]
+				except ValueError:
+					temp = temp + line
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 
