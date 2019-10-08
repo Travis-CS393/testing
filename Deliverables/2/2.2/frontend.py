@@ -74,7 +74,7 @@ class FrontEndComponent():
 
 def test_driver():
 	tester = FrontEndComponent()
-	sorted_lsts = []
+	sorted_lsts = list()
 	temp = ""
 	hold = sys.stdin.readlines()
 	for line in hold:			
