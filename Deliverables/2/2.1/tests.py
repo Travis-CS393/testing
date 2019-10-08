@@ -175,23 +175,29 @@ def test_driver():
 def test_driver():
 	special_obj = []
 	count = 0
-	finished = False
+	running = True
 	temp = ""
-	hold = sys.stdin.readlines()
+	hold = []
+	allines = sys.stdin.readlines()
+	for i in range(len(allines)):
+		if allines[i] != ' \n':
+			hold.append(allines[i].replace("\n",""))
+
 	for line in hold:
-		ln = line.replace("\n","")
+		#ln = line.replace("\n","")
 		try:
-			while(finished != True):
+			while(running):
 				ln = temp + ln
 				data, idx = json.JSONDecoder().raw_decode(ln)
 				special_obj.append(data)
 				ln = ln[idx:]
 				temp = ""
 				if (idx == len(ln)):
-					finished = True
+					running = False
 
 		except ValueError:
 			temp = temp + ln
+			
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 	print(json.dumps(sorted_ten), end='')
