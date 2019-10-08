@@ -50,7 +50,7 @@ class BackEndComponent():
 				print(type(s_obj))
 
 		sorted_lst = list(sorted(num_lst)) + list(sorted(str_lst)) + list(self.obj_sort(obj_lst))
-		return json.dumps(sorted_lst)
+		return sorted_lst
 
 		'''
 		num_lst = sorted(num_lst)
