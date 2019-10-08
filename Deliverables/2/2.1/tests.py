@@ -129,11 +129,18 @@ def test_driver():
 			count += 1
 		else:
 			break
-  
-	data, idx = json.JSONDecoder().raw_decode(all_obj.replace("\n",""))
-	print(data)
+    
+    all_obj = all_obj.replace("\n","")
+	while all_obj:
+		try:
+			data, idx = json.JSONDecoder().raw_decode(all_obj)
+			special_obj.append(result)
+			all_obj = all_obj[index:]
+		except ValueError:
+		    break 
+	
 	back_service = BackEndComponent()
-	sorted_ten = back_service.sort(data)
+	sorted_ten = back_service.sort(special_obj)
 
 	print(sorted_ten, end='')
 	
