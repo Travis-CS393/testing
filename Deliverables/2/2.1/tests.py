@@ -146,6 +146,8 @@ def test_driver():
 	print(sorted_ten, end='')
 """
 
+"""
+
 def test_driver():
 	special_obj = []
 	count = 0
@@ -168,7 +170,30 @@ def test_driver():
 
 	print(json.dumps(sorted_ten), end='')
 
-	
+"""
+
+def test_driver():
+	special_obj = []
+	count = 0
+	finished = False
+	temp = ""
+	hold = sys.stdin.readlines()
+	for line in hold:
+		ln = line.replace("\n","")
+		try:
+			while(!finished):
+				data, idx = json.JSONDecoder().raw_decode(temp + ln)
+				special_obj.append(data)
+				if (idx + 1 == len(nl)):
+					finished = True
+				temp = temp[idx:]
+				ln = ln[idx:]
+		except ValueError:
+			temp = temp + ln
+	back_service = BackEndComponent()
+	sorted_ten = back_service.sort(special_obj)
+	print(json.dumps(sorted_ten), end='')
+
 
 # def test_driver():
 # 	special_obj = []
