@@ -98,12 +98,9 @@ def test_driver1():
 
 	print(sorted_ten)
 """
-<<<<<<< HEAD
 '''
-=======
 
 
->>>>>>> e8e3773f5fb57b53da4f3568e57e24451effd5c0
 def test_driver():
 	special_obj = []
 	sorted_ten = []
