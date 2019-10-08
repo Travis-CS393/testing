@@ -92,12 +92,13 @@ def test_driver():
 	for line in sys.stdin.readlines():
 		reading_frame += line.rstrip()
 		try:
-			json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
-			if(len(special_obj) < 10):
-				special_obj.append(json_obj)
-				reading_frame = reading_frame[end_idx:]
-			else:
-				break
+			while(len(reading_frame) != 1):
+				json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
+				if(len(special_obj) < 10):
+					special_obj.append(json_obj)
+					reading_frame = reading_frame[end_idx:]
+				else:
+					break
 		except ValueError:
 			pass
 	back_service = BackEndComponent()
