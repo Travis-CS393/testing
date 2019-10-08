@@ -135,7 +135,7 @@ def test_driver():
 		try:
 			data, idx = json.JSONDecoder().raw_decode(all_obj)
 			special_obj.append(data)
-			all_obj = all_obj[index:]
+			all_obj = all_obj[idx:]
 		except ValueError:
 			break 
 	
