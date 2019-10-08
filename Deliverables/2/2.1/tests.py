@@ -150,7 +150,7 @@ def test_driver():
 	special_obj = []
 	count = 0
 	temp = ""
-	hold = sys.stdin.readlines()
+	hold = sys.stdin.readlines().replace("\n","")
 	for line in hold:			
 		try:
 			while(line):
