@@ -72,7 +72,7 @@ class FrontEndComponent():
 		#sys.stdout.write(sorted_lsts)
 		print(sorted_lsts)
 
-def test_driver():
+def test_driver_9():
 	tester = FrontEndComponent()
 	sorted_lsts = list()
 	temp = ""
@@ -96,5 +96,22 @@ def test_driver():
 		sorted_lsts.append(json.loads(back_service.sort(lst)))
 
 	print(json.dumps(sorted_lsts), end='')
+
+def test_driver():
+	special_obj = []
+	reading_frame = ""
+	for line in sys.stdin.readlines():
+		reading_frame += (line.replace("\n","")).lstrip()
+		try:
+			while(len(reading_frame) >= 1):
+				json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
+				special_obj.append(json_obj)
+				reading_frame = reading_frame[end_idx:].lstrip()
+		except ValueError:
+			pass
+	back_service = BackEndComponent()
+	sorted_ten = back_service.sort(special_obj)
+
+	print(json.dumps(sorted_ten), end='')
 
 test_driver()
