@@ -25,7 +25,7 @@ class FrontEndComponent():
 			data = json.load(file)
 			for j in data:
 				self.lst.append(j)
-	
+
 
 	# Reads array of special JSON objects with STDIN
 	def read(self):
@@ -38,7 +38,7 @@ class FrontEndComponent():
 			if line != "\n":
 				self.lst.append(json.loads(line))
 
-	# Reads special JSON objects with STDIN from file 
+	# Reads special JSON objects with STDIN from file
 	def readFile(self, filename):
 		with open(filename) as f:
 			for line in f:
