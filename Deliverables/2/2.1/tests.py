@@ -159,8 +159,8 @@ def test_driver():
 				special_obj.append(data)
 				if (idx == len(line)):
 					break
-				temp = temp[idx+1:]
-				line = line[idx+1:]
+				temp = temp[idx:]
+				line = line[idx:]
 		except ValueError:
 			temp = temp + line
 	back_service = BackEndComponent()
