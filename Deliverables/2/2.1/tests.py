@@ -157,7 +157,7 @@ def test_driver():
 			while(line):
 				data, idx = json.JSONDecoder().raw_decode(temp + line)
 				special_obj.append(data)
-				temp = ""
+				temp = temp[idx+1:]
 				line = line[idx+1:]
 		except ValueError:
 			temp = temp + line
