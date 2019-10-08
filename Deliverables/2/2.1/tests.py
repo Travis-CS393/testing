@@ -150,10 +150,11 @@ def test_driver():
 	special_obj = []
 	count = 0
 	temp = ""
-	for line in sys.stdin.readlines():
+	hold = sys.stdin.readlines()
+	for line in hold:
 		if len(special_obj) < 10:
 			try:
-				data, idx = json.JSONDecoder().raw_decode(temp + line.replace("\n",""))
+				data, idx = json.JSONDecoder().raw_decode(temp + line)
 				special_obj.append(data)
 				temp = ""
 				continue
