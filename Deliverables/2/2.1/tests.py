@@ -129,8 +129,8 @@ def test_driver():
 			count += 1
 		else:
 			break
-    
-    all_obj = all_obj.replace("\n","")
+
+	all_obj = all_obj.replace("\n","")
 	while all_obj:
 		try:
 			data, idx = json.JSONDecoder().raw_decode(all_obj)
