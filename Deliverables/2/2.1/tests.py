@@ -158,7 +158,6 @@ def test_driver():
 				data, idx = json.JSONDecoder().raw_decode(temp + line)
 				special_obj.append(data)
 				if (idx == len(line)):
-					print("done line")
 					break
 				temp = temp[idx+1:]
 				line = line[idx+1:]
