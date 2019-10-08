@@ -156,6 +156,7 @@ def test_driver():
 				data, idx = json.JSONDecoder().raw_decode(temp + line.replace("\n",""))
 				special_obj.append(data)
 				temp = ""
+				continue
 			except ValueError:
 				temp = temp + line
 	back_service = BackEndComponent()
