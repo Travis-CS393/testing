@@ -158,8 +158,10 @@ def test_driver():
 				data, idx = json.JSONDecoder().raw_decode(temp + line)
 				print("index is ", idx)
 				special_obj.append(data)
+				if (idx == len(line)):
+					break
 				temp = temp[idx+1:]
-				line = line[idx+1:]
+				line = line[idx:]
 		except ValueError:
 			temp = temp + line
 	back_service = BackEndComponent()
