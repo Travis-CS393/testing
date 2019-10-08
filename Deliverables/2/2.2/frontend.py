@@ -95,6 +95,6 @@ def test_driver():
 	for lst in partitioned_lst:
 		sorted_lsts.append(back_service.sort(lst))
 
-	print(sorted_lsts, end='')
+	print(json.dumps(sorted_lsts), end='')
 
 test_driver()
