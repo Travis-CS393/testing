@@ -74,8 +74,6 @@ class BackEndComponent():
 
 		return sorted_lst
 		'''
-=======
 		obj = self.obj_sort(obj_lst)
 		olist = json.dumps(obj)
 		return num, stri, olist
->>>>>>> cf26017ca3c4ee1cb358268bd0139a1fae9ba652
