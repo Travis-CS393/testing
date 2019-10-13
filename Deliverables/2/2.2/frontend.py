@@ -1,6 +1,8 @@
+from __future__ import print_function
+from backend import BackEndComponent
 import json
 import sys
-import BackEndComponent
+
 
 class FrontEndComponent():
 	def __init__(self, lst=None):
@@ -18,61 +20,43 @@ class FrontEndComponent():
 
 		self.lst = [] if lst is None else lst
 
-	"""
-	# Reads special JSON objects from .json file
-	def read(self, filename):
-		with open(filename) as file:
-			data = json.load(file)
-			for j in data:
-				self.lst.append(j)
-	
-
-	# Reads array of special JSON objects with STDIN
+	# Reads special JSON objects from STDIN into self.lst
 	def read(self):
-		self.lst = json.load(sys.stdin)
-	"""
-
-	# Reads special JSON objects with STDIN from command line
-	def readCL(self):
+		reading_frame = ""
 		for line in sys.stdin.readlines():
-			if line != "\n":
-				self.lst.append(json.loads(line))
-
-	# Reads special JSON objects with STDIN from file 
-	def readFile(self, filename):
-		with open(filename) as f:
-			for line in f:
-				if line != "\n":
-					self.lst.append(json.loads(line))
-
+			reading_frame += (line.replace("\n","")).lstrip()
+			try:
+				while(len(reading_frame) >= 1):
+					json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
+					self.lst.append(json_obj)
+					reading_frame = reading_frame[end_idx:].lstrip()
+		except ValueError:
+			pass
 
 	# Partitions the list of special JSON objects into lists of 10
 	def partition(self):
 		start = 0
 		end = 10
-		tens = []
+		sets_of_tens = []
 		while end <= len(self.lst):
-			tens.append(self.lst[start:end])
+			sets_of_tens.append(self.lst[start:end])
 			start += 10
 			end += 10
 
-        '''
-		# frontend should not pass lists that are not length 10 to backend
-		# output should be perfect lists of 10
-        if (len(self.lst) % 10 > 0):
-			tens.append(self.lst[start:len(self.lst)])
-		'''
+		return set_of_tens
 
-		return tens
 
-	# Sends each set of 10 special JSON objects to back-end for sorting
-	# and stores sorted list in to array or arrays of special JSON objects
-	def process(self):
-		sorted_lsts = []
-		partitioned_lst = self.partition(self.lst)
-		back_service = BackEndComponent()
-		for lst in partitioned_lst:
-			sorted_lsts.append(back_service.sort(lst))
+def test_driver():
+	sorted_lsts = list()
 
-		#sys.stdout.write(sorted_lsts)
-		print(sorted_lsts)
+	tester = FrontEndComponent()
+	tester.read()
+	partitioned_lst = tester.partition()
+	
+	back_service = BackEndComponent()
+	for lst in partitioned_lst:
+		sorted_lsts.append(json.loads(back_service.sort(lst)))
+
+	print(json.dumps(sorted_lsts), end='')
+
+test_driver()

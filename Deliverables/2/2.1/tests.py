@@ -3,6 +3,8 @@ from backend import BackEndComponent
 import json
 import sys
 
+"""
+# Testing Input and Output Files
 def test1():
 	special_obj = json.load(sys.stdin)
 	back_service = BackEndComponent()
@@ -59,76 +61,49 @@ def testFive():
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(input)
 	assert(sorted_ten == output)
+"""
+
+def test_driver_13():
+	special_obj = []
+	count = 0
+	temp = ""
+	hold = sys.stdin.readlines()
+	for line in hold:
+		rmvnl = line.replace("\n","")
+		try:
+			while(rmvnl):
+				data, idx = json.JSONDecoder().raw_decode(temp + rmvnl)
+				special_obj.append(data)
+				if (idx == len(rmvnl)):
+					break
+				temp = temp[idx+1:]
+				rmvnl = rmvnl[idx+1:]
+		except ValueError:
+			temp = temp + line
+	back_service = BackEndComponent()
+	sorted_ten = back_service.sort(special_obj)
+
+	print(json.dumps(sorted_ten), end='')
 
 
 def test_driver():
 	special_obj = []
-	count = 0
+	reading_frame = ""
 	for line in sys.stdin.readlines():
-		if count < 10:
-			special_obj.append(json.loads(line))
-			count += 1
-		else:
-			break
-
-	back_service = BackEndComponent()
-	# sorted_ten = back_service.sort(special_obj)
-	a, b, c = back_service.sort(special_obj)
-	for bs in b:
-		bs = json.dumps(bs)
-	a.extend(b)
-	print(a)
-
-	# print(sorted_ten)
-"""
-def test_driver1():
-	special_obj = []
-	count = 0
-	data = json.load(sys.stdin)
-	for element in data:
-		if count < 10:
-			special_obj.append(element)
-			count += 1
-		else:
-			break
-
+		reading_frame += (line.replace("\n","")).lstrip()
+		try:
+			while(len(reading_frame) >= 1):
+				json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
+				if(len(special_obj) < 10):
+					special_obj.append(json_obj)
+					reading_frame = reading_frame[end_idx:].lstrip()
+				else:
+					break
+		except ValueError:
+			pass
 	back_service = BackEndComponent()
 	sorted_ten = back_service.sort(special_obj)
 
-	print(sorted_ten)
-"""
-
-def test_driver():
-	special_obj = []
-	sorted_ten = []
-	count = 0
-	for line in sys.stdin.readlines():
-		if count < 10:
-			special_obj.append(json.JSONDecoder().decode(line))
-			count += 1
-		else:
-			break
-
-	back_service = BackEndComponent()
-	sorted_ten = back_service.sort(special_obj)
-
-	print(sorted_ten, end='')
-	#sys.stdout.write(sorted_ten)
-
-# def test_driver():
-# 	special_obj = []
-# 	count = 0
-# 	for line in sys.stdin.readlines():
-# 		if count < 10:
-# 			special_obj.append(json.JSONDecoder().decode(line))
-# 			count += 1
-# 		else:
-# 			break
-#
-# 	back_service = BackEndComponent()
-# 	sorted_ten = back_service.sort(special_obj)
-#
-# 	#print(sorted_ten)
-# 	sys.stdout.write(sorted_ten)
+	print(json.dumps(sorted_ten), end='')
 
 test_driver()
