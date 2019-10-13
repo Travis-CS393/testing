@@ -1,5 +1,5 @@
 import json
-import sys 
+import sys
 
 class GoBoardComponent():
 	def __init__(self, go_board=None, go_boards=None, statements=None, points=None):
@@ -24,11 +24,11 @@ class GoBoardComponent():
 									   MaybeStone input sorted in increasing lexicographic order
 
 		The 19 x 19 board contains only rows of MaybeStone where each row has 19 of MaybeStone,
-		which can be Stone or Empty (" ").
-		
-		Stone is one of "B" or "W", depending on whether it is a black or white stone. 
-		
-		Point is represented by "N-N", where N is a natural number from 1 - 19, and represent 
+		which can be Stone or Empty ("").
+
+		Stone is one of "B" or "W", depending on whether it is a black or white stone.
+
+		Point is represented by "N-N", where N is a natural number from 1 - 19, and represent
 		coordinates for the Go coordinate system (1-1 top left corner, 19-19 bottom right corner)
 		"""
 		self.go_board = [ [" "] * 19 for row in range(19)] if go_board is None else go_board
@@ -41,9 +41,8 @@ class GoBoardComponent():
 	############################################
 	# PROCESS INPUT
 	############################################
-
-	# Reads [Board, Statement] JSON array from STDIN and 
-	# stores Board to self.go_board and Statement to self.statement
+	# Reads [Board, Statement] JSON array from STDIN and
+	# stores Board to self.go_board and Statements to self.statements
 	def read_input(self):
 		inputs = []
 		reading_frame = ""
@@ -105,19 +104,13 @@ class GoBoardComponent():
 			f.write(str(self.remove(s[1], s[2])) + "*")
 		elif (s[0] == "get-points"):
 			f.write(str(self.get_points(s[1])) + "*")
-		else:
-			raise Exception("Invalid Statement: Not a query or a command.")
-
-		f.close()
 		'''
-	
-
 
 	###########################################
 	# HELPER FUNCTIONS
 	###########################################
-	
-	# Converts point from "N-N" to indices 
+
+	# Converts point from "N-N" to indices
 	def process_point(self,point):
 		idx = point.split("-")
 		for i in range(len(idx)):
@@ -155,7 +148,7 @@ class GoBoardComponent():
 	# QUERIES
 	###########################################
 
-	# Occupied takes a point and returns True if 
+	# Occupied takes a point and returns True if
 	# board at that point is not empty stone, else False
 	def occupied(self, point):
 		x, y = self.process_point(point)
@@ -169,18 +162,18 @@ class GoBoardComponent():
 
 		return True if (self.go_board[x][y] == stone) else False
 
-	# Return true if there is a path of adjacent points to Point 
+	# Return true if there is a path of adjacent points to Point
 	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
 	def reachable(self, point, maybe_stone):
 		pass
-	
+
 
 
 	###########################################
 	# COMMANDS
 	###########################################
-	
+
 	# Places a stone at the given point on go_board if not occupied
 	def place(self, stone, point):
 		if(self.occupied(point)):
@@ -189,7 +182,7 @@ class GoBoardComponent():
 			x, y = self.process_point(point)
 
 			#temp_board = list(self.go_board)
-			#temp_board[x][y] = 
+			#temp_board[x][y] =
 			self.go_board[x][y] = stone
 			return self.go_board
 
@@ -212,10 +205,10 @@ class GoBoardComponent():
 		# Gets points and resets self.points
 		points = sorted(self.points)
 		self.points = []
-		
+
 		return points
 
-	
+
 
 	################################################
 	# TYPE ASSERTIONS PREDICATES
@@ -228,7 +221,7 @@ class GoBoardComponent():
 			pos_set = {"1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"}
 			if( (parsed_point[0] in pos_set) and (parsed_point[1] in pos_set) ):
 				return True
-		return False				
+		return False
 
 
 	# Stone must be "B" or "W"
@@ -286,4 +279,3 @@ class GoBoardComponent():
 			return False
 
 		return True
-
