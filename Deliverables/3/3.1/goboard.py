@@ -203,8 +203,7 @@ class GoBoardComponent():
 					self.add_point(y, x)
 
 		# Gets points and resets self.points
-		#points = sorted(self.points)
-		points = self.points
+		points = sorted(self.points)
 		self.points = []
 
 		return points
