@@ -200,7 +200,7 @@ class GoBoardComponent():
 		for x in range(len(self.go_board)):
 			for y in range(len(self.go_board[0])):
 				if(self.go_board[x][y] == maybe_stone):
-					self.add_point(x, y)
+					self.add_point(y, x)
 
 		# Gets points and resets self.points
 		points = sorted(self.points)
