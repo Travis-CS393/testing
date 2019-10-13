@@ -192,7 +192,7 @@ class GoBoardComponent():
 			return "I am just a board! I cannot remove what is not there!"
 		else:
 			x, y = self.process_point(point)
-			self.go_board[x][y] = ""
+			self.go_board[x][y] = " "
 			return self.go_board
 
 	# Returns array of points that maybe_stone occupies on go_board
