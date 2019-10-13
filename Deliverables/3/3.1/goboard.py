@@ -1,18 +1,18 @@
 import json
-import sys 
+import sys
 
 class GoBoardComponent():
 	def __init__(self, go_board=None, statements=None, responses=None, points=None):
 		"""
-		This class implements a Go board component that takes in a 19 x 19 go board and a 
-		statement from STDIN in the form [Board, Statement], and returns responses 
+		This class implements a Go board component that takes in a 19 x 19 go board and a
+		statement from STDIN in the form [Board, Statement], and returns responses
 		according to the following statements:
 
 		Query Statements:
-			["occupied?", Point] - returns true if a Stone at point, else false 
+			["occupied?", Point] - returns true if a Stone at point, else false
 			["occupies?", Stone, Point] - returns true if Stone at point, else false
 			["reachable?", Point, MaybeStone] - returns true if exists path of vertical or horizontal
-												adjacent points of same Stone from Stone at Point to MaybeStone, 
+												adjacent points of same Stone from Stone at Point to MaybeStone,
 												else false
 
 		Command Statements:
@@ -20,15 +20,15 @@ class GoBoardComponent():
 									  "This seat is taken!"
 			["remove", Stone, Point] - returns updated Board with Stone removed from Point, error if invalid move
 									  "I am just a board! I cannot remove what is not there"
-			["get-points", MaybeStone] - returns JSON array of Points that has stored all Point positions of the given 
-									   MaybeStone input 
+			["get-points", MaybeStone] - returns JSON array of Points that has stored all Point positions of the given
+									   MaybeStone input
 
 		The 19 x 19 board contains only rows of MaybeStone where each row has 19 of MaybeStone,
 		which can be Stone or Empty ("").
-		
-		Stone is one of "B" or "W", depending on whether it is a black or white stone. 
-		
-		Point is represented by "N-N", where N is a natural number from 1 - 19, and represent 
+
+		Stone is one of "B" or "W", depending on whether it is a black or white stone.
+
+		Point is represented by "N-N", where N is a natural number from 1 - 19, and represent
 		coordinates for the Go coordinate system (1-1 top left corner, 19-19 bottom right corner)
 		"""
 		self.go_board = [ [""] * 19 for row in range(19)] if go_board is None else go_board
@@ -42,7 +42,7 @@ class GoBoardComponent():
 	# PROCESS INPUT
 	############################################
 
-	# Reads [Board, Statement] JSON array from STDIN and 
+	# Reads [Board, Statement] JSON array from STDIN and
 	# stores Board to self.go_board and Statements to self.statements
 	def read_input(self):
 		inputs = []
@@ -64,7 +64,7 @@ class GoBoardComponent():
 			self.go_board = inputs[0][0]
 		else:
 			raise Exception("Go board must be 19 x 19 and hold only MaybeStones")
-		
+
 		if(self.check_statements(inputs[0][1])):
 			self.statements = inputs[0][1]
 		else:
@@ -91,14 +91,14 @@ class GoBoardComponent():
 				raise Exception("Invalid Statement: Not a query or a command.")
 
 		f.close()
-	
+
 
 
 	###########################################
 	# HELPER FUNCTIONS
 	###########################################
-	
-	# Converts point from "N-N" to indices 
+
+	# Converts point from "N-N" to indices
 	def process_point(self,point):
 		idx = point.split("-")
 		for i in range(len(idx)):
@@ -133,32 +133,32 @@ class GoBoardComponent():
 	# QUERIES
 	###########################################
 
-	# Occupied takes a point and returns True if 
+	# Occupied takes a point and returns True if
 	# board at that point is not empty stone, else False
 	def occupied(self, point):
 		x, y = self.process_point(point)
 
-		return True if (self.go_board[x][y] != "") else False 
+		return True if (self.go_board[x][y] != "") else False
 
 	# Occupies takes a point and returns True if
 	# board at that point has that stone, else False
 	def occupies(self, point, stone):
 		x, y = self.process_point(point)
 
-		return True if (self.go_board[x][y] == stone) else False 
+		return True if (self.go_board[x][y] == stone) else False
 
-	# Return true if there is a path of adjacent points to Point 
+	# Return true if there is a path of adjacent points to Point
 	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
 	def reachable(self, point, maybe_stone):
 		pass
-	
+
 
 
 	###########################################
 	# COMMANDS
 	###########################################
-	
+
 	# Places a stone at the given point on go_board if not occupied
 	def place(self, stone, point):
 		if(self.occupied(point)):
@@ -167,7 +167,7 @@ class GoBoardComponent():
 			x, y = self.process_point(point)
 
 			#temp_board = list(self.go_board)
-			#temp_board[x][y] = 
+			#temp_board[x][y] =
 			self.go_board[x][y] = stone
 			return self.go_board
 
@@ -188,12 +188,12 @@ class GoBoardComponent():
 					self.add_point("", x, y)
 
 		# Gets points and resets self.points
-		points = self.points
+		points = sorted(self.points)
 		self.points = []
-		
+
 		return points
 
-	
+
 
 	################################################
 	# TYPE ASSERTIONS PREDICATES
@@ -206,7 +206,7 @@ class GoBoardComponent():
 			pos_set = {"1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"}
 			if( (parsed_point[0] in pos_set) and (parsed_point[1] in pos_set) ):
 				return True
-		return False				
+		return False
 
 
 	# Stone must be "B" or "W"
@@ -235,13 +235,13 @@ class GoBoardComponent():
 			return False
 
 	# Statements must be array of one of
-	# ["occupied?", Point], ["occupies?", Point, Stone], ["reachable?", Point, MaybeStone] 
+	# ["occupied?", Point], ["occupies?", Point, Stone], ["reachable?", Point, MaybeStone]
 	# ["place", Stone, Point], ["remove", Stone, Point], ["get-points", MaybeStone]
 	# with proper inputs for Point, Stone, and MaybeStone
 	def check_statements(self, statements):
 		for statement in statements:
 			if(len(statement) == 2):
-				
+
 				if(statement[0] == "occupied?"):
 					if(self.check_point(statement[1]) == False):
 						print(1)
@@ -253,9 +253,9 @@ class GoBoardComponent():
 				else:
 					print("hi")
 					return False
-			
+
 			elif(len(statement) == 3):
-				
+
 				if((statement[0] == "place") or (statement[0] == "remove")):
 					if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
 						print(4)
@@ -271,10 +271,9 @@ class GoBoardComponent():
 				else:
 					print(7)
 					return False
-			
+
 			else:
 				print(8)
 				return False
 
 		return True
-
