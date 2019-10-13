@@ -68,7 +68,7 @@ def test_driver_13():
 	count = 0
 	temp = ""
 	hold = sys.stdin.readlines()
-	for line in hold:			
+	for line in hold:
 		rmvnl = line.replace("\n","")
 		try:
 			while(rmvnl):

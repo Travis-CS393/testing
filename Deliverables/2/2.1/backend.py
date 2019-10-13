@@ -24,9 +24,9 @@ class BackEndComponent():
 				layer_count += 1
 				check_obj = check_obj["name"]
 			next_layer.append((layer_count, isinstance(check_obj["name"],str), check_obj["name"], i))
-		
+
 		next_layer = sorted(next_layer, key=lambda cond:(cond[0], cond[1], cond[2]))
-		
+
 		sorted_obj_lst = []
 		for i in range(len(obj_lst)):
 			sorted_obj_lst.append(obj_lst[next_layer[i][3]])
@@ -51,4 +51,3 @@ class BackEndComponent():
 
 		sorted_lst = list(sorted(num_lst)) + list(sorted(str_lst)) + list(self.obj_sort(obj_lst))
 		return sorted_lst
-
