@@ -188,7 +188,7 @@ class GoBoardComponent():
 
 	# Removes a stone from given point on go_board if occupied
 	def remove(self, stone, point):
-		if(self.occupied(point) == False):
+		if( (self.occupied(point) == False) or (self.occupies(stone,point) == False) ):
 			return "I am just a board! I cannot remove what is not there!"
 		else:
 			x, y = self.process_point(point)
