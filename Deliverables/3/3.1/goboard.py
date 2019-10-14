@@ -160,7 +160,7 @@ class GoBoardComponent():
 		x, y = self.process_point(point)
 		xp = [-1, 0, 1, 0]
 		yp = [0, 1, 0, -1]
-		for (i in range(4)):
+		for i in range(4):
 			if (0 < x + xp[i] < 20) & (0 < y + yp[i] < 20):
 				str_point = str(x+xp[i]) + "-" + str(y+yp[i])
 				neighbors.append(str_point)
@@ -198,7 +198,7 @@ class GoBoardComponent():
 			return True
 		q = queue.Queue
 		neighbors = self.findNeighbors(point)
-		for (n in neighbors):
+		for n in neighbors:
 			nx, ny = self.process_point(n)
 			marks[nx, ny] = True
 			q.put(n)
@@ -209,7 +209,7 @@ class GoBoardComponent():
 			if (self.go_board[chx, chy] == maybe_stone):
 				return True
 			connections = self.findConnections(point, maybe_stone)
-			for (c in connections):
+			for c in connections:
 				conx, cony = self.process_point(c)
 				if (!marks[conx,cony]):
 					marks[conx, cony] = True
