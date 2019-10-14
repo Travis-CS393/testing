@@ -1,5 +1,6 @@
 import json
 import sys
+import queue
 
 class GoBoardComponent():
 	def __init__(self, go_board=None, statements=None, responses=None, points=None):
@@ -31,7 +32,7 @@ class GoBoardComponent():
 		Point is represented by "N-N", where N is a natural number from 1 - 19, and represent
 		coordinates for the Go coordinate system (1-1 top left corner, 19-19 bottom right corner)
 		"""
-		self.go_board = [ [""] * 19 for row in range(19)] if go_board is None else go_board
+		self.go_board = [ [" "] * 19 for row in range(19)] if go_board is None else go_board
 		self.statements = [] if statements is None else statements
 		self.responses = [] if responses is None else responses
 		self.points = [] if points is None else points
@@ -127,6 +128,30 @@ class GoBoardComponent():
 
 		return self.responses
 
+	def findConnections(self, point, maybe_stone):
+		all = self.get_points(maybe_stone)
+		x, y = self.process_point(point)
+		connected = []
+		for a in all:
+			px, py = self.process_point(a)
+			diffx = abs(px - x)
+			diffy = abs(py - y)
+				str_point = str(px) + "-" + str(py)
+				connected.append(str_point)
+		return connected
+
+	def findNeighbors(self, point):
+		neighbors = []
+		x, y = self.process_point(point)
+		xp = [-1, 0, 1, 0]
+		yp = [0, 1, 0, -1]
+		for (i in range(4)):
+			if (0 < x + xp[i] < 20) & (0 < y + yp[i] < 20):
+				str_point = str(x+xp[i]) + "-" + str(y+yp[i])
+				neighbors.append(str_point)
+
+		return neighbors
+
 
 
 	############################################
@@ -151,8 +176,30 @@ class GoBoardComponent():
 	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
 	def reachable(self, point, maybe_stone):
-		pass
+		x, y = self.process_point(point)
+		marks = [ [False] * 19 for row in range(19)]
+		# if maybe_stone is same as point, then return True
+		if (self.go_board[x,y] == maybe_stone):
+			return True
+		q = queue.Queue
+		neighbors = self.findNeighbors(point)
+		for (n in neighbors):
+			nx, ny = self.process_point(n)
+			marks[nx, ny] = True
+			q.put(n)
 
+		while (!q.Empty):
+			check = q.get()
+			chx, chy = self.process_point(check)
+			if (self.go_board[chx, chy] == maybe_stone):
+				return True
+			connections = self.findConnections(point, maybe_stone)
+			for (c in connections):
+				conx, cony = self.process_point(c)
+				if (!marks[conx,cony]):
+					marks[conx, cony] = True
+					q.put(c)
+		return False
 
 
 	###########################################
@@ -177,7 +224,7 @@ class GoBoardComponent():
 			return "I am just a board! I cannot remove what is not there!"
 		else:
 			x, y = self.process_point(point)
-			self.go_board[x][y] = ""
+			self.go_board[x][y] = " "
 			return self.go_board
 
 	# Returns array of points that maybe_stone occupies on go_board
