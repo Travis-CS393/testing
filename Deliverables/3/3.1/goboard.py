@@ -181,9 +181,6 @@ class GoBoardComponent():
 		marks = [[False] * 19 for row in range(19)]
 		# if maybe_stone is same as point, then return True
 		type = self.go_board[x][y]
-		print(type)
-		print(maybe_stone)
-		print("points ", x, y)
 		if (type == maybe_stone):
 			print(1)
 			return True
@@ -202,6 +199,7 @@ class GoBoardComponent():
 			for n in neighbors:
 				nx, ny = self.process_point(n)
 				if (self.go_board[nx][ny] == maybe_stone):
+					print("n ", nx, ny)
 					print(3)
 					return True
 				elif (self.go_board[nx][ny] == type and marks[nx][ny] == False):
