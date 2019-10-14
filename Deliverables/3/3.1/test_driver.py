@@ -13,6 +13,5 @@ def test_driver():
 		output.append(go_board.execute_statement(go_board.statements[i]))
 		
 	print(json.dumps(output))
-	print(len(output))
 
 test_driver()
