@@ -159,7 +159,7 @@ class GoBoardComponent():
 
 		return True if (self.go_board[x][y] == stone) else False
 
-	
+	"""
 	# Return true if there is a path of adjacent points to Point
 	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
@@ -191,10 +191,36 @@ class GoBoardComponent():
 					q.put(n)
 
 		return False
+		"""
+
+		def reachable(self, point, maybe_stone):
+			visited = [[False] * 19 for row in range(19)]
+			x, y = self.process_point(point)
+
+			start_type = self.go_board[x][y]
+			if (start_type == maybe_stone):
+				return True
+
+			q = Queue.Queue()
+			q.put(point)
+
+			while (q.empyt() != True):
+				check_point = q.get()
+				c_x, c_y = self.process_point(check_point)
+				if(visited[c_x][c_y] == False):
+					visited[c_x][c_y] = True
+					neighbors = self.find_neighbors(check_point)
+					for n in neighbors:
+						n_x, y_y = self.process_point(n)
+						if (self.go_board[n_x][n_y] == maybe_stone):
+							return True
+						if (self.go_board[n_x][n_y] == start_type):
+							q.put(n)
+
+			return False
+				
+
 		
-
-
-
 	###########################################
 	# COMMANDS
 	###########################################
