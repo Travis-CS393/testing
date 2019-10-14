@@ -151,8 +151,9 @@ class GoBoardComponent():
 			px, py = self.process_point(a)
 			diffx = abs(px - x)
 			diffy = abs(py - y)
-			str_point = str(px) + "-" + str(py)
-			connected.append(str_point)
+			if (diffx <= 1 ^ diffy <= 1):
+				str_point = str(px) + "-" + str(py)
+				connected.append(str_point)
 		return connected
 
 	def findNeighbors(self, point):
