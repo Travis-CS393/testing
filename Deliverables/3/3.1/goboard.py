@@ -143,19 +143,6 @@ class GoBoardComponent():
 
 		return responses
 
-	def findConnections(self, point, maybe_stone):
-		all_stones = self.get_points(maybe_stone)
-		x, y = self.process_point(point)
-		connected = []
-		for a in all_stones:
-			px, py = self.process_point(a)
-			# WHAT ARE WE USING DIFF FOR
-			diffx = abs(px - x)
-			diffy = abs(py - y)
-			str_point = str(px) + "-" + str(py)
-			connected.append(str_point)
-		return connected
-
 	def findNeighbors(self, point):
 		neighbors = []
 		x, y = self.process_point(point)
@@ -163,12 +150,10 @@ class GoBoardComponent():
 		yp = [0, 1, 0, -1]
 		for i in range(4):
 			if (0 < x + xp[i] < 20) & (0 < y + yp[i] < 20):
-				str_point = str(x+xp[i]) + "-" + str(y+yp[i])
+				str_point = str(x+xp[i]+1) + "-" + str(y+yp[i]+1)
 				neighbors.append(str_point)
 
 		return neighbors
-
-
 
 	############################################
 	# QUERIES
@@ -193,28 +178,33 @@ class GoBoardComponent():
 	# the path reaches the given MaybeStone, else False
 	def reachable(self, point, maybe_stone):
 		x, y = self.process_point(point)
-		marks = [ [False] * 19 for row in range(19)]
+		marks = [[False] * 19 for row in range(19)]
 		# if maybe_stone is same as point, then return True
-		if (self.go_board[x][y] == maybe_stone):
+		type = self.go_board[x][y]
+		if (type == maybe_stone):
+			print(1)
 			return True
 		q = Queue.Queue()
-		neighbors = self.findNeighbors(point)
-		for n in neighbors:
-			nx, ny = self.process_point(n)
-			marks[nx][ny] = True
-			q.put(n)
+		q.put(point)
 
 		while (q.empty() != True):
 			check = q.get()
 			chx, chy = self.process_point(check)
+			marks[chx][chy] = True
 			if (self.go_board[chx][chy] == maybe_stone):
+				print(2)
 				return True
-			connections = self.findConnections(point, maybe_stone)
-			for c in connections:
-				conx, cony = self.process_point(c)
-				if (marks[conx][cony] == False):
-					marks[conx][cony] = True
-					q.put(c)
+
+			neighbors = self.findNeighbors(point)
+			for n in neighbors:
+				nx, ny = self.process_point(n)
+				if (self.go_board[nx][ny] == maybe_stone):
+					print("n ", nx, ny)
+					print(3)
+					return True
+				elif (self.go_board[nx][ny] == type and marks[nx][ny] == False):
+					q.put(n)
+
 		return False
 
 
