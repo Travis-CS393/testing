@@ -211,7 +211,7 @@ class GoBoardComponent():
 				visited[c_x][c_y] = True
 				neighbors = self.find_neighbors(check_point)
 				for n in neighbors:
-					n_x, y_y = self.process_point(n)
+					n_x, n_y = self.process_point(n)
 					if (self.go_board[n_x][n_y] == maybe_stone):
 						return True
 					if (self.go_board[n_x][n_y] == start_type):
