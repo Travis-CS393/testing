@@ -110,20 +110,6 @@ class GoBoardComponent():
 		self.points.append(str_point)
 
 	# Finds all the adjacent neighbors to a given point
-	"""
-	def findNeighbors(self, point):
-		neighbors = []
-		x, y = self.process_point(point)
-		xp = [-1, 0, 1, 0]
-		yp = [0, 1, 0, -1]
-		for i in range(4):
-			if (0 < ((y + 1) + xp[i]) < 20) & (0 < ((x + 1) + yp[i]) < 20):
-				str_point = str((y + 1) + xp[i]) + "-" + str((x + 1) + yp[i])
-				neighbors.append(str_point)
-
-		return neighbors
-	"""
-
 	def find_neighbors(self, point):
 		neighbors = []
 		xp = [-1, 0, 1, 0]
@@ -137,7 +123,6 @@ class GoBoardComponent():
 				neighbors.append(point_str)
 
 		return neighbors
-
 
 
 
@@ -159,40 +144,9 @@ class GoBoardComponent():
 
 		return True if (self.go_board[x][y] == stone) else False
 
-	"""
 	# Return true if there is a path of adjacent points to Point
 	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
-	def reachable(self, point, maybe_stone):
-		x, y = self.process_point(point)
-		marks = [[False] * 19 for row in range(19)]
-		
-		# if maybe_stone is same as point, then return True
-		type = self.go_board[x][y]
-		if (type == maybe_stone):
-			return True
-
-		q = Queue.Queue()
-		q.put(point)
-
-		while (q.empty() != True):
-			check = q.get()
-			chx, chy = self.process_point(check)
-			marks[chx][chy] = True
-			if (self.go_board[chx][chy] == maybe_stone):
-				return True
-
-			neighbors = self.find_neighbors(point)
-			for n in neighbors:
-				nx, ny = self.process_point(n)
-				if (self.go_board[nx][ny] == maybe_stone):
-					return True
-				elif (self.go_board[nx][ny] == type and marks[nx][ny] == False):
-					q.put(n)
-
-		return False
-		"""
-
 	def reachable(self, point, maybe_stone):
 		visited = [[False] * 19 for row in range(19)]
 		x, y = self.process_point(point)
