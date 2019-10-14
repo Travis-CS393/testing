@@ -198,7 +198,7 @@ class GoBoardComponent():
 			return True
 		q = queue.Queue
 		neighbors = self.findNeighbors(point)
-		for (n in neighbors):
+		for n in neighbors:
 			nx, ny = self.process_point(n)
 			marks[nx, ny] = True
 			q.put(n)
@@ -209,7 +209,7 @@ class GoBoardComponent():
 			if (self.go_board[chx, chy] == maybe_stone):
 				return True
 			connections = self.findConnections(point, maybe_stone)
-			for (c in connections):
+			for c in connections:
 				conx, cony = self.process_point(c)
 				if (!marks[conx,cony]):
 					marks[conx, cony] = True
