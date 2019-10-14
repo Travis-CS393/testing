@@ -201,6 +201,7 @@ class GoBoardComponent():
 		neighbors = self.findNeighbors(point)
 		for n in neighbors:
 			nx, ny = self.process_point(n)
+			print("neighbors are ", nx, ny)
 			q.put(n)
 
 		while (q.empty() != True):
@@ -212,6 +213,7 @@ class GoBoardComponent():
 			connections = self.findConnections(point, maybe_stone)
 			for c in connections:
 				conx, cony = self.process_point(c)
+				print('connections are', conx, cony)
 				if (marks[conx][cony] == False):
 					marks[conx][cony] = True
 					q.put(c)
@@ -310,7 +312,7 @@ class GoBoardComponent():
 				return False
 		elif((statement[0] == "place") or (statement[0] == "remove")):
 			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
-				print('chaos')
+				print(4)
 				return False
 		elif(statement[0] == "occupies?"):
 			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
