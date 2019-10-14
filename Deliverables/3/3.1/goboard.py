@@ -124,7 +124,7 @@ class GoBoardComponent():
 		str_point = str(col + 1) + "-" + str(row + 1)
 		self.points.append(str_point)
 
-	# Append all responses to board actions to file for json dump
+	# Append all responses to board actions to file for json dumps
 	def responses_cat(self):
 		responses = []
 		f = open("wetried.txt","r")
