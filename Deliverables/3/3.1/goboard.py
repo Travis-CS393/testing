@@ -14,7 +14,7 @@ class GoBoardComponent():
 			["occupies?", Stone, Point] - returns True if Stone at point, else False
 			["reachable?", Point, MaybeStone] - returns True if exists path of vertical or horizontal
 												adjacent points of same Stone from Stone at Point to MaybeStone,
-												else False
+												else False, implements BFS with queue
 
 		Command Statements:
 			["place", Stone, Point] - returns updated Board with Stone at Point, error if invalid move
@@ -42,6 +42,7 @@ class GoBoardComponent():
 	############################################
 	# PROCESS INPUT
 	############################################
+
 	# Reads [Board, Statement] JSON array from STDIN and
 	# stores Board to self.go_board and Statements to self.statements
 	def read_input(self):
