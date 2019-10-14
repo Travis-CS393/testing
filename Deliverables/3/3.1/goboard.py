@@ -203,7 +203,7 @@ class GoBoardComponent():
 			marks[nx, ny] = True
 			q.put(n)
 
-		while (!q.Empty):
+		while (not q.Empty()):
 			check = q.get()
 			chx, chy = self.process_point(check)
 			if (self.go_board[chx, chy] == maybe_stone):
