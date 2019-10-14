@@ -144,10 +144,10 @@ class GoBoardComponent():
 		return responses
 
 	def findConnections(self, point, maybe_stone):
-		all = self.get_points(maybe_stone)
+		all_stones = self.get_points(maybe_stone)
 		x, y = self.process_point(point)
 		connected = []
-		for a in all:
+		for a in all_stones:
 			px, py = self.process_point(a)
 			diffx = abs(px - x)
 			diffy = abs(py - y)
@@ -200,19 +200,19 @@ class GoBoardComponent():
 		neighbors = self.findNeighbors(point)
 		for n in neighbors:
 			nx, ny = self.process_point(n)
-			marks[nx][ny] = True
+			marks[ny][nx] = True
 			q.put(n)
 
 		while (q.empty() != True):
 			check = q.get()
 			chx, chy = self.process_point(check)
-			if (self.go_board[chx][chy] == maybe_stone):
+			if (self.go_board[chy][chx] == maybe_stone):
 				return True
 			connections = self.findConnections(point, maybe_stone)
 			for c in connections:
 				conx, cony = self.process_point(c)
-				if (marks[conx][cony] == False):
-					marks[conx][cony] = True
+				if (marks[cony][conx] == False):
+					marks[cony][conx] = True
 					q.put(c)
 		return False
 
