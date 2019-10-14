@@ -160,7 +160,7 @@ class GoBoardComponent():
 		x, y = self.process_point(point)
 		xp = [-1, 0, 1, 0]
 		yp = [0, 1, 0, -1]
-		for (i in range(4)):
+		for i in range(4):
 			if (0 < x + xp[i] < 20) & (0 < y + yp[i] < 20):
 				str_point = str(x+xp[i]) + "-" + str(y+yp[i])
 				neighbors.append(str_point)
