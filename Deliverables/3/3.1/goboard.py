@@ -196,7 +196,7 @@ class GoBoardComponent():
 		# if maybe_stone is same as point, then return True
 		if (self.go_board[x][y] == maybe_stone):
 			return True
-		q = queue.Queue()
+		q = Queue()
 		neighbors = self.findNeighbors(point)
 		for n in neighbors:
 			nx, ny = self.process_point(n)
