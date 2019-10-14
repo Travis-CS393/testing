@@ -116,7 +116,7 @@ class GoBoardComponent():
 		xp = [-1, 0, 1, 0]
 		yp = [0, 1, 0, -1]
 		for i in range(4):
-			if (0 < (y + 1) + xp[i] < 20) & (0 < (x + 1) yp[i] < 20):
+			if (0 < ((y + 1) + xp[i]) < 20) & (0 < ((x + 1) + yp[i]) < 20):
 				str_point = str((y + 1) + xp[i]) + "-" + str((x + 1) + yp[i])
 				neighbors.append(str_point)
 
