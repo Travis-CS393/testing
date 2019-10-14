@@ -182,7 +182,7 @@ class GoBoardComponent():
 			if (self.go_board[chx][chy] == maybe_stone):
 				return True
 
-			neighbors = self.findNeighbors(point)
+			neighbors = self.find_neighbors(point)
 			for n in neighbors:
 				nx, ny = self.process_point(n)
 				if (self.go_board[nx][ny] == maybe_stone):
