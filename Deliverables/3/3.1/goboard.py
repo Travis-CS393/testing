@@ -110,6 +110,7 @@ class GoBoardComponent():
 		self.points.append(str_point)
 
 	# Finds all the adjacent neighbors to a given point
+	"""
 	def findNeighbors(self, point):
 		neighbors = []
 		x, y = self.process_point(point)
@@ -121,6 +122,24 @@ class GoBoardComponent():
 				neighbors.append(str_point)
 
 		return neighbors
+	"""
+
+	def find_neighbors(self, point):
+		neighbors = []
+		xp = [-1, 0, 1, 0]
+		yp = [0 , 1, 0, -1]
+		x, y = self.process_point(point)
+		for i in range(4):
+			n_x = (x + 1) + xp[i]
+			n_y = (y + 1) + yp[i]
+			if ((n_x > 0 and n_x < 20) and (n_y > 0 and n_y < 20)):
+				point_str = str(n_y) + "-" + str(n_x)
+				neighbors.append(point_str)
+
+		return neighbors
+
+
+
 
 	############################################
 	# QUERIES
@@ -140,6 +159,7 @@ class GoBoardComponent():
 
 		return True if (self.go_board[x][y] == stone) else False
 
+	
 	# Return true if there is a path of adjacent points to Point
 	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
@@ -171,6 +191,7 @@ class GoBoardComponent():
 					q.put(n)
 
 		return False
+		
 
 
 
