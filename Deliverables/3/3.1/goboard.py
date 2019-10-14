@@ -193,16 +193,13 @@ class GoBoardComponent():
 	# the path reaches the given MaybeStone, else False
 	def reachable(self, point, maybe_stone):
 		x, y = self.process_point(point)
-		marks = [ [False] * 19 for row in range(19)]
+		marks = [[False] * 19 for row in range(19)]
 		# if maybe_stone is same as point, then return True
-		if (self.go_board[x][y] == maybe_stone):
+		type = self.go_board[x][y]
+		if (type == maybe_stone):
 			return True
 		q = Queue.Queue()
-		neighbors = self.findNeighbors(point)
-		for n in neighbors:
-			nx, ny = self.process_point(n)
-			print("neighbors are ", nx, ny)
-			q.put(n)
+		q.put(point)
 
 		while (q.empty() != True):
 			check = q.get()
@@ -210,13 +207,15 @@ class GoBoardComponent():
 			marks[chx][chy] = True
 			if (self.go_board[chx][chy] == maybe_stone):
 				return True
-			connections = self.findConnections(point, maybe_stone)
-			for c in connections:
-				conx, cony = self.process_point(c)
-				print('connections are', conx, cony)
-				if (marks[conx][cony] == False):
-					marks[conx][cony] = True
-					q.put(c)
+
+			neighbors = self.findNeighbors(point)
+			for n in neighbors:
+				nx, ny = self.process_point(n)
+				if (self.go_board[nx][ny] == maybe_stone):
+					return True
+				else if (self.go_board[nx][ny] == type and marks[nx][ny] == False):
+					q.put(n)
+
 		return False
 
 
