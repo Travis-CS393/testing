@@ -149,7 +149,6 @@ class GoBoardComponent():
 		connected = []
 		for a in all_stones:
 			px, py = self.process_point(a)
-			# WHAT ARE WE USING DIFF FOR
 			diffx = abs(px - x)
 			diffy = abs(py - y)
 			if (diffx <= 1 ^ diffy <= 1):
@@ -197,18 +196,17 @@ class GoBoardComponent():
 		marks = [ [False] * 19 for row in range(19)]
 		# if maybe_stone is same as point, then return True
 		if (self.go_board[x][y] == maybe_stone):
-			print("entered", x, " ", y)
 			return True
 		q = Queue.Queue()
 		neighbors = self.findNeighbors(point)
 		for n in neighbors:
 			nx, ny = self.process_point(n)
-			marks[nx][ny] = True
 			q.put(n)
 
 		while (q.empty() != True):
 			check = q.get()
 			chx, chy = self.process_point(check)
+			marks[chx, chy] = True
 			if (self.go_board[chx][chy] == maybe_stone):
 				return True
 			connections = self.findConnections(point, maybe_stone)
@@ -312,7 +310,7 @@ class GoBoardComponent():
 				return False
 		elif((statement[0] == "place") or (statement[0] == "remove")):
 			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
-				print(4)
+				print('chaos')
 				return False
 		elif(statement[0] == "occupies?"):
 			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
