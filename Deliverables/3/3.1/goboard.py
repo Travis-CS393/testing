@@ -197,7 +197,7 @@ class GoBoardComponent():
 		marks = [ [False] * 19 for row in range(19)]
 		# if maybe_stone is same as point, then return True
 		if (self.go_board[x][y] == maybe_stone):
-			print("entered")
+			print("entered", x, " ", y)
 			return True
 		q = Queue.Queue()
 		neighbors = self.findNeighbors(point)
