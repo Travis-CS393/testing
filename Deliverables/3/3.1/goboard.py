@@ -3,18 +3,18 @@ import sys
 import queue
 
 class GoBoardComponent():
-	def __init__(self, go_board=None, statements=None, responses=None, points=None):
+	def __init__(self, go_board=None, go_boards=None, statements=None, points=None):
 		"""
 		This class implements a Go board component that takes in a 19 x 19 go board and a
 		statement from STDIN in the form [Board, Statement], and returns responses
-		according to the following statements:
+		according to one of the following statements:
 
 		Query Statements:
-			["occupied?", Point] - returns true if a Stone at point, else false
-			["occupies?", Stone, Point] - returns true if Stone at point, else false
-			["reachable?", Point, MaybeStone] - returns true if exists path of vertical or horizontal
+			["occupied?", Point] - returns True if a Stone at point, else False
+			["occupies?", Stone, Point] - returns True if Stone at point, else False
+			["reachable?", Point, MaybeStone] - returns True if exists path of vertical or horizontal
 												adjacent points of same Stone from Stone at Point to MaybeStone,
-												else false
+												else False
 
 		Command Statements:
 			["place", Stone, Point] - returns updated Board with Stone at Point, error if invalid move
@@ -22,7 +22,7 @@ class GoBoardComponent():
 			["remove", Stone, Point] - returns updated Board with Stone removed from Point, error if invalid move
 									  "I am just a board! I cannot remove what is not there"
 			["get-points", MaybeStone] - returns JSON array of Points that has stored all Point positions of the given
-									   MaybeStone input
+									   MaybeStone input sorted in increasing lexicographic order
 
 		The 19 x 19 board contains only rows of MaybeStone where each row has 19 of MaybeStone,
 		which can be Stone or Empty ("").
@@ -33,8 +33,8 @@ class GoBoardComponent():
 		coordinates for the Go coordinate system (1-1 top left corner, 19-19 bottom right corner)
 		"""
 		self.go_board = [ [" "] * 19 for row in range(19)] if go_board is None else go_board
+		self.go_boards = [] if go_boards is None else go_boards
 		self.statements = [] if statements is None else statements
-		self.responses = [] if responses is None else responses
 		self.points = [] if points is None else points
 
 
@@ -42,7 +42,6 @@ class GoBoardComponent():
 	############################################
 	# PROCESS INPUT
 	############################################
-
 	# Reads [Board, Statement] JSON array from STDIN and
 	# stores Board to self.go_board and Statements to self.statements
 	def read_input(self):
@@ -59,41 +58,54 @@ class GoBoardComponent():
 				pass
 
 		if(len(inputs[0]) != 2):
-			raise Exception("Input must be in the form [Board, Statements]")
+			raise Exception("Input must be in the form array of [Board, Statements]")
 
-		if(self.check_board(inputs[0][0])):
-			self.go_board = inputs[0][0]
-		else:
-			raise Exception("Go board must be 19 x 19 and hold only MaybeStones")
-
-		if(self.check_statements(inputs[0][1])):
-			self.statements = inputs[0][1]
-		else:
-			raise Exception("Statements must be Query{ occupied?, occupies?, reachable?} or Command{ place, remove, or get-points}. Check inputs to query or command.")
-
-	# Iterates through statements and stores response from each corresponding action
-	def execute_statements(self):
-		f = open("wetried.txt","w+")
-
-		for statement in self.statements:
-			if(statement[0] == "occupied?"):
-				f.write(str(self.occupied(statement[1])) + "*")
-			elif (statement[0] == "occupies?"):
-				f.write(str(self.occupies(statement[1], statement[2])) + "*")
-			elif (statement[0] == "reachable?"):
-				f.write(str(self.reachable(statement[1], statement[2])) + "*")
-			elif (statement[0] == "place"):
-				f.write(str(self.place(statement[1], statement[2])) + "*")
-			elif (statement[0] == "remove"):
-				f.write(str(self.remove(statement[1], statement[2])) + "*")
-			elif (statement[0] == "get-points"):
-				f.write(str(self.get_points(statement[1])) + "\n")
+		# Check that every go board and statement passed is valid
+		for i in range(0, len(inputs)):
+			if(self.check_board(inputs[i][0])):
+				self.go_boards.append(inputs[i][0])
 			else:
-				raise Exception("Invalid Statement: Not a query or a command.")
+				raise Exception("Go board must be 19 x 19 and hold only MaybeStones")
 
-		f.close()
+			if(self.check_statement(inputs[i][1])):
+				self.statements.append(inputs[i][1])
+			else:
+				raise Exception("Statement must be Query{ occupied?, occupies?, reachable?} or Command{ place, remove, or get-points}. Check inputs to query or command.")
 
+	# Stores response from each corresponding statement action in file f
+	def execute_statement(self, statement):
+		s = statement
+		if(s[0] == "occupied?"):
+			return self.occupied(s[1])
+		elif (s[0] == "occupies?"):
+			return self.occupies(s[1], s[2])
+		elif (s[0] == "reachable?"):
+			return self.reachable(s[1], s[2])
+		elif (s[0] == "place"):
+			return self.place(s[1], s[2])
+		elif (s[0] == "remove"):
+			return self.remove(s[1], s[2])
+		elif (s[0] == "get-points"):
+			return self.get_points(s[1])
+		else:
+			raise Exception("Invalid Statement: Not a query or a command.")
 
+		'''
+		s = statement
+		f = open("wetried.txt","a")
+		if(s[0] == "occupied?"):
+			f.write(str(self.occupied(s[1])) + "*")
+		elif (s[0] == "occupies?"):
+			f.write(str(self.occupies(s[1], s[2])) + "*")
+		elif (s[0] == "reachable?"):
+			f.write(str(self.reachable(s[1], s[2])) + "*")
+		elif (s[0] == "place"):
+			f.write(str(self.place(s[1], s[2])) + "*")
+		elif (s[0] == "remove"):
+			f.write(str(self.remove(s[1], s[2])) + "*")
+		elif (s[0] == "get-points"):
+			f.write(str(self.get_points(s[1])) + "*")
+		'''
 
 	###########################################
 	# HELPER FUNCTIONS
@@ -105,28 +117,31 @@ class GoBoardComponent():
 		for i in range(len(idx)):
 			idx[i] = int(idx[i])
 
-		return idx[0] - 1, idx[1] - 1
+		return idx[1] - 1, idx[0] - 1
 
 	# Adds "N-N" point position to self.points array
-	def add_point(self, maybe_stone, x, y):
-		str_point = str(x + 1) + "-" + str(y + 1)
+	def add_point(self, col, row):
+		str_point = str(col + 1) + "-" + str(row + 1)
 		self.points.append(str_point)
 
+	# Append all responses to board actions to file for json dump
 	def responses_cat(self):
+		responses = []
 		f = open("wetried.txt","r")
 		if f.mode == "r":
 			contents = f.read()
 
-		contents = contents.split("*")
-
+		contents = contents.strip().split("*")
+		print(contents)
 		for element in contents:
+			#print(element)
 			try:
 				json_obj, end_idx = json.JSONDecoder().raw_decode(element.replace("\'","\""))
-				self.responses.append(json_obj)
+				responses.append(json_obj)
 			except ValueError:
 				pass
 
-		return self.responses
+		return responses
 
 	def findConnections(self, point, maybe_stone):
 		all = self.get_points(maybe_stone)
@@ -163,11 +178,11 @@ class GoBoardComponent():
 	def occupied(self, point):
 		x, y = self.process_point(point)
 
-		return True if (self.go_board[x][y] != "") else False
+		return True if (self.go_board[x][y] != " ") else False
 
 	# Occupies takes a point and returns True if
 	# board at that point has that stone, else False
-	def occupies(self, point, stone):
+	def occupies(self, stone, point):
 		x, y = self.process_point(point)
 
 		return True if (self.go_board[x][y] == stone) else False
@@ -220,7 +235,7 @@ class GoBoardComponent():
 
 	# Removes a stone from given point on go_board if occupied
 	def remove(self, stone, point):
-		if(self.occupied(point) == False):
+		if( (self.occupied(point) == False) or (self.occupies(stone,point) == False) ):
 			return "I am just a board! I cannot remove what is not there!"
 		else:
 			x, y = self.process_point(point)
@@ -232,7 +247,7 @@ class GoBoardComponent():
 		for x in range(len(self.go_board)):
 			for y in range(len(self.go_board[0])):
 				if(self.go_board[x][y] == maybe_stone):
-					self.add_point("", x, y)
+					self.add_point(y, x)
 
 		# Gets points and resets self.points
 		points = sorted(self.points)
@@ -264,7 +279,7 @@ class GoBoardComponent():
 
 	# MaybeStone must be a Stone or ""
 	def check_maybe_stone(self, maybe_stone):
-		if( self.check_stone(maybe_stone) or (maybe_stone == "") ):
+		if( self.check_stone(maybe_stone) or (maybe_stone == " ") ):
 			return True
 		return False
 
@@ -281,46 +296,33 @@ class GoBoardComponent():
 		else:
 			return False
 
-	# Statements must be array of one of
-	# ["occupied?", Point], ["occupies?", Point, Stone], ["reachable?", Point, MaybeStone]
+	# Statement must be one of
+	# ["occupied?", Point], ["occupies?", Stone, Point], ["reachable?", Point, MaybeStone]
 	# ["place", Stone, Point], ["remove", Stone, Point], ["get-points", MaybeStone]
 	# with proper inputs for Point, Stone, and MaybeStone
-	def check_statements(self, statements):
-		for statement in statements:
-			if(len(statement) == 2):
-
-				if(statement[0] == "occupied?"):
-					if(self.check_point(statement[1]) == False):
-						print(1)
-						return False
-				elif(statement[0] == "get-points"):
-					if(self.check_maybe_stone(statement[1]) == False):
-						print(2)
-						return False
-				else:
-					print("hi")
-					return False
-
-			elif(len(statement) == 3):
-
-				if((statement[0] == "place") or (statement[0] == "remove")):
-					if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
-						print(4)
-						return False
-				elif(statement[0] == "occupies?"):
-					if((self.check_point(statement[1]) == False) or (self.check_stone(statement[2]) == False)):
-						print(5)
-						return False
-				elif(statement[0] == "reachable?"):
-					if((self.check_point(statement[1]) == False) or (self.check_maybe_stone(statement[2]) == False)):
-						print(6)
-						return False
-				else:
-					print(7)
-					return False
-
-			else:
-				print(8)
+	def check_statement(self, statement):
+		if(statement[0] == "occupied?"):
+			if(self.check_point(statement[1]) == False):
+				print(1)
 				return False
+		elif(statement[0] == "get-points"):
+			if(self.check_maybe_stone(statement[1]) == False):
+				print(2)
+				return False
+		elif((statement[0] == "place") or (statement[0] == "remove")):
+			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
+				print(4)
+				return False
+		elif(statement[0] == "occupies?"):
+			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
+				print(5)
+				return False
+		elif(statement[0] == "reachable?"):
+			if((self.check_point(statement[1]) == False) or (self.check_maybe_stone(statement[2]) == False)):
+				print(6)
+				return False
+		else:
+			print(7)
+			return False
 
 		return True
