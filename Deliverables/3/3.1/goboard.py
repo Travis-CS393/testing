@@ -120,8 +120,8 @@ class GoBoardComponent():
 		return idx[1] - 1, idx[0] - 1
 
 	# Adds "N-N" point position to self.points array
-	def add_point(self, col, row):
-		str_point = str(col + 1) + "-" + str(row + 1)
+	def add_point(self, x, y):
+		str_point = str(x + 1) + "-" + str(y + 1)
 		self.points.append(str_point)
 
 	# Append all responses to board actions to file for json dumps
@@ -149,6 +149,7 @@ class GoBoardComponent():
 		connected = []
 		for a in all_stones:
 			px, py = self.process_point(a)
+			# WHAT ARE WE USING DIFF FOR
 			diffx = abs(px - x)
 			diffy = abs(py - y)
 			str_point = str(px) + "-" + str(py)
@@ -200,19 +201,19 @@ class GoBoardComponent():
 		neighbors = self.findNeighbors(point)
 		for n in neighbors:
 			nx, ny = self.process_point(n)
-			marks[ny][nx] = True
+			marks[nx][ny] = True
 			q.put(n)
 
 		while (q.empty() != True):
 			check = q.get()
 			chx, chy = self.process_point(check)
-			if (self.go_board[chy][chx] == maybe_stone):
+			if (self.go_board[chx][chy] == maybe_stone):
 				return True
 			connections = self.findConnections(point, maybe_stone)
 			for c in connections:
 				conx, cony = self.process_point(c)
-				if (marks[cony][conx] == False):
-					marks[cony][conx] = True
+				if (marks[conx][cony] == False):
+					marks[conx][cony] = True
 					q.put(c)
 		return False
 
@@ -228,9 +229,6 @@ class GoBoardComponent():
 			return "This seat is taken!"
 		else:
 			x, y = self.process_point(point)
-
-			#temp_board = list(self.go_board)
-			#temp_board[x][y] =
 			self.go_board[x][y] = stone
 			return self.go_board
 
