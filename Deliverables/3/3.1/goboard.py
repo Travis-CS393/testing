@@ -213,7 +213,7 @@ class GoBoardComponent():
 				nx, ny = self.process_point(n)
 				if (self.go_board[nx][ny] == maybe_stone):
 					return True
-				else if (self.go_board[nx][ny] == type and marks[nx][ny] == False):
+				elif (self.go_board[nx][ny] == type and marks[nx][ny] == False):
 					q.put(n)
 
 		return False
