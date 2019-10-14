@@ -206,7 +206,7 @@ class GoBoardComponent():
 		while (q.empty() != True):
 			check = q.get()
 			chx, chy = self.process_point(check)
-			marks[chx, chy] = True
+			marks[chx][chy] = True
 			if (self.go_board[chx][chy] == maybe_stone):
 				return True
 			connections = self.findConnections(point, maybe_stone)
