@@ -119,8 +119,8 @@ class GoBoardComponent():
 		return idx[1] - 1, idx[0] - 1
 
 	# Adds "N-N" point position to self.points array
-	def add_point(self, x, y):
-		str_point = str(x + 1) + "-" + str(y + 1)
+	def add_point(self, col, row):
+		str_point = str(col + 1) + "-" + str(row + 1)
 		self.points.append(str_point)
 
 	# Append all responses to board actions to file for json dump
