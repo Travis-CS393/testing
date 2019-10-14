@@ -204,7 +204,7 @@ class GoBoardComponent():
 		q = Queue.Queue()
 		q.put(point)
 
-		while (q.empyt() != True):
+		while (q.empty() != True):
 			check_point = q.get()
 			c_x, c_y = self.process_point(check_point)
 			if(visited[c_x][c_y] == False):
