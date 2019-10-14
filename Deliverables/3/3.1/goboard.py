@@ -203,7 +203,7 @@ class GoBoardComponent():
 			marks[nx, ny] = True
 			q.put(n)
 
-		while (!q.Empty):
+		while (q.Empty == False):
 			check = q.get()
 			chx, chy = self.process_point(check)
 			if (self.go_board[chx, chy] == maybe_stone):
@@ -211,7 +211,7 @@ class GoBoardComponent():
 			connections = self.findConnections(point, maybe_stone)
 			for c in connections:
 				conx, cony = self.process_point(c)
-				if (!marks[conx,cony]):
+				if (marks[conx,cony] == False):
 					marks[conx, cony] = True
 					q.put(c)
 		return False
