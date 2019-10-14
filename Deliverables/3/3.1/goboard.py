@@ -194,19 +194,19 @@ class GoBoardComponent():
 		x, y = self.process_point(point)
 		marks = [ [False] * 19 for row in range(19)]
 		# if maybe_stone is same as point, then return True
-		if (self.go_board[x,y] == maybe_stone):
+		if (self.go_board[x][y] == maybe_stone):
 			return True
-		q = queue.Queue
+		q = queue.Queue()
 		neighbors = self.findNeighbors(point)
 		for n in neighbors:
 			nx, ny = self.process_point(n)
 			marks[nx, ny] = True
 			q.put(n)
 
-		while (not q.Empty()):
+		while (q.empty() != True):
 			check = q.get()
 			chx, chy = self.process_point(check)
-			if (self.go_board[chx, chy] == maybe_stone):
+			if (self.go_board[chx][chy] == maybe_stone):
 				return True
 			connections = self.findConnections(point, maybe_stone)
 			for c in connections:
