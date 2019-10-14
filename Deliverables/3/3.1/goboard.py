@@ -200,7 +200,7 @@ class GoBoardComponent():
 		neighbors = self.findNeighbors(point)
 		for n in neighbors:
 			nx, ny = self.process_point(n)
-			marks[nx, ny] = True
+			marks[nx][ny] = True
 			q.put(n)
 
 		while (q.empty() != True):
