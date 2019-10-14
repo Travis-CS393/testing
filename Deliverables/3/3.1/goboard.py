@@ -211,7 +211,7 @@ class GoBoardComponent():
 			connections = self.findConnections(point, maybe_stone)
 			for c in connections:
 				conx, cony = self.process_point(c)
-				if (!marks[conx,cony]):
+				if (marks[conx,cony] == False):
 					marks[conx, cony] = True
 					q.put(c)
 		return False
