@@ -4,5 +4,4 @@
 # run.sh: runs the actual submission
 
 
-#python ../Deliverables/2/2.2/frontend.py
 python ./frontend.py

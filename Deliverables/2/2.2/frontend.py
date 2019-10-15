@@ -30,8 +30,8 @@ class FrontEndComponent():
 					json_obj, end_idx = json.JSONDecoder().raw_decode(reading_frame)
 					self.lst.append(json_obj)
 					reading_frame = reading_frame[end_idx:].lstrip()
-		except ValueError:
-			pass
+			except ValueError:
+				pass
 
 	# Partitions the list of special JSON objects into lists of 10
 	def partition(self):
