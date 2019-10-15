@@ -182,7 +182,6 @@ class GoBoardComponent():
 		# if maybe_stone is same as point, then return True
 		type = self.go_board[x][y]
 		if (type == maybe_stone):
-			print(1)
 			return True
 		q = Queue.Queue()
 		q.put(point)
@@ -198,11 +197,11 @@ class GoBoardComponent():
 			neighbors = self.findNeighbors(point)
 			for n in neighbors:
 				nx, ny = self.process_point(n)
-				if (self.go_board[nx][ny] == maybe_stone):
+				if (self.go_board[nx+1][ny+1] == maybe_stone):
 					print("n ", nx, ny)
 					print(3)
 					return True
-				elif (self.go_board[nx][ny] == type and marks[nx][ny] == False):
+				elif (self.go_board[nx+1][ny+1] == type and marks[nx+1][ny+1] == False):
 					q.put(n)
 
 		return False
