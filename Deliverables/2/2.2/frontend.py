@@ -43,7 +43,7 @@ class FrontEndComponent():
 			start += 10
 			end += 10
 
-		return set_of_tens
+		return sets_of_tens
 
 
 def test_driver():
