@@ -14,7 +14,7 @@ class GoBoardComponent():
 			["occupies?", Stone, Point] - returns True if Stone at point, else False
 			["reachable?", Point, MaybeStone] - returns True if exists path of vertical or horizontal
 												adjacent points of same Stone from Stone at Point to MaybeStone,
-												else False
+												else False, implements BFS with queue
 
 		Command Statements:
 			["place", Stone, Point] - returns updated Board with Stone at Point, error if invalid move
@@ -42,6 +42,7 @@ class GoBoardComponent():
 	############################################
 	# PROCESS INPUT
 	############################################
+
 	# Reads [Board, Statement] JSON array from STDIN and
 	# stores Board to self.go_board and Statements to self.statements
 	def read_input(self):
@@ -90,22 +91,7 @@ class GoBoardComponent():
 		else:
 			raise Exception("Invalid Statement: Not a query or a command.")
 
-		'''
-		s = statement
-		f = open("wetried.txt","a")
-		if(s[0] == "occupied?"):
-			f.write(str(self.occupied(s[1])) + "*")
-		elif (s[0] == "occupies?"):
-			f.write(str(self.occupies(s[1], s[2])) + "*")
-		elif (s[0] == "reachable?"):
-			f.write(str(self.reachable(s[1], s[2])) + "*")
-		elif (s[0] == "place"):
-			f.write(str(self.place(s[1], s[2])) + "*")
-		elif (s[0] == "remove"):
-			f.write(str(self.remove(s[1], s[2])) + "*")
-		elif (s[0] == "get-points"):
-			f.write(str(self.get_points(s[1])) + "*")
-		'''
+
 
 	###########################################
 	# HELPER FUNCTIONS
@@ -124,36 +110,22 @@ class GoBoardComponent():
 		str_point = str(x + 1) + "-" + str(y + 1)
 		self.points.append(str_point)
 
-	# Append all responses to board actions to file for json dumps
-	def responses_cat(self):
-		responses = []
-		f = open("wetried.txt","r")
-		if f.mode == "r":
-			contents = f.read()
-
-		contents = contents.strip().split("*")
-		print(contents)
-		for element in contents:
-			#print(element)
-			try:
-				json_obj, end_idx = json.JSONDecoder().raw_decode(element.replace("\'","\""))
-				responses.append(json_obj)
-			except ValueError:
-				pass
-
-		return responses
-
-	def findNeighbors(self, point):
+	# Finds all the adjacent neighbors to a given point
+	def find_neighbors(self, point):
 		neighbors = []
-		x, y = self.process_point(point)
 		xp = [-1, 0, 1, 0]
-		yp = [0, 1, 0, -1]
+		yp = [0 , 1, 0, -1]
+		x, y = self.process_point(point)
 		for i in range(4):
-			if (0 < x + xp[i] < 20) & (0 < y + yp[i] < 20):
-				str_point = str(x+xp[i]+1) + "-" + str(y+yp[i]+1)
-				neighbors.append(str_point)
+			n_x = (x + 1) + xp[i]
+			n_y = (y + 1) + yp[i]
+			if ((n_x > 0 and n_x < 20) and (n_y > 0 and n_y < 20)):
+				point_str = str(n_y) + "-" + str(n_x)
+				neighbors.append(point_str)
 
 		return neighbors
+
+
 
 	############################################
 	# QUERIES
@@ -177,32 +149,28 @@ class GoBoardComponent():
 	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
 	def reachable(self, point, maybe_stone):
+		visited = [[False] * 19 for row in range(19)]
 		x, y = self.process_point(point)
-		marks = [[False] * 19 for row in range(19)]
-		# if maybe_stone is same as point, then return True
-		type = self.go_board[x][y]
-		if (type == maybe_stone):
+
+		start_type = self.go_board[x][y]
+		if (start_type == maybe_stone):
 			return True
+
 		q = Queue.Queue()
 		q.put(point)
 
 		while (q.empty() != True):
-			check = q.get()
-			chx, chy = self.process_point(check)
-			marks[chx][chy] = True
-			if (self.go_board[chx][chy] == maybe_stone):
-				print(2)
-				return True
-
-			neighbors = self.findNeighbors(point)
-			for n in neighbors:
-				nx, ny = self.process_point(n)
-				if (self.go_board[nx+1][ny+1] == maybe_stone):
-					print("n ", nx, ny)
-					print(3)
-					return True
-				elif (self.go_board[nx+1][ny+1] == type and marks[nx+1][ny+1] == False):
-					q.put(n)
+			check_point = q.get()
+			c_x, c_y = self.process_point(check_point)
+			if(visited[c_x][c_y] == False):
+				visited[c_x][c_y] = True
+				neighbors = self.find_neighbors(check_point)
+				for n in neighbors:
+					n_x, n_y = self.process_point(n)
+					if (self.go_board[n_x][n_y] == maybe_stone):
+						return True
+					if (self.go_board[n_x][n_y] == start_type):
+						q.put(n)
 
 		return False
 
