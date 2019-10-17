@@ -1,6 +1,6 @@
 import json
 import sys
-import queue as Queue
+import Queue
 
 class GoBoardComponent():
 	def __init__(self, go_boards=None, statements=None, go_board=None, points=None):
@@ -62,7 +62,7 @@ class GoBoardComponent():
 		for i in range(0, len(inputs)):
 			if(len(inputs[i]) != 2):
 				raise Exception("Input must be in the form array of [Board, Statements]")
-	
+
 			if(self.check_board(inputs[i][0])):
 				self.go_boards.append(inputs[i][0])
 			else:
@@ -153,10 +153,10 @@ class GoBoardComponent():
 	"""
 	["occupied?", Point] - True or False
 	["occupies?", Stone, Point] - True or False
-	["reachable?", Point, MaybeStone] - True or False			
+	["reachable?", Point, MaybeStone] - True or False
 	["place", Stone, Point] - Board or "This seat is taken!"
 	["remove", Stone, Point] - Board or "I am just a board! I cannot remove what is not there!"
-	["get-points", MaybeStone] - array of Point 
+	["get-points", MaybeStone] - array of Point
 	"""
 	# Stores response from each corresponding statement action in file f
 	def execute_statement(self, statement):
@@ -207,7 +207,7 @@ class GoBoardComponent():
 		if (start_type == maybe_stone):
 			return True
 
-		q = queue.Queue()
+		q = Queue.Queue()
 		q.put(point)
 
 		while (q.empty() != True):
@@ -295,6 +295,3 @@ class GoBoardComponent():
 				neighbors.append(point_str)
 
 		return neighbors
-
-
-	
