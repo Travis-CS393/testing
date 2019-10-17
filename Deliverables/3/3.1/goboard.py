@@ -1,9 +1,9 @@
 import json
 import sys
-import Queue
+import queue as Queue
 
 class GoBoardComponent():
-	def __init__(self, go_board=None, go_boards=None, statements=None, points=None):
+	def __init__(self, go_boards=None, statements=None, go_board=None, points=None):
 		"""
 		This class implements a Go board component that takes in a 19 x 19 go board and a
 		statement from STDIN in the form [Board, Statement], and returns responses
@@ -32,9 +32,9 @@ class GoBoardComponent():
 		Point is represented by "N-N", where N is a natural number from 1 - 19, and represent
 		coordinates for the Go coordinate system (1-1 top left corner, 19-19 bottom right corner)
 		"""
-		self.go_board = [ [" "] * 19 for row in range(19)] if go_board is None else go_board
 		self.go_boards = [] if go_boards is None else go_boards
 		self.statements = [] if statements is None else statements
+		self.go_board = [ [" "] * 19 for row in range(19)] if go_board is None else go_board
 		self.points = [] if points is None else points
 
 
@@ -58,11 +58,11 @@ class GoBoardComponent():
 			except ValueError:
 				pass
 
-		if(len(inputs[0]) != 2):
-			raise Exception("Input must be in the form array of [Board, Statements]")
-
 		# Check that every go board and statement passed is valid
 		for i in range(0, len(inputs)):
+			if(len(inputs[i]) != 2):
+				raise Exception("Input must be in the form array of [Board, Statements]")
+	
 			if(self.check_board(inputs[i][0])):
 				self.go_boards.append(inputs[i][0])
 			else:
@@ -73,6 +73,91 @@ class GoBoardComponent():
 			else:
 				raise Exception("Statement must be Query{ occupied?, occupies?, reachable?} or Command{ place, remove, or get-points}. Check inputs to query or command.")
 
+
+
+	################################################
+	# TYPE ASSERTIONS PREDICATES
+	################################################
+
+	# Point must be in the format "N-N" where N is a value 1 to 19
+	def check_point(self, point):
+		parsed_point = point.split("-")
+		if(len(parsed_point) == 2):
+			pos_set = {"1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"}
+			if( (parsed_point[0] in pos_set) and (parsed_point[1] in pos_set) ):
+				return True
+		return False
+
+
+	# Stone must be "B" or "W"
+	def check_stone(self, stone):
+		if( (stone == "B") or (stone == "W") ):
+			return True
+		return False
+
+	# MaybeStone must be a Stone or " "
+	def check_maybe_stone(self, maybe_stone):
+		if( self.check_stone(maybe_stone) or (maybe_stone == " ") ):
+			return True
+		return False
+
+	# Board must be 19 x 19 represented by an array of 19 rows
+	# where each row contains 19 elements of type MaybeStone
+	def check_board(self, board):
+		if((len(board) == 19) and (len(board[0]) == 19)):
+			check_all_stones = True
+			for row in range(len(board[0])):
+				for col in range(len(board[0][1])):
+					if(self.check_maybe_stone(board[row][col]) == False):
+						check_all_stones = False
+			return check_all_stones
+		else:
+			return False
+
+	# Statement must be one of
+	# ["occupied?", Point], ["occupies?", Stone, Point], ["reachable?", Point, MaybeStone]
+	# ["place", Stone, Point], ["remove", Stone, Point], ["get-points", MaybeStone]
+	# with proper inputs for Point, Stone, and MaybeStone
+	def check_statement(self, statement):
+		if(statement[0] == "occupied?"):
+			if(self.check_point(statement[1]) == False):
+				print(1)
+				return False
+		elif(statement[0] == "get-points"):
+			if(self.check_maybe_stone(statement[1]) == False):
+				print(2)
+				return False
+		elif((statement[0] == "place") or (statement[0] == "remove")):
+			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
+				print(4)
+				return False
+		elif(statement[0] == "occupies?"):
+			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
+				print(5)
+				return False
+		elif(statement[0] == "reachable?"):
+			if((self.check_point(statement[1]) == False) or (self.check_maybe_stone(statement[2]) == False)):
+				print(6)
+				return False
+		else:
+			print(7)
+			return False
+
+		return True
+
+
+
+	############################################
+	# STATEMENT PROCESSING
+	############################################
+	"""
+	["occupied?", Point] - True or False
+	["occupies?", Stone, Point] - True or False
+	["reachable?", Point, MaybeStone] - True or False			
+	["place", Stone, Point] - Board or "This seat is taken!"
+	["remove", Stone, Point] - Board or "I am just a board! I cannot remove what is not there!"
+	["get-points", MaybeStone] - array of Point 
+	"""
 	# Stores response from each corresponding statement action in file f
 	def execute_statement(self, statement):
 		s = statement
@@ -90,40 +175,6 @@ class GoBoardComponent():
 			return self.get_points(s[1])
 		else:
 			raise Exception("Invalid Statement: Not a query or a command.")
-
-
-
-	###########################################
-	# HELPER FUNCTIONS
-	###########################################
-
-	# Converts point from "N-N" to indices
-	def process_point(self,point):
-		idx = point.split("-")
-		for i in range(len(idx)):
-			idx[i] = int(idx[i])
-
-		return idx[1] - 1, idx[0] - 1
-
-	# Adds "N-N" point position to self.points array
-	def add_point(self, x, y):
-		str_point = str(x + 1) + "-" + str(y + 1)
-		self.points.append(str_point)
-
-	# Finds all the adjacent neighbors to a given point
-	def find_neighbors(self, point):
-		neighbors = []
-		xp = [-1, 0, 1, 0]
-		yp = [0 , 1, 0, -1]
-		x, y = self.process_point(point)
-		for i in range(4):
-			n_x = (x + 1) + xp[i]
-			n_y = (y + 1) + yp[i]
-			if ((n_x > 0 and n_x < 20) and (n_y > 0 and n_y < 20)):
-				point_str = str(n_y) + "-" + str(n_x)
-				neighbors.append(point_str)
-
-		return neighbors
 
 
 
@@ -213,72 +264,37 @@ class GoBoardComponent():
 
 
 
-	################################################
-	# TYPE ASSERTIONS PREDICATES
-	################################################
+	###########################################
+	# HELPER FUNCTIONS
+	###########################################
 
-	# Point must be in the format "N-N" where N is a value 1 to 19
-	def check_point(self, point):
-		parsed_point = point.split("-")
-		if(len(parsed_point) == 2):
-			pos_set = {"1", "2", "3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"}
-			if( (parsed_point[0] in pos_set) and (parsed_point[1] in pos_set) ):
-				return True
-		return False
+	# Converts point from "N-N" to indices
+	def process_point(self,point):
+		idx = point.split("-")
+		for i in range(len(idx)):
+			idx[i] = int(idx[i])
+
+		return idx[1] - 1, idx[0] - 1
+
+	# Adds "N-N" point position to self.points array
+	def add_point(self, x, y):
+		str_point = str(x + 1) + "-" + str(y + 1)
+		self.points.append(str_point)
+
+	# Finds all the adjacent neighbors to a given point
+	def find_neighbors(self, point):
+		neighbors = []
+		xp = [-1, 0, 1, 0]
+		yp = [0 , 1, 0, -1]
+		x, y = self.process_point(point)
+		for i in range(4):
+			n_x = (x + 1) + xp[i]
+			n_y = (y + 1) + yp[i]
+			if ((n_x > 0 and n_x < 20) and (n_y > 0 and n_y < 20)):
+				point_str = str(n_y) + "-" + str(n_x)
+				neighbors.append(point_str)
+
+		return neighbors
 
 
-	# Stone must be "B" or "W"
-	def check_stone(self, stone):
-		if( (stone == "B") or (stone == "W") ):
-			return True
-		return False
-
-	# MaybeStone must be a Stone or ""
-	def check_maybe_stone(self, maybe_stone):
-		if( self.check_stone(maybe_stone) or (maybe_stone == " ") ):
-			return True
-		return False
-
-	# Board must be 19 x 19 represented by an array of 19 rows
-	# where each row contains 19 elements of type MaybeStone
-	def check_board(self, board):
-		if((len(board) == 19) and (len(board[0]) == 19)):
-			check_all_stones = True
-			for row in range(len(board[0])):
-				for col in range(len(board[0][1])):
-					if(self.check_maybe_stone(board[row][col]) == False):
-						check_all_stones = False
-			return check_all_stones
-		else:
-			return False
-
-	# Statement must be one of
-	# ["occupied?", Point], ["occupies?", Stone, Point], ["reachable?", Point, MaybeStone]
-	# ["place", Stone, Point], ["remove", Stone, Point], ["get-points", MaybeStone]
-	# with proper inputs for Point, Stone, and MaybeStone
-	def check_statement(self, statement):
-		if(statement[0] == "occupied?"):
-			if(self.check_point(statement[1]) == False):
-				print(1)
-				return False
-		elif(statement[0] == "get-points"):
-			if(self.check_maybe_stone(statement[1]) == False):
-				print(2)
-				return False
-		elif((statement[0] == "place") or (statement[0] == "remove")):
-			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
-				print(4)
-				return False
-		elif(statement[0] == "occupies?"):
-			if((self.check_stone(statement[1]) == False) or (self.check_point(statement[2]) == False)):
-				print(5)
-				return False
-		elif(statement[0] == "reachable?"):
-			if((self.check_point(statement[1]) == False) or (self.check_maybe_stone(statement[2]) == False)):
-				print(6)
-				return False
-		else:
-			print(7)
-			return False
-
-		return True
+	

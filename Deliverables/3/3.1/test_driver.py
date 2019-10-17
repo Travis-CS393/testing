@@ -1,7 +1,5 @@
-from __future__ import print_function
 from goboard import GoBoardComponent
 import json
-import sys
 
 # Test Driver returns JSON array of response JSON values to STDOUT
 def test_driver():
