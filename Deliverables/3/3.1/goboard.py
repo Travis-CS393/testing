@@ -207,7 +207,7 @@ class GoBoardComponent():
 		if (start_type == maybe_stone):
 			return True
 
-		q = Queue.Queue()
+		q = queue.Queue()
 		q.put(point)
 
 		while (q.empty() != True):
