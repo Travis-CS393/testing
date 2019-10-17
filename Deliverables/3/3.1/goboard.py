@@ -1,6 +1,6 @@
 import json
 import sys
-import Queue
+import queue
 
 class GoBoardComponent():
 	def __init__(self, go_board=None, go_boards=None, statements=None, points=None):
@@ -156,7 +156,7 @@ class GoBoardComponent():
 		if (start_type == maybe_stone):
 			return True
 
-		q = Queue.Queue()
+		q = queue.Queue()
 		q.put(point)
 
 		while (q.empty() != True):
