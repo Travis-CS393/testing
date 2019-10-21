@@ -1,4 +1,4 @@
-import queue as Queue
+import Queue
 
 class GoBoardComponent():
 	def __init__(self, board_size=None):
