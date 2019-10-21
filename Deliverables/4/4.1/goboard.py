@@ -107,31 +107,51 @@ class GoBoardComponent():
 	# Returns the validity of a Move given a [Stone, [Point, Boards]] valid input
 	def get_validity(self, stone, point, boards_arr):
 
-		# If no one has moved then board should be all Empty
-		# If only one move in history, boards should be last move and Empty
-		if ((len(boards_arr) == 1 and (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size))) or \
-			(len(boards_arr) == 2 and (len(self.get_points(" ", boards_arr[1])) != (self.board_size * self.board_size)))):
-			return False
-
-		# Black goes first
-		if ((len(boards_arr) == 1) and (stone == "W")):
-			return False
-
-		# Game Over you cannot make a play because players have passed consecutively already
-		if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
-			return False
-
+		####################################
 		# Check board history validity 
+		####################################
 
-		#####################################
-		# SEE IF YOU CAN PLACE STONE AT POINT
-		#####################################
-		try_place = self.place(stone, point, boards_arr[0])
+		# Board history len 1 means game just started 
+		if (len(boards_arr) == 1):
+			# Board should contain no stones
+			if (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size)):
+				return False
+			# Black must go first
+			if (stone != "B"):
+				return False
 
-		# Another stone already occupies that point
-		if (try_place == "This seat is taken!"):
-			return False
+		# Board history has len 2, first is empty board, black moved once, it's white's turn 
+		elif (len(boards_arr) == 2):
+			if (len(self.get_points(" ", boards_arr[1])) != (self.board_size * self.board_size)):
+				return False
+			if (len(self.get_points("B", boards_arr[0]) > 1) or (len(self.get_points("W", boards_arr[0])) != 0)):
+				return False
+			if (stone != "W"):
+				return False
+		
 
+		# Three boards in history, check that moves were valid between them
+		else:
+
+			# Game Over you cannot make a play because players have passed consecutively already
+			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
+				return False
+
+			# Board history contains invalid moves
+			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
+				return False
+
+			# See if the requested play is valid 
+			try_place = self.place(stone, point, boards_arr[0])
+			if (try_place == "This seat is taken!"):
+				return False
+			else:			
+				if ((not self.get_move_validity(boards_arr[0], try_place))):
+					return False
+
+		return True
+
+		"""
 		# You can't place a stone if it won't have any liberties after turn
 		# Remove all dead pieces to get new liberties intersections 
 		neighbors = self.find_neighbors(point)
@@ -143,10 +163,50 @@ class GoBoardComponent():
 		if (not self.reachable(point, " ", try_place)):
 			return False
 
+
 		# Check Ko
+		"""
 
 
-		return True 
+
+	def get_move_validity(prev_board, curr_board):
+		placed = {}
+		removed = {}
+		check_removed = {}
+
+		for row in range(self.board_size):
+			for col in range(self.board_size):
+				if (prev_board[row][col] != curr_board[row][col]):
+					if (prev_board[row][col] == " "):
+						placed.add([curr_board[row][col], (row,col)])
+					else:
+						removed.add([curr_board[row][col], (row, col)])
+
+		# Can only add one stone every turn or pass
+		if (len(placed) > 1):
+			return False
+
+		# Cannot capture pieces if you didn't make a play 
+		if (len(placed) == 0 and len(removed) != 0):
+			return False
+
+		# Check if placing the play was valid
+		try_place = self.place(placed[0][0], placed[0][1], prev_board)
+		neighbors = self.find_neighbors(placed[0][1])
+		for n in neighbors:
+			if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
+				# Check that current board removed all the dead stones captured by the play
+				if ([stone, point] in removed):
+					check_removed.add([stone, point])
+					try_place = self.remove(stone, point, try_place)
+				else:
+					return False
+
+		# If still no liberties present after removal of dead, then invalid move 
+		if (not self.reachable(placed[0][1], " ", try_place)):
+			return False
+
+		return True
 
 
 
