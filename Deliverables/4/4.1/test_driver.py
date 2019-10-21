@@ -47,7 +47,7 @@ def check_input(input, board_size):
 		return True
 	elif ((len(input) == 2) and check_stone(input[0]) and check_point(input[1][0]) \
 		 and ((len(input[1][1]) == 3) or (len(input[1][1]) == 2) or (len(input[1][1]) == 1))):
-		return all(check_board(board) for board in input[1][1])
+		return all(check_board(board, board_size) for board in input[1][1])
 	else:
 		return False
 
