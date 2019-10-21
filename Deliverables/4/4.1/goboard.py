@@ -48,7 +48,7 @@ class GoBoardComponent():
 		else:
 			raise Exception("Invalid input has no appropriate response.")
 
-	# Returns the score of "B" and "W" given a final board state
+	# Returns the score of "B" and "W" given a final board state.
 	def get_score(self, board):
 		black_area = 0
 		white_area = 0
