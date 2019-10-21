@@ -1,4 +1,4 @@
-import queue as Queue
+import Queue
 
 class GoBoardComponent():
 	def __init__(self, board_size=None):
@@ -121,13 +121,20 @@ class GoBoardComponent():
 		if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
 			return False
 
+		#####################################
+		# SEE IF YOU CAN PLACE STONE AT POINT
+		#####################################
 		try_place = self.place(stone, point, boards_arr[0])
 
+		# Another stone already occupies that point
 		if (try_place == "This seat is taken!"):
 			return False
 
+		# You can't place a stone if it won't have any liberties after turn
 		if (not self.reachable(point, " ", try_place)):
 			return False
+
+
 
 		# Check board history validity 
 
