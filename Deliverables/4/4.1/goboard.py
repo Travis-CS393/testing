@@ -152,24 +152,12 @@ class GoBoardComponent():
 		return True
 
 		"""
-		# You can't place a stone if it won't have any liberties after turn
-		# Remove all dead pieces to get new liberties intersections 
-		neighbors = self.find_neighbors(point)
-		for i in neighbors:
-			if (try_place[i[0]][i[1]] != stone and (not self.reachable(point, " ", try_place))):
-				try_place = self.remove(stone, point, try_place)
-
-		# If no liberties after removal, then invalid move
-		if (not self.reachable(point, " ", try_place)):
-			return False
-
-
 		# Check Ko
 		"""
 
 
 
-	def get_move_validity(prev_board, curr_board):
+	def get_move_validity(self, prev_board, curr_board):
 		placed = {}
 		removed = {}
 		check_removed = {}
