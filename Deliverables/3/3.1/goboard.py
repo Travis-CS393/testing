@@ -1,6 +1,10 @@
 import json
 import sys
+<<<<<<< HEAD
 import queue as Queue
+=======
+import queue
+>>>>>>> 3853244b8037b648ffaef7415a2acbebe7a89267
 
 class GoBoardComponent():
 	def __init__(self, go_boards=None, statements=None, go_board=None, points=None):
