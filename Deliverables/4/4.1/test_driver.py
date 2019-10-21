@@ -3,28 +3,6 @@ import json
 import sys
 
 ##########################################
-# TEST DRIVER
-##########################################
-
-# Test Driver returns JSON array of response JSON values to STDOUT
-def test_driver():
-	inputs = read_input()
-	outputs = []
-	goboard = GoBoardComponent()
-
-	for element in inputs:
-		if(check_input(element)):
-			outputs.append(goboard.get_response(element))
-		else:
-			raise Exception("Invalid Input: Must be one of Board or [Stone, Move].")
-
-	print(print_output(output))
-
-test_driver()
-
-
-
-##########################################
 # HELPER FUNCTIONS
 ##########################################
 
@@ -101,5 +79,26 @@ def check_board(board, board_size):
 			if (self.check_maybe_stone(board[row][col]) == False):
 				check_all_stones = False
 	return check_all_stones
+
+
+##########################################
+# TEST DRIVER
+##########################################
+
+# Test Driver returns JSON array of response JSON values to STDOUT
+def test_driver():
+	inputs = read_input()
+	outputs = []
+	goboard = GoBoardComponent()
+
+	for element in inputs:
+		if(check_input(element)):
+			outputs.append(goboard.get_response(element))
+		else:
+			raise Exception("Invalid Input: Must be one of Board or [Stone, Move].")
+
+	print(print_output(output))
+
+test_driver()
 
 
