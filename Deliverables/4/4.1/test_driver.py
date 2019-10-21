@@ -65,7 +65,7 @@ def check_point(point):
 	if(len(parsed_point) == 2):
 		pos_set = {"1", "2", "3", "4", "5", "6", "7", "8", "9", \
 				   "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"}
-		return( (pared_point[0] in pos_set) and (parsed_point[1] in pos_set) )
+		return( (parsed_point[0] in pos_set) and (parsed_point[1] in pos_set) )
 	return False
 
 # Board must be 19 x 19 represented by an array of 19 rows 
