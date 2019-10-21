@@ -1,6 +1,6 @@
 import json
 import sys
-import Queue
+import queue as Queue
 
 class GoBoardComponent():
 	def __init__(self, go_boards=None, statements=None, go_board=None, points=None):
