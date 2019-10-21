@@ -1,4 +1,4 @@
-import Queue
+import queue as Queue
 
 class GoBoardComponent():
 	def __init__(self, board_size=None):
@@ -121,6 +121,8 @@ class GoBoardComponent():
 		if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
 			return False
 
+		# Check board history validity 
+
 		#####################################
 		# SEE IF YOU CAN PLACE STONE AT POINT
 		#####################################
@@ -131,20 +133,17 @@ class GoBoardComponent():
 			return False
 
 		# You can't place a stone if it won't have any liberties after turn
+		# Remove all dead pieces to get new liberties intersections 
+		neighbors = self.find_neighbors(point)
+		for i in neighbors:
+			if (try_place[i[0]][i[1]] != stone and (not self.reachable(point, " ", try_place))):
+				try_place = self.remove(stone, point, try_place)
+
+		# If no liberties after removal, then invalid move
 		if (not self.reachable(point, " ", try_place)):
 			return False
 
-
-
-		# Check board history validity 
-
-		# TEST RULE 7 requirements
-		# Check if you can place a stone on that position, is it occupied, does it have liberties
-
-		# Check if you killed any stones and remove them
-
 		# Check Ko
-
 
 
 		return True 
