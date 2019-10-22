@@ -169,39 +169,26 @@ class GoBoardComponent():
 			if (try_place == "This seat is taken!"):
 				return False
 			elif (not self.reachable(point, " ", try_place)):
-				"""
-				removed = []
-				placed = []
-				check_removed = []
-				for row in range(self.board_size):
-					for col in range(self.board_size):
-						if (boards_arr[0][row][col] != try_place[row][col]):
-							if (boards_arr[0][row][col] == " "):
-								placed.append([try_place[row][col], (row,col)])
-							elif ((boards_arr[0][row][col] == "B") and (try_place[row][col] == " ")):
-								removed.append([try_place[row][col], (row, col)])
-							else:
-								removed.append([try_place[row][col], (row, col)])
-
+				visited = [ [False] * self.board_size for row in range(self.board_size) ]
 				neighbors = self.find_neighbors(point)
+				q = Queue.Queue()
 				for n in neighbors:
 					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
-						# Check that current board removed all the dead stones captured by the play
-						if (self.check_removed(removed, [stone, n])):
-							try_place = self.remove(stone, n, try_place)
-							check_removed.append([stone, n])
-						else:
-							return False
+						q.put(n)
 
-				if (len(removed) != len(check_removed)):
+				while (q.empty() != True):
+					check_point = q.get()
+					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+					n_neighbors = find_neighbors(check_point)
+					for n in n_neighbors:
+						if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
+							visited[check_point[0]][check_point[1]] = True
+							q.put(n)
+
+				if (not self.reachable(point, " ", try_place)):				
 					return False
-
-				# If still no liberties present after removal of dead, then invalid move 
-				if (not self.reachable(point, " ", try_place)):
-				"""
-				return False
 			else:
-				if ((not self.get_move_validity(boards_arr[0], try_place))):
+				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
 
 			# Check Ko rule, cannot repeat immediate position on play w/out pass
