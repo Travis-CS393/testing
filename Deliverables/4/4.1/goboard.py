@@ -214,7 +214,7 @@ class GoBoardComponent():
 						placed.append([curr_board[row][col], (row,col)])
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == " ")):
 						removed.append([curr_board[row][col], (row, col)])
-					else:
+					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
 						removed.append([curr_board[row][col], (row, col)])
 
 		# Can only add one stone every turn or pass
@@ -233,8 +233,8 @@ class GoBoardComponent():
 
 		# Check if placing the play was valid
 		try_place = self.place(placed[0][0], placed[0][1], prev_board)
-		if (not self.reachable(placed[0][1], " ", try_place)):
-			return False
+		#if (not self.reachable(placed[0][1], " ", try_place)):
+		#	return False
 
 		visited = [ [False] * self.board_size for row in range(self.board_size) ]
 		neighbors = self.find_neighbors(placed[0][1])
