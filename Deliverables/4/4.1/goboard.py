@@ -255,9 +255,9 @@ class GoBoardComponent():
 		b1_white = len(self.get_points("W", boards_arr[1]))
 
 		if((b1_black - b2_black) == 1):
-			order.append("B")
+			order.append("W")
 		else:
-			order.append("W")						
+			order.append("B")						
 
 		return order
 
