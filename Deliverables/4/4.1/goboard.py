@@ -177,15 +177,21 @@ class GoBoardComponent():
 		if (len(placed) == 0 and len(removed) != 0):
 			return False
 
+		# Pass move means boards are identical
+		if (len(placed) == 0 and (prev_board != curr_board)):
+			return False
+		else:
+			return True
+
 		# Check if placing the play was valid
 		try_place = self.place(placed[0][0], placed[0][1], prev_board)
 		neighbors = self.find_neighbors(placed[0][1])
 		for n in neighbors:
 			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
 				# Check that current board removed all the dead stones captured by the play
-				if (self.check_removed(removed, [stone, point])):
-					check_removed.append([stone, point])
-					try_place = self.remove(stone, point, try_place)
+				if (self.check_removed(removed, [placed[0][0], point])):
+					check_removed.append([placed[0][0], point])
+					try_place = self.remove(placed[0][0], point, try_place)
 				else:
 					return False
 
