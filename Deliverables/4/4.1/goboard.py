@@ -144,7 +144,10 @@ class GoBoardComponent():
 		# Three boards in history, check that moves were valid between them
 		if (len(boards_arr) == 3):
 			# Game Over you cannot make a play because players have passed consecutively already
-			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
+			if ((boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
+				return False
+
+			if ((boards_arr[1] == boards_arr[2]) and (len (self.get_points(" ", boards_arr[1])) == (self.board_size * self.board_size)) and (len (self.get_points(" ", boards_arr[2])) == (self.board_size * self. board_size)) and (len (self.get_points("W", boards_arr[0])) != 1)):
 				return False
 
 			# Board history contains dead stones
