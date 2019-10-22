@@ -154,8 +154,8 @@ class GoBoardComponent():
 
 			# See if the requested play is valid 
 			try_place = self.place(stone, point, boards_arr[0])
+			print(try_place)
 			if (try_place == "This seat is taken!"):
-				print("exittec f")
 				return False
 			else:			
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
