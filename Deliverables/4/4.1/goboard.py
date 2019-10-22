@@ -58,11 +58,13 @@ class GoBoardComponent():
 		all_empty = self.get_points(" ", board)
 		for intersection in all_empty:
 			if ((not self.reachable(self.process_point(intersection), "W", board)) and (not self.reachable(self.process_point(intersection), "B", board))):
-				neutral +=1
+				neutral += 1
 			elif (not self.reachable(self.process_point(intersection), "W", board)):
 				black_area += 1
-			else:
+			elif (not self.reachable(self.process_point(intersection), "B", board)):
 				white_area += 1
+			else:
+				neutral += 1
 
 				
 		if ((black_area + white_area + neutral) == (self.board_size * self.board_size)):
