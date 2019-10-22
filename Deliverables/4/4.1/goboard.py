@@ -199,9 +199,9 @@ class GoBoardComponent():
 
 		return True
 
-	def check_removed(self, removed_arr, stone-point):
+	def check_removed(self, removed_arr, stone_point):
 		for element in removed_arr:
-			if (element == stone-point):
+			if (element == stone_point):
 				return True
 		return False
 
