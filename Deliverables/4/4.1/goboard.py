@@ -232,17 +232,22 @@ class GoBoardComponent():
 		if (not self.reachable(placed[0][1], " ", try_place)):
 			return False
 
+		visited = [ [False] * self.board_size for row in range(self.board_size) ]
 		neighbors = self.find_neighbors(placed[0][1])
+		q = Queue.Queue()
 		for n in neighbors:
 			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
-				# Check that current board removed all the dead stones captured by the play
-				if (self.check_removed(removed, [placed[0][0], n])):
-					try_place = self.remove(placed[0][0], n, try_place)
-					check_removed.append([placed[0][0], n])
-				else:
-					return False
-			#if((try_place[n[0]][n[1]] == placed[0][0]) and (not self.reachable(n, " ", try_place))):
-			#	return False
+				q.put(n)
+
+		while (q.empty() != True):
+			check_point = q.get()
+			try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+			check_removed.append([try_place[check_point[0]][check_point[1]], check_point])
+			n_neighbors = self.find_neighbors(check_point)
+			for n in n_neighbors:
+				if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
+					visited[check_point[0]][check_point[1]] = True
+					q.put(n)
 
 		# Check that all things that things that shouldn't be removed weren't removed
 		if (len(removed) != len(check_removed)):
