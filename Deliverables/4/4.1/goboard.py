@@ -192,7 +192,7 @@ class GoBoardComponent():
 					return False
 
 			# Check Ko rule, cannot repeat immediate position on play w/out pass
-			if (try_place == boards_arr[1]):
+			if ((try_place == boards_arr[1]) or (boards_arr[0] == boards_arr[2])):
 				return False
 
 		return True
