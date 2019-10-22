@@ -174,7 +174,7 @@ class GoBoardComponent():
 				check_removed = []
 				for row in range(self.board_size):
 					for col in range(self.board_size):
-						if (boards_arr[0][row][col] != try_place[0][row][col]):
+						if (boards_arr[0][row][col] != try_place[row][col]):
 							if (boards_arr[0][row][col] == " "):
 								placed.append([try_place[row][col], (row,col)])
 							elif ((boards_arr[0][row][col] == "B") and (try_place[row][col] == " ")):
