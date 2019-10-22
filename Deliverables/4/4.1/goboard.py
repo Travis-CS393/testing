@@ -130,6 +130,10 @@ class GoBoardComponent():
 				return False
 			if (stone != "W"):
 				return False
+			try_place = self.place(stone, point, boards_arr[0])
+			if (try_place == "This seat is taken!"):
+				return False
+
 		
 
 		# Three boards in history, check that moves were valid between them
