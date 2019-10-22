@@ -157,7 +157,7 @@ class GoBoardComponent():
 
 
 	def get_move_validity(self, prev_board, curr_board):
-		placed = set()
+		placed = []
 		removed = set()
 		check_removed = set()
 
@@ -165,7 +165,7 @@ class GoBoardComponent():
 			for col in range(self.board_size):
 				if (prev_board[row][col] != curr_board[row][col]):
 					if (prev_board[row][col] == " "):
-						placed.add([curr_board[row][col], (row,col)])
+						placed.append([curr_board[row][col], (row,col)])
 					else:
 						removed.add([curr_board[row][col], (row, col)])
 
@@ -188,6 +188,10 @@ class GoBoardComponent():
 					try_place = self.remove(stone, point, try_place)
 				else:
 					return False
+
+		# Check that all things that things that shouldn't be removed weren't removed
+		if (len(removed) != len(check_removed)):
+			return False
 
 		# If still no liberties present after removal of dead, then invalid move 
 		if (not self.reachable(placed[0][1], " ", try_place)):
