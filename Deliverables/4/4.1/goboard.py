@@ -123,7 +123,7 @@ class GoBoardComponent():
 		
 
 		# Board history has len 2, first is empty board, black moved once, it's white's turn 
-		elif (len(boards_arr) == 2):
+		if (len(boards_arr) == 2):
 			if (len(self.get_points(" ", boards_arr[1])) != (self.board_size * self.board_size)):
 				return False
 			if ((len(self.get_points("B", boards_arr[0])) > 1) or (len(self.get_points("W", boards_arr[0])) != 0)):
@@ -137,7 +137,7 @@ class GoBoardComponent():
 		
 
 		# Three boards in history, check that moves were valid between them
-		else:
+		if (len(boards_arr) == 3):
 			# Game Over you cannot make a play because players have passed consecutively already
 			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
 				return False
