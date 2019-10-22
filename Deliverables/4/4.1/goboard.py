@@ -203,9 +203,9 @@ class GoBoardComponent():
 		for n in neighbors:
 			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
 				# Check that current board removed all the dead stones captured by the play
-				try_place = self.remove(placed[0][0], point, try_place)
-				if (self.check_removed(removed, [placed[0][0], point])):
-					check_removed.append([placed[0][0], point])
+				try_place = self.remove(placed[0][0], n, try_place)
+				if (self.check_removed(removed, [placed[0][0], n])):
+					check_removed.append([placed[0][0], n])
 				else:
 					return False
 
