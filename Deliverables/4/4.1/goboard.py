@@ -143,6 +143,11 @@ class GoBoardComponent():
 
 		# Three boards in history, check that moves were valid between them
 		if (len(boards_arr) == 3):
+
+			# Check Ko rule, cannot repeat immediate position on play w/out pass
+			if (boards_arr[0] == boards_arr[2]):
+				return False
+
 			# Game Over you cannot make a play because players have passed consecutively already
 			if ((boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
 				return False
@@ -190,10 +195,6 @@ class GoBoardComponent():
 			else:
 				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
-
-			# Check Ko rule, cannot repeat immediate position on play w/out pass
-			if (boards_arr[0] == boards_arr[2]):
-				return False
 
 			if (boards_arr[1] == try_place):
 				return False
