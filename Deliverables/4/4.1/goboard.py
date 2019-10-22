@@ -256,8 +256,11 @@ class GoBoardComponent():
 		if((b1_black - b2_black) == 1):
 			order.append("B")
 		else:
-			order.append("W")							
+			order.append("W")						
 
+		if (len(order) != 4):
+			print("AHJ")
+			
 		return order
 
 	def get_other_player(self, curr_player):
