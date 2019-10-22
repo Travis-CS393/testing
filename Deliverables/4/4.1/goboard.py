@@ -134,11 +134,6 @@ class GoBoardComponent():
 
 		# Three boards in history, check that moves were valid between them
 		else:
-			# Check that players are alternating plays between "B" and "W"
-			player_order = self.get_player_order(boards_arr, stone)
-			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
-				return False
-
 			# Game Over you cannot make a play because players have passed consecutively already
 			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
 				return False
@@ -146,6 +141,12 @@ class GoBoardComponent():
 			# Board history contains invalid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
+
+			# Check that players are alternating plays between "B" and "W"
+			player_order = self.get_player_order(boards_arr, stone)
+			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
+				return False
+
 
 			# See if the requested play is valid 
 			try_place = self.place(stone, point, boards_arr[0])
