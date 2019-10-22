@@ -50,35 +50,23 @@ class GoBoardComponent():
 
 	# Returns the score of "B" and "W" given a final board state.
 	def get_score(self, board):
-		black_area = 0
-		white_area = 0
+		black_area = len(self.get_points("B", board))
+		white_area = len(self.get_points("W", board))
 		neutral = 0
-		"""
-		for row in range(self.board_size):
-			for col in range(self.board_size):
-				if ((not self.reachable((row, col),"W",board)) and (not self.reachable((row, col), "B", board))):
-					neutral += 1
-				elif ((board[row][col] == " ") and (not self.reachable((row, col),"W", board))):
-					black_area += 1
-				elif ((board[row][col] == " ") and (not self.reachable((row, col), "B", board))):
-					white_area += 1
-				else:
-					neutral += 1
-		"""
+	
 
-		all_empty = self.get_points(" ", board) + self.get_points("B", board) + self.get_points("W", board)
+		all_empty = self.get_points(" ", board)
 		for intersection in all_empty:
-			if ((not self.reachable(self.process_point(intersection), "W", board)) and (not self.reachable(self.process_point(intersection), "B", board))):
-				neutral += 1
-			elif (not self.reachable(self.process_point(intersection), "W", board)):
+			if ((not self.reachable(intersection, "W", board)) and (not self.reachable(intersection, "B", board))):
+				neutral +=1
+			elif (not self.reachable(intersection, "W", board)):
 				black_area += 1
-			elif (not self.reachable(self.process_point(intersection), "B", board)):
-				white_area += 1
 			else:
-				neutral += 1
+				white_area += 1
+
 				
 		if ((black_area + white_area + neutral) == (self.board_size * self.board_size)):
-			return {"B": len(self.get_points("B",board)) + black_area, "W": len(self.get_points("W",board)) + white_area }
+			return {"B": black_area, "W": white_area }
 		else:
 			raise Exception("Invalid scoring, sum of black, white, and neutral points must be total intersections.")
 
