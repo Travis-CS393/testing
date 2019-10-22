@@ -169,6 +169,7 @@ class GoBoardComponent():
 			if (try_place == "This seat is taken!"):
 				return False
 			elif (not self.reachable(point, " ", try_place)):
+				"""
 				removed = []
 				placed = []
 				check_removed = []
@@ -197,7 +198,8 @@ class GoBoardComponent():
 
 				# If still no liberties present after removal of dead, then invalid move 
 				if (not self.reachable(point, " ", try_place)):
-					return False
+				"""
+				return False
 			else:
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
 					return False
