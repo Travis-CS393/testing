@@ -238,7 +238,7 @@ class GoBoardComponent():
 
 
 		if (boards_arr[1] == boards_arr[2]):
-			order.append(self.get_other_player(curr_player))
+			order.append(self.get_other_player(last_move))
 			last_move = self.get_other_player(last_move)
 		else:
 			for row in range(self.board_size):
