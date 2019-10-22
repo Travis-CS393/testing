@@ -258,9 +258,6 @@ class GoBoardComponent():
 		else:
 			order.append("W")						
 
-		if (len(order) != 4):
-			print("AHJ")
-			
 		return order
 
 	def get_other_player(self, curr_player):
