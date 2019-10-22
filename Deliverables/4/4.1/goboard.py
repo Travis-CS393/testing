@@ -179,7 +179,7 @@ class GoBoardComponent():
 				while (q.empty() != True):
 					check_point = q.get()
 					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-					n_neighbors = find_neighbors(check_point)
+					n_neighbors = self.find_neighbors(check_point)
 					for n in n_neighbors:
 						if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
 							visited[check_point[0]][check_point[1]] = True
