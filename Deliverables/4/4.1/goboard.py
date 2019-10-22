@@ -60,11 +60,9 @@ class GoBoardComponent():
 					neutral += 1
 				elif ((board[row][col] == " ") and (not self.reachable((row, col),"W", board))):
 					black_area += 1
-				elif ((board[row][col] == " ") and (not self.reachable((row, col), "B", board))):
+				else: # ((board[row][col] == " ") and (not self.reachable((row, col), "B", board))):
 					white_area += 1
-				else:
-					neutral += 1
-
+				
 		if ((black_area + white_area + neutral) == (self.board_size * self.board_size)):
 			return {"B": len(self.get_points("B",board)) + black_area, "W": len(self.get_points("W",board)) + white_area }
 		else:
@@ -146,6 +144,9 @@ class GoBoardComponent():
 				return False
 
 			# Board history contains invalid moves
+			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
+				return False
+				
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
@@ -160,7 +161,14 @@ class GoBoardComponent():
 			if (try_place == "This seat is taken!"):
 				return False
 			elif (not self.reachable(point, " ", try_place)):
-				return False
+				neighbors = self.find_neighbors(point)
+				for n in neighbors:
+					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
+						# Check that current board removed all the dead stones captured by the play
+						try_place = self.remove(stone, n, try_place)
+
+				if (not self.reachable(point, " ", try_place)):
+					return False
 			else:			
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
 					return False
@@ -182,6 +190,8 @@ class GoBoardComponent():
 				if (prev_board[row][col] != curr_board[row][col]):
 					if (prev_board[row][col] == " "):
 						placed.append([curr_board[row][col], (row,col)])
+					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == " ")):
+						removed.append([curr_board[row][col], (row, col)])
 					else:
 						removed.append([curr_board[row][col], (row, col)])
 
@@ -201,20 +211,20 @@ class GoBoardComponent():
 
 		# Check if placing the play was valid
 		try_place = self.place(placed[0][0], placed[0][1], prev_board)
-		if ((not self.reachable(placed[0][1], " ", try_place))):
+		if (not self.reachable(placed[0][1], " ", try_place)):
 			return False
 
 		neighbors = self.find_neighbors(placed[0][1])
 		for n in neighbors:
 			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
 				# Check that current board removed all the dead stones captured by the play
-				try_place = self.remove(placed[0][0], n, try_place)
 				if (self.check_removed(removed, [placed[0][0], n])):
+					try_place = self.remove(placed[0][0], n, try_place)
 					check_removed.append([placed[0][0], n])
 				else:
 					return False
-			if((try_place[n[0]][n[1]] == placed[0][0]) and (not self.reachable(n, " ", try_place))):
-				return False
+			#if((try_place[n[0]][n[1]] == placed[0][0]) and (not self.reachable(n, " ", try_place))):
+			#	return False
 
 		# Check that all things that things that shouldn't be removed weren't removed
 		if (len(removed) != len(check_removed)):
@@ -280,6 +290,16 @@ class GoBoardComponent():
 			return "W"
 		else:
 			return "B"
+
+	def check_dead_removed(self, board):
+		for row in range(self.board_size):
+			for col in range(self.board_size):
+				if (board[row][col] == "B" and (not self.reachable((row, col), " ", board))):
+					return False
+				elif (board[row][col] == "W" and (not self.reachable((row, col), " ", board))):
+					return False
+
+		return True 
 
 	########################################
 	# QUERIES
