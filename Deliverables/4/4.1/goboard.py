@@ -60,8 +60,10 @@ class GoBoardComponent():
 					neutral += 1
 				elif ((board[row][col] == " ") and (not self.reachable((row, col),"W", board))):
 					black_area += 1
-				else: # ((board[row][col] == " ") and (not self.reachable((row, col), "B", board))):
+				elif ((board[row][col] == " ") and (not self.reachable((row, col), "B", board))):
 					white_area += 1
+				else:
+					neutral += 1
 				
 		if ((black_area + white_area + neutral) == (self.board_size * self.board_size)):
 			return {"B": len(self.get_points("B",board)) + black_area, "W": len(self.get_points("W",board)) + white_area }
