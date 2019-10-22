@@ -113,12 +113,14 @@ class GoBoardComponent():
 
 		# Board history len 1 means game just started 
 		if (len(boards_arr) == 1):
-			# Board should contain no stones
-			if (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size)):
-				return False
 			# Black must go first
 			if (stone != "B"):
 				return False
+
+			# Board should contain no stones
+			if (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size)):
+				return False
+		
 
 		# Board history has len 2, first is empty board, black moved once, it's white's turn 
 		elif (len(boards_arr) == 2):
@@ -132,6 +134,10 @@ class GoBoardComponent():
 
 		# Three boards in history, check that moves were valid between them
 		else:
+			# Check that players are alternating plays between "B" and "W"
+			player_order = self.get_player_order(boards_arr, stone)
+			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
+				return False
 
 			# Game Over you cannot make a play because players have passed consecutively already
 			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
@@ -211,6 +217,54 @@ class GoBoardComponent():
 				return True
 		return False
 
+	def get_player_order(self, boards_arr, curr_player):
+		
+		last_move = curr_player
+		
+		order = []
+		order.append(last_move)
+
+		if (boards_arr[0] == boards_arr[1]):
+			order.append(self.get_other_player(last_move))
+			last_move = self.get_other_player(last_move)
+		else:
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					if (boards_arr[1][row][col] != boards_arr[0][row][col]):
+						if (boards_arr[1][row][col] == " "):
+							order.append(boards_arr[0][row][col])
+							last_move = boards_arr[0][row][col]
+
+
+		if (boards_arr[1] == boards_arr[2]):
+			order.append(self.get_other_player(curr_player))
+			last_move = self.get_other_player(last_move)
+		else:
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					if (boards_arr[2][row][col] != boards_arr[1][row][col]):
+						if (boards_arr[2][row][col] == " "):
+							order.append(boards_arr[1][row][col])
+							last_move = boards_arr[1][row][col]
+
+		b2_black = self.get_points("B", boards_arr[2])
+		b2_white = self.get_points("W", boards_arr[2])
+
+		b1_black = self.get_points("B", boards_arr[1])
+		b1_white = self.get_points("W", boards_arr[1])
+
+		if((b1_black - b2_black) == 1):
+			order.append("B")
+		else:
+			order.append("W")							
+
+		return order.reverse()
+
+	def get_other_player(self, curr_player):
+		if (curr_player == "B"):
+			return "W"
+		else:
+			return "B"
 
 	########################################
 	# QUERIES
