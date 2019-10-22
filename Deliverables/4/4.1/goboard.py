@@ -66,7 +66,7 @@ class GoBoardComponent():
 					neutral += 1
 
 		if ((black_area + white_area + neutral) == (self.board_size * self.board_size)):
-			return {"B": len(self.get_points("B",board)) + black_area, "W": len(self.get_points("W",board)) +white_area }
+			return {"B": len(self.get_points("B",board)) + black_area, "W": len(self.get_points("W",board)) + white_area }
 		else:
 			raise Exception("Invalid scoring, sum of black, white, and neutral points must be total intersections.")
 
@@ -124,7 +124,7 @@ class GoBoardComponent():
 		elif (len(boards_arr) == 2):
 			if (len(self.get_points(" ", boards_arr[1])) != (self.board_size * self.board_size)):
 				return False
-			if (len(self.get_points("B", boards_arr[0]) > 1) or (len(self.get_points("W", boards_arr[0])) != 0)):
+			if ((len(self.get_points("B", boards_arr[0])) > 1) or (len(self.get_points("W", boards_arr[0])) != 0)):
 				return False
 			if (stone != "W"):
 				return False
@@ -149,18 +149,17 @@ class GoBoardComponent():
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
 					return False
 
+			# Check Ko rule, cannot repeat immediate position on play w/out pass
+			if (try_place == boards_arr[0]):
+				return False
+
 		return True
-
-		"""
-		# Check Ko
-		"""
-
 
 
 	def get_move_validity(self, prev_board, curr_board):
-		placed = {}
-		removed = {}
-		check_removed = {}
+		placed = set()
+		removed = set()
+		check_removed = set()
 
 		for row in range(self.board_size):
 			for col in range(self.board_size):
