@@ -158,8 +158,8 @@ class GoBoardComponent():
 
 	def get_move_validity(self, prev_board, curr_board):
 		placed = []
-		removed = set()
-		check_removed = set()
+		removed = []
+		check_removed = []
 
 		for row in range(self.board_size):
 			for col in range(self.board_size):
@@ -167,7 +167,7 @@ class GoBoardComponent():
 					if (prev_board[row][col] == " "):
 						placed.append([curr_board[row][col], (row,col)])
 					else:
-						removed.add([curr_board[row][col], (row, col)])
+						removed.append([curr_board[row][col], (row, col)])
 
 		# Can only add one stone every turn or pass
 		if (len(placed) > 1):
@@ -183,8 +183,8 @@ class GoBoardComponent():
 		for n in neighbors:
 			if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
 				# Check that current board removed all the dead stones captured by the play
-				if ([stone, point] in removed):
-					check_removed.add([stone, point])
+				if (self.check_removed(removed, [stone, point])):
+					check_removed.append([stone, point])
 					try_place = self.remove(stone, point, try_place)
 				else:
 					return False
@@ -199,6 +199,11 @@ class GoBoardComponent():
 
 		return True
 
+	def check_removed(self, removed_arr, stone-point):
+		for element in removed_arr:
+			if (element == stone-point):
+				return True
+		return False
 
 
 	########################################
