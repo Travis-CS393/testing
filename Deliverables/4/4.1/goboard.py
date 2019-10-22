@@ -68,9 +68,9 @@ class GoBoardComponent():
 
 		all_empty = self.get_points(" ", board)
 		for intersection in all_empty:
-			if ((not self.reachable((row, col), "W", board)) and (not self.reachable((row, col), "B", board))):
+			if ((not self.reachable(self.process_point(intersection), "W", board)) and (not self.reachable(self.process_point(intersection), "B", board))):
 				neutral += 1
-			elif (not self.reachable((row, col), "W", board)):
+			elif (not self.reachable(self.process_point(intersection), "W", board)):
 				black_area += 1
 			else:
 				white_area += 1
