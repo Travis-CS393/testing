@@ -217,9 +217,10 @@ class GoBoardComponent():
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
 						removed.append([curr_board[row][col], (row, col)])
 
-		# removed something that still had liberties 
+		# removed something that still had liberties after play
+		test_board = self.place(placed[0][0], placed[0][1], prev_board)
 		for s in removed:
-			if (self.reachable(s[0][1], " ", prev_board)):
+			if (self.reachable(s[0][1], " ", test_board)):
 				return False
 
 		# Can only add one stone every turn or pass
