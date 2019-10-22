@@ -199,6 +199,9 @@ class GoBoardComponent():
 
 		# Check if placing the play was valid
 		try_place = self.place(placed[0][0], placed[0][1], prev_board)
+		if ((not self.reachable(placed[0][1], " ", try_place))):
+			return False
+			
 		neighbors = self.find_neighbors(placed[0][1])
 		for n in neighbors:
 			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
