@@ -145,6 +145,11 @@ class GoBoardComponent():
 			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
 				return False
 
+			# Board history contains dead stones
+			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
+				return False
+
+			# Board history contains other invalid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
