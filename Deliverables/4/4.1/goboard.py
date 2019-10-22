@@ -159,6 +159,8 @@ class GoBoardComponent():
 			try_place = self.place(stone, point, boards_arr[0])
 			if (try_place == "This seat is taken!"):
 				return False
+			elif (not self.reachable(point, " ", try_place)):
+				return False
 			else:			
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
 					return False
@@ -201,7 +203,7 @@ class GoBoardComponent():
 		try_place = self.place(placed[0][0], placed[0][1], prev_board)
 		if ((not self.reachable(placed[0][1], " ", try_place))):
 			return False
-			
+
 		neighbors = self.find_neighbors(placed[0][1])
 		for n in neighbors:
 			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
