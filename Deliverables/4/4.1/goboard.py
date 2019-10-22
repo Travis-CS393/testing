@@ -208,6 +208,8 @@ class GoBoardComponent():
 					check_removed.append([placed[0][0], n])
 				else:
 					return False
+			if((try_place[n[0]][n[1]] == placed[0][0]) and (not self.reachable(n, " ", try_place))):
+				return False
 
 		# Check that all things that things that shouldn't be removed weren't removed
 		if (len(removed) != len(check_removed)):
