@@ -143,10 +143,6 @@ class GoBoardComponent():
 			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
 				return False
 
-			# Board history contains invalid moves
-			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
-				return False
-				
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
@@ -161,14 +157,7 @@ class GoBoardComponent():
 			if (try_place == "This seat is taken!"):
 				return False
 			elif (not self.reachable(point, " ", try_place)):
-				neighbors = self.find_neighbors(point)
-				for n in neighbors:
-					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
-						# Check that current board removed all the dead stones captured by the play
-						try_place = self.remove(stone, n, try_place)
-
-				if (not self.reachable(point, " ", try_place)):
-					return False
+				return False
 			else:			
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
 					return False
