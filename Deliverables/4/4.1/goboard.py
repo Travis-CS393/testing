@@ -258,8 +258,7 @@ class GoBoardComponent():
 		else:
 			order.append("W")							
 
-		player_order = order.reverse()
-		return player_order
+		return order
 
 	def get_other_player(self, curr_player):
 		if (curr_player == "B"):
