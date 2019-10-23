@@ -349,11 +349,12 @@ class GoBoardComponent():
 				elif (prev_board[row][col] == " " and (curr_board[row][col] != " ")):
 					placed.append([curr_board[row][col],(row, col)])
 
-		if (len(placed) != 0):
-			test_board = self.place(placed[0][0], placed[0][1], prev_board)
+		if (len(placed) == 1):
 			for s in removed:
-				if (self.reachable(s, " ", test_board)):
+				if (self.reachable(s, " ", self.place(placed[0][0], placed[0][1], prev_board))):
 					return True
+		else:
+			return True
 
 		return False
 
