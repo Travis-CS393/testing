@@ -261,6 +261,12 @@ class GoBoardComponent():
 		if (not self.reachable(placed[0][1], " ", try_place)):
 			return False
 
+		# See if there were other things that were removed for fun 
+		test_board = self.place(placed[0][0], placed[0][1], prev_board)
+		for s in removed:
+			if (self.reachable(s[1], " ", test_board)):
+				return False
+
 		return True
 
 	def check_removed(self, removed_arr, stone_point):
