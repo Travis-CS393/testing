@@ -229,7 +229,7 @@ class GoBoardComponent():
 		# Pass move means boards are identical
 		if (len(placed) == 0 and (prev_board != curr_board)):
 			return False
-		else:
+		elif (len(placed) == 1):
 			# Check if placing the play was valid
 			try_place = self.place(placed[0][0], placed[0][1], prev_board)
 			#if (not self.reachable(placed[0][1], " ", try_place)):
