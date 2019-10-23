@@ -199,8 +199,6 @@ class GoBoardComponent():
 			if (boards_arr[1] == try_place):
 				return False
 
-			if (self.check_alive_removed(boards_arr[2], boards_arr[1]) or self.check_alive_removed(boards_arr[1], boards_arr[0])):
-				return False
 
 		return True
 
@@ -336,27 +334,6 @@ class GoBoardComponent():
 					return False
 
 		return True 
-
-	def check_alive_removed(self, prev_board, curr_board):
-		placed = []
-		removed = []
-		for row in range(self.board_size):
-			for col in range(self.board_size):
-				if ((prev_board[row][col] == "B") and (curr_board[row][col] == " ")):
-					removed.append((row, col))
-				elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
-					removed.append((row, col))
-				elif (prev_board[row][col] == " " and (curr_board[row][col] != " ")):
-					placed.append([curr_board[row][col],(row, col)])
-
-		if (len(placed) == 1):
-			for s in removed:
-				if (self.reachable(s, " ", self.place(placed[0][0], placed[0][1], prev_board))):
-					return True
-		else:
-			return True
-
-		return False
 
 	########################################
 	# QUERIES
