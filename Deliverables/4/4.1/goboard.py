@@ -262,10 +262,10 @@ class GoBoardComponent():
 				return False
 
 			# See if there were other things that were removed for fun 
-			test_board = self.place(placed[0][0], placed[0][1], prev_board)
-			for s in removed:
-				if (self.reachable(s[1], " ", test_board)):
-					return False
+			#test_board = self.place(placed[0][0], placed[0][1], prev_board)
+			#for s in removed:
+			#	if (self.reachable(s[1], " ", test_board)):
+			#		return False
 
 		return True
 
