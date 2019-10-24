@@ -140,6 +140,10 @@ class GoBoard():
 			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
 				return False
 
+			# Check Board history contains only valid moves
+			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
+				return False
+
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
 			if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
@@ -148,10 +152,6 @@ class GoBoard():
 			else:
 				if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
 					return False
-
-			# Check Board history contains only valid moves
-			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
-				return False
 
 			#############################
 			# Check move against history
