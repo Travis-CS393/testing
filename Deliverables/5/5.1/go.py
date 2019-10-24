@@ -144,6 +144,7 @@ class GoBoard():
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
+			
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
 			if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
