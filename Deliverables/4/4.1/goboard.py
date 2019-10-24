@@ -163,10 +163,9 @@ class GoBoardComponent():
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
-		
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
-			if (player_order[0] != player_order[2]):
+			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
 				return False
 
 
@@ -191,19 +190,14 @@ class GoBoardComponent():
 							visited[check_point[0]][check_point[1]] = True
 							q.put(n)
 
-				if (not self.reachable(point, " ", try_place)):
-					return False
-				if (not self.get_move_validity(boards_arr[0],try_place)):
-					return False
-				if (boards_arr[1] == try_place):
+				if (not self.reachable(point, " ", try_place)):				
 					return False
 			else:
 				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
-				if (boards_arr[1] == try_place):
-					return False
 
-			
+			if (boards_arr[1] == try_place):
+				return False
 
 
 		return True
@@ -212,7 +206,7 @@ class GoBoardComponent():
 	def get_move_validity(self, prev_board, curr_board):
 		placed = []
 		removed = []
-		dead_removed = []
+		check_removed = []
 
 		for row in range(self.board_size):
 			for col in range(self.board_size):
@@ -223,52 +217,56 @@ class GoBoardComponent():
 						removed.append([curr_board[row][col], (row, col)])
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
 						removed.append([curr_board[row][col], (row, col)])	
-					# Unexplained changes in board state
-					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
-						return False
-					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == "B")):
-						return False
 
 		# Can only add one stone every turn or pass
 		if (len(placed) > 1):
 			return False
 
-		# Move was a pass, boards should be identical 
-		if (len(placed) == 0):
-			if (len(removed) != 0):
-				return False
-			if (prev_board != curr_board):
-				return False
+		# Cannot capture pieces if you didn't make a play 
+		if (len(placed) == 0 and len(removed) != 0):
+			return False
 
-		# Check if place on board has liberties, and for removed dead stones
-		if (len(placed) == 1):
-			try_place = self.place(placed[0][0], placed[0][1], prev_board)
+		# Pass move means boards are identical
+		if (len(placed) == 0 and (prev_board != curr_board)):
+			return False
+		else:
+			return True
 
-			visited = [ [False] * self.board_size for row in range(self.board_size) ]
-			neighbors = self.find_neighbors(placed[0][1])
-			
-			q = Queue.Queue()
-			for n in neighbors:
-				if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
+		# Check if placing the play was valid
+		try_place = self.place(placed[0][0], placed[0][1], prev_board)
+		#if (not self.reachable(placed[0][1], " ", try_place)):
+		#	return False
+
+		visited = [ [False] * self.board_size for row in range(self.board_size) ]
+		neighbors = self.find_neighbors(placed[0][1])
+		q = Queue.Queue()
+		for n in neighbors:
+			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
+				q.put(n)
+
+		while (q.empty() != True):
+			check_point = q.get()
+			try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+			check_removed.append([try_place[check_point[0]][check_point[1]], check_point])
+			n_neighbors = self.find_neighbors(check_point)
+			for n in n_neighbors:
+				if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
+					visited[check_point[0]][check_point[1]] = True
 					q.put(n)
 
-			while (q.empty() != True):
-				check_point = q.get()
-				try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-				dead_removed.append([try_place[check_point[0]][check_point[1]], check_point])
-				n_neighbors = self.find_neighbors(check_point)
-				for n in n_neighbors:
-					if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
-						visited[check_point[0]][check_point[1]] = True
-						q.put(n)
+		# Check that all things that things that shouldn't be removed weren't removed
+		if (removed != check_removed):
+			return False
 
-			if (not self.reachable(placed[0][1], " ", try_place)):
+		# If still no liberties present after removal of dead, then invalid move 
+		if (not self.reachable(placed[0][1], " ", try_place)):
+			return False
+
+		# See if there were other things that were removed for fun 
+		test_board = self.place(placed[0][0], placed[0][1], prev_board)
+		for s in removed:
+			if (self.reachable(s[1], " ", test_board)):
 				return False
-
-			# Did not remove all or only the ones that are dead after play
-			if (removed.sort() != dead_removed.sort()):
-				return False
-
 
 		return True
 
@@ -283,6 +281,19 @@ class GoBoardComponent():
 		last_move = curr_player
 		
 		order = []
+		order.append(last_move)
+
+		if (boards_arr[0] == boards_arr[1]):
+			order.append(self.get_other_player(last_move))
+			last_move = self.get_other_player(last_move)
+		else:
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					if (boards_arr[1][row][col] != boards_arr[0][row][col]):
+						if (boards_arr[1][row][col] == " "):
+							order.append(boards_arr[0][row][col])
+							last_move = boards_arr[0][row][col]
+
 
 		if (boards_arr[1] == boards_arr[2]):
 			order.append(self.get_other_player(last_move))
@@ -295,18 +306,17 @@ class GoBoardComponent():
 							order.append(boards_arr[1][row][col])
 							last_move = boards_arr[1][row][col]
 
-		if (boards_arr[0] == boards_arr[1]):
-			order.append(self.get_other_player(last_move))
-			last_move = self.get_other_player(last_move)
-		else:
-			for row in range(self.board_size):
-				for col in range(self.board_size):
-					if (boards_arr[1][row][col] != boards_arr[0][row][col]):
-						if (boards_arr[1][row][col] == " "):
-							order.append(boards_arr[0][row][col])
-							last_move = boards_arr[0][row][col]		
+		b2_black = len(self.get_points("B", boards_arr[2]))
+		b2_white = len(self.get_points("W", boards_arr[2]))
 
-		order.append(last_move)
+		b1_black = len(self.get_points("B", boards_arr[1]))
+		b1_white = len(self.get_points("W", boards_arr[1]))
+
+		if((b1_black - b2_black) == 1):
+			order.append("W")
+		else:
+			order.append("B")						
+
 		return order
 
 	def get_other_player(self, curr_player):
