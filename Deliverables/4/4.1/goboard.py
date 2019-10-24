@@ -293,8 +293,8 @@ class GoBoardComponent():
 			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
 				return False
 		else:
-			print(order)
-
+			return False
+			
 		return True 
 
 	def get_other_player(self, curr_player):
