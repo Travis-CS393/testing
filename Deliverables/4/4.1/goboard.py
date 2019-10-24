@@ -163,10 +163,12 @@ class GoBoardComponent():
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
+			"""
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
 			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
 				return False
+			"""
 
 
 			# See if the requested play is valid 
@@ -314,7 +316,7 @@ class GoBoardComponent():
 
 		if((b1_black - b2_black) == 1):
 			order.append("W")
-		else:
+		elif ((b1_white - b2_white) == 1):
 			order.append("B")						
 
 		return order
