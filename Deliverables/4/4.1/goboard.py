@@ -288,6 +288,26 @@ class GoBoardComponent():
 					if ((boards_arr[1][row][col] == " ") and (boards_arr[0][row][col] != " ")):
 						order.append(boards_arr[0][row][col])
 			order.append(curr_player)
+		else:
+			if (boards_arr[1] == boards_arr[2]):
+				order.append(curr_player)
+			else:
+				for row in range(self.board_size):
+					for col in range(self.board_size):
+						if (boards_arr[2][row][col] != boards_arr[1][row[col]]):
+							if (boards_arr[2][row][col] == " "):
+								order.append(boards_arr[1][row][col])
+
+			if (boards_arr[0] == boards_arr[1]):
+				order.append(self.get_other_player(curr_player))
+			else:
+				for row in range(self.board_size):
+					for col in range(self.board_size):
+						if (boards_arr[1][row][col] != boards_arr[0][row[col]]):
+							if (boards_arr[1][row][col] == " "):
+								order.append(boards_arr[0][row][col])
+			order.append(curr_player)
+
 
 		if (len(order) == 3):
 			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
