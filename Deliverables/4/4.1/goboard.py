@@ -50,23 +50,25 @@ class GoBoardComponent():
 
 	# Returns the score of "B" and "W" given a final board state.
 	def get_score(self, board):
-		black_area = 0
-		white_area = 0
+		black_area = len(self.get_points("B", board))
+		white_area = len(self.get_points("W", board))
 		neutral = 0
+	
 
-		for row in range(self.board_size):
-			for col in range(self.board_size):
-				if ((not self.reachable((row, col),"W",board)) and (not self.reachable((row, col), "B", board))):
-					neutral += 1
-				elif ((board[row][col] == " ") and (not self.reachable((row, col),"W", board))):
-					black_area += 1
-				elif ((board[row][col] == " ") and (not self.reachable((row, col), "B", board))):
-					white_area += 1
-				else:
-					neutral += 1
+		all_empty = self.get_points(" ", board)
+		for intersection in all_empty:
+			if ((not self.reachable(self.process_point(intersection), "W", board)) and (not self.reachable(self.process_point(intersection), "B", board))):
+				neutral += 1
+			elif (not self.reachable(self.process_point(intersection), "W", board)):
+				black_area += 1
+			elif (not self.reachable(self.process_point(intersection), "B", board)):
+				white_area += 1
+			else:
+				neutral += 1
 
+				
 		if ((black_area + white_area + neutral) == (self.board_size * self.board_size)):
-			return {"B": len(self.get_points("B",board)) + black_area, "W": len(self.get_points("W",board)) + white_area }
+			return {"B": black_area, "W": white_area }
 		else:
 			raise Exception("Invalid scoring, sum of black, white, and neutral points must be total intersections.")
 
@@ -141,14 +143,27 @@ class GoBoardComponent():
 
 		# Three boards in history, check that moves were valid between them
 		if (len(boards_arr) == 3):
-			# Game Over you cannot make a play because players have passed consecutively already
-			if ((len(boards_arr) == 3) and (boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
+
+			# Check Ko rule, cannot repeat immediate position on play w/out pass
+			if (boards_arr[0] == boards_arr[2]):
 				return False
 
-			# Board history contains invalid moves
+			# Game Over you cannot make a play because players have passed consecutively already
+			if ((boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
+				return False
+
+			if ((boards_arr[1] == boards_arr[2]) and (len (self.get_points(" ", boards_arr[1])) == (self.board_size * self.board_size)) and (len (self.get_points(" ", boards_arr[2])) == (self.board_size * self. board_size)) and (len (self.get_points("W", boards_arr[0])) != 1)):
+				return False
+
+			# Board history contains dead stones
+			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
+				return False
+
+			# Board history contains other invalid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
+			
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
 			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
@@ -159,13 +174,32 @@ class GoBoardComponent():
 			try_place = self.place(stone, point, boards_arr[0])
 			if (try_place == "This seat is taken!"):
 				return False
-			else:			
-				if ((not self.get_move_validity(boards_arr[0], try_place))):
+			elif (not self.reachable(point, " ", try_place)):
+				visited = [ [False] * self.board_size for row in range(self.board_size) ]
+				neighbors = self.find_neighbors(point)
+				q = Queue.Queue()
+				for n in neighbors:
+					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
+						q.put(n)
+
+				while (q.empty() != True):
+					check_point = q.get()
+					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+					n_neighbors = self.find_neighbors(check_point)
+					for n in n_neighbors:
+						if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
+							visited[check_point[0]][check_point[1]] = True
+							q.put(n)
+
+				if (not self.reachable(point, " ", try_place)):				
+					return False
+			else:
+				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
 
-			# Check Ko rule, cannot repeat immediate position on play w/out pass
-			if (try_place == boards_arr[1]):
+			if (boards_arr[1] == try_place):
 				return False
+
 
 		return True
 
@@ -180,44 +214,52 @@ class GoBoardComponent():
 				if (prev_board[row][col] != curr_board[row][col]):
 					if (prev_board[row][col] == " "):
 						placed.append([curr_board[row][col], (row,col)])
-					else:
+					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == " ")):
 						removed.append([curr_board[row][col], (row, col)])
+					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
+						removed.append([curr_board[row][col], (row, col)])	
 
 		# Can only add one stone every turn or pass
 		if (len(placed) > 1):
 			return False
 
 		# Cannot capture pieces if you didn't make a play 
-		if (len(placed) == 0 and len(removed) != 0):
-			return False
-
-		# Pass move means boards are identical
-		if (len(placed) == 0 and (prev_board != curr_board)):
-			return False
-		else:
-			return True
-
-		# Check if placing the play was valid
-		try_place = self.place(placed[0][0], placed[0][1], prev_board)
-		neighbors = self.find_neighbors(placed[0][1])
-		for n in neighbors:
-			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
-				# Check that current board removed all the dead stones captured by the play
-				try_place = self.remove(placed[0][0], n, try_place)
-				if (self.check_removed(removed, [placed[0][0], n])):
-					check_removed.append([placed[0][0], n])
-				else:
-					return False
-			if((try_place[n[0]][n[1]] == placed[0][0]) and (not self.reachable(n, " ", try_place))):
+		if (len(placed) == 0):
+			if (len(removed) != 0):
+				return False
+			if (prev_board != curr_board):
 				return False
 
-		# Check that all things that things that shouldn't be removed weren't removed
-		if (len(removed) != len(check_removed)):
-			return False
+		if (len(placed) == 1):		
+			# Check if placing the play was valid
+			try_place = self.place(placed[0][0], placed[0][1], prev_board)
+			if (try_place == "This seat is taken!"):
+				return False
+			else:
+				visited = [ [False] * self.board_size for row in range(self.board_size) ]
+				neighbors = self.find_neighbors(placed[0][1])
+				q = Queue.Queue()
+				for n in neighbors:
+					if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
+						q.put(n)
 
-		# If still no liberties present after removal of dead, then invalid move 
-		if (not self.reachable(placed[0][1], " ", try_place)):
-			return False
+				while (q.empty() != True):
+					check_point = q.get()
+					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+					check_removed.append([try_place[check_point[0]][check_point[1]], check_point])
+					n_neighbors = self.find_neighbors(check_point)
+					for n in n_neighbors:
+						if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
+							visited[check_point[0]][check_point[1]] = True
+							q.put(n)
+
+				# Check that all things that things that shouldn't be removed weren't removed
+				if (removed != check_removed):
+					return False
+
+				# If still no liberties present after removal of dead, then invalid move 
+				if (not self.reachable(placed[0][1], " ", try_place)):
+					return False
 
 		return True
 
@@ -265,7 +307,7 @@ class GoBoardComponent():
 
 		if((b1_black - b2_black) == 1):
 			order.append("W")
-		else:
+		elif ((b1_white - b2_white) == 1):
 			order.append("B")						
 
 		return order
@@ -275,6 +317,16 @@ class GoBoardComponent():
 			return "W"
 		else:
 			return "B"
+
+	def check_dead_removed(self, board):
+		for row in range(self.board_size):
+			for col in range(self.board_size):
+				if (board[row][col] == "B" and (not self.reachable((row, col), " ", board))):
+					return False
+				elif (board[row][col] == "W" and (not self.reachable((row, col), " ", board))):
+					return False
+
+		return True 
 
 	########################################
 	# QUERIES
