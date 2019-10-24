@@ -262,7 +262,7 @@ class GoBoardComponent():
 				return False
 
 			# Did not remove all or only the ones that are dead after play
-			if (removed != dead_removed):
+			if (removed.sort() != dead_removed.sort()):
 				return False
 
 
