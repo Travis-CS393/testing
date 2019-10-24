@@ -225,14 +225,11 @@ class GoBoardComponent():
 			return False
 
 		# Cannot capture pieces if you didn't make a play 
-		if (len(placed) == 0 and len(removed) != 0):
-			return False
-
-		# Pass move means boards are identical
-		if (len(placed) == 0 and (prev_board != curr_board)):
-			return False
-		else:
-			return True
+		if (len(placed) == 0):
+			if (len(removed) != 0):
+				return False
+			if (prev_board != curr_board):
+				return False
 
 		# Check if placing the play was valid
 		try_place = self.place(placed[0][0], placed[0][1], prev_board)
