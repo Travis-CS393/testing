@@ -1,4 +1,4 @@
-from go import GoBoard, Row, MaybeStone, Stone
+from go import GoBoard
 import json
 import sys
 

@@ -258,7 +258,7 @@ class GoBoardComponent():
 						visited[check_point[0]][check_point[1]] = True
 						q.put(n)
 
-			if (not self.reachable(point, " ", try_place)):				
+			if (not self.reachable(placed[0][1], " ", try_place)):				
 				return False
 
 			# Did not remove all or only the ones that are dead after play

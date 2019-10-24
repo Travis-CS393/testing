@@ -25,7 +25,7 @@ class GoBoard():
 						sorted in increasing lexicographic order. 
 		"""
 		self.board_size = 19 if board_size is None else board_size
-		self.go_board = [ Row() for r in range(self.board_size) ]
+		self.go_board = [ " " * 19 for row in range(self.board_size) ]
 
 	###############################
 	# BOARD RESPONSES 
@@ -38,7 +38,7 @@ class GoBoard():
 		elif ((len(input) == 2) and (input[1] == "pass")):
 			return self.pass_turn(input[0])
 		elif (len(input == 2)):
-			return self.get_validity(input[0], Point(point=input[1][0]).point_to_idx(), input[1][1])
+			return self.get_validity(input[0], self.point_to_idx(input[1][0]), input[1][1])
 		else:
 			raise Exception("Invalid input has no appropriate response")
 
@@ -50,7 +50,7 @@ class GoBoard():
 
 		all_empty = self.get_points(" ", board)
 		for intersection in all_empty:
-			point = Point(point=intersection).point_to_idx()
+			point = self.point_to_idx(intersection)
 			if ((not self.reachable(point, "W", board)) and (not self.reachable(point, "B", board))):
 				neutral += 1
 			elif (not self.reachable(point, "W", board)):
@@ -341,6 +341,17 @@ class GoBoard():
 	###############################
 	# HELPER FUNCTIONS
 	###############################
+	# Converts point from "N-N" to indices
+	def point_to_idx(self, point):
+		idx = point.split("-")
+		for i in range(len(idx)):
+			idx[i] = int(idx[i])
+
+		return idx[1] - 1, idx[0] - 1
+
+	# Converts indices to "N-N" point position
+	def idx_to_point(self, x, y):
+		return str(x + 1) + "-" + str(y + 1)
 
 	# Finds all the adjacent neighbors to a given point
 	def find_neighbors(self, idx):
@@ -419,69 +430,6 @@ class GoBoard():
 
 
 
-class Row():
-	def __init__(self, board_size=None, row=None):
-		"""
-		This class implements a Go Board Row component which contains the
-		board_size number of Maybestones as an array of " ", stones
-		"B" or "W". 
-		"""
-		self.board_size = 19 if board_size is None else board_size
-		self.row = [ Maybestone() for row in range(self.board_size)]
 
-
-
-class MaybeStone():
-	def __init__(self, maybe=" "):
-		"""
-		This class implements a Go MaybeStone component which can be Stone or 
-		Empty (" ").
-		"""
-		if (maybe == "B"):
-			self.maybe = StoneComponent("B")
-		elif (maybe == "W"):
-			self.maybe = StoneComponent("W")
-		elif (maybe == " "):
-			self.maybe = " "
-		else:
-			raise TypeError("Maybestone must be one of Stone or Empty")
-
-
-
-class Stone():
-	def __init__(self):
-		"""
-		This class implements a Go Stone component which can be "B" or "W", 
-		representing a black or white Go stone piece.
-		"""
-		self.black = "B" 
-		self.white = "W"
-
-
-
-class Point():
-	def __init__(self, point=None, idx=None):
-		"""
-		This class implements a Point position on a Go Board using the 
-		coordinate system where 1-1 is the top left corner, and 19-19
-		is the bottom right corner. 
-
-		Points are written in form "N-N" where N is from 1 to board_size.
-		Points have an idx representing x and y coordinates.
-		"""
-		self.point = "1-1" if None else point
-		self.idx = (0, 0) if None else self.point_to_idx()
-
-	# Converts point from "N-N" to indices
-	def point_to_idx(self):
-		idx = self.point.split("-")
-		for i in range(len(idx)):
-			idx[i] = int(idx[i])
-
-		return idx[1] - 1, idx[0] - 1
-
-	# Converts indices to "N-N" point position
-	def idx_to_point(self):
-		return str(self.idx[0] + 1) + "-" + str(self.idx[1] + 1)
 
 
