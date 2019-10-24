@@ -165,8 +165,7 @@ class GoBoardComponent():
 
 			
 			# Check that players are alternating plays between "B" and "W"
-			player_order = self.get_player_order(boards_arr, stone)
-			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
+			if (not self.get_player_order(boards_arr, stone)):
 				return False
 
 
@@ -270,47 +269,25 @@ class GoBoardComponent():
 		return False
 
 	def get_player_order(self, boards_arr, curr_player):
-		
-		last_move = curr_player
-		
 		order = []
-		order.append(last_move)
 
-		if (boards_arr[0] == boards_arr[1]):
-			order.append(self.get_other_player(last_move))
-			last_move = self.get_other_player(last_move)
-		else:
+		if ((boards_arr[2] != boards_arr[1]) and (boards_arr[1] != boards_arr[0])):
 			for row in range(self.board_size):
 				for col in range(self.board_size):
-					if (boards_arr[1][row][col] != boards_arr[0][row][col]):
-						if (boards_arr[1][row][col] == " "):
-							order.append(boards_arr[0][row][col])
-							last_move = boards_arr[0][row][col]
+					if ((boards_arr[2][row][col] == " ") and (boards_arr[1][row][col] != " ")):
+						order.append(boards_arr[1][row][col])
 
-
-		if (boards_arr[1] == boards_arr[2]):
-			order.append(self.get_other_player(last_move))
-			last_move = self.get_other_player(last_move)
-		else:
 			for row in range(self.board_size):
 				for col in range(self.board_size):
-					if (boards_arr[2][row][col] != boards_arr[1][row][col]):
-						if (boards_arr[2][row][col] == " "):
-							order.append(boards_arr[1][row][col])
-							last_move = boards_arr[1][row][col]
+					if ((board_size[1][row][col] == " ") and (boards_arr[0][row][col] != " ")):
+						order.append(boards_arr[0][row][col])
+			order.append(curr_player)
 
-		b2_black = len(self.get_points("B", boards_arr[2]))
-		b2_white = len(self.get_points("W", boards_arr[2]))
-
-		b1_black = len(self.get_points("B", boards_arr[1]))
-		b1_white = len(self.get_points("W", boards_arr[1]))
-
-		if((b1_black - b2_black) == 1):
-			order.append("W")
-		elif ((b1_white - b2_white) == 1):
-			order.append("B")						
-
-		return order
+		if (len(order) == 3):
+			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
+				return False
+				
+		return True 
 
 	def get_other_player(self, curr_player):
 		if (curr_player == "B"):
