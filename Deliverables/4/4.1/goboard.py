@@ -217,10 +217,11 @@ class GoBoardComponent():
 						removed.append([curr_board[row][col], (row, col)])
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
 						removed.append([curr_board[row][col], (row, col)])	
-
-		# Can only add one stone every turn or pass
-		if (len(placed) > 1):
-			return False
+					# Unexplained changes in board state
+					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
+						return False
+					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == "B")):
+						return False
 
 		# Cannot capture pieces if you didn't make a play 
 		if (len(placed) == 0):
@@ -253,12 +254,17 @@ class GoBoardComponent():
 							q.put(n)
 
 				# Check that all things that things that shouldn't be removed weren't removed
-				if (removed != check_removed):
+				if (removed.sort() != check_removed.sort()):
 					return False
 
 				# If still no liberties present after removal of dead, then invalid move 
 				if (not self.reachable(placed[0][1], " ", try_place)):
 					return False
+
+		# Can only add one stone every turn or pass
+		if (len(placed) > 1):
+			return False
+
 
 		return True
 
@@ -286,7 +292,7 @@ class GoBoardComponent():
 		if (len(order) == 3):
 			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
 				return False
-				
+
 		return True 
 
 	def get_other_player(self, curr_player):
