@@ -163,6 +163,7 @@ class GoBoardComponent():
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
+			
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
 			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
@@ -223,50 +224,42 @@ class GoBoardComponent():
 			return False
 
 		# Cannot capture pieces if you didn't make a play 
-		if (len(placed) == 0 and len(removed) != 0):
-			return False
-
-		# Pass move means boards are identical
-		if (len(placed) == 0 and (prev_board != curr_board)):
-			return False
-		else:
-			return True
-
-		# Check if placing the play was valid
-		try_place = self.place(placed[0][0], placed[0][1], prev_board)
-		#if (not self.reachable(placed[0][1], " ", try_place)):
-		#	return False
-
-		visited = [ [False] * self.board_size for row in range(self.board_size) ]
-		neighbors = self.find_neighbors(placed[0][1])
-		q = Queue.Queue()
-		for n in neighbors:
-			if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
-				q.put(n)
-
-		while (q.empty() != True):
-			check_point = q.get()
-			try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-			check_removed.append([try_place[check_point[0]][check_point[1]], check_point])
-			n_neighbors = self.find_neighbors(check_point)
-			for n in n_neighbors:
-				if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
-					visited[check_point[0]][check_point[1]] = True
-					q.put(n)
-
-		# Check that all things that things that shouldn't be removed weren't removed
-		if (removed != check_removed):
-			return False
-
-		# If still no liberties present after removal of dead, then invalid move 
-		if (not self.reachable(placed[0][1], " ", try_place)):
-			return False
-
-		# See if there were other things that were removed for fun 
-		test_board = self.place(placed[0][0], placed[0][1], prev_board)
-		for s in removed:
-			if (self.reachable(s[1], " ", test_board)):
+		if (len(placed) == 0):
+			if (len(removed) != 0):
 				return False
+			if (prev_board != curr_board):
+				return False
+
+		if (len(placed) == 1):		
+			# Check if placing the play was valid
+			try_place = self.place(placed[0][0], placed[0][1], prev_board)
+			if (try_place == "This seat is taken!"):
+				return False
+			else:
+				visited = [ [False] * self.board_size for row in range(self.board_size) ]
+				neighbors = self.find_neighbors(placed[0][1])
+				q = Queue.Queue()
+				for n in neighbors:
+					if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
+						q.put(n)
+
+				while (q.empty() != True):
+					check_point = q.get()
+					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+					check_removed.append([try_place[check_point[0]][check_point[1]], check_point])
+					n_neighbors = self.find_neighbors(check_point)
+					for n in n_neighbors:
+						if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
+							visited[check_point[0]][check_point[1]] = True
+							q.put(n)
+
+				# Check that all things that things that shouldn't be removed weren't removed
+				if (removed != check_removed):
+					return False
+
+				# If still no liberties present after removal of dead, then invalid move 
+				if (not self.reachable(placed[0][1], " ", try_place)):
+					return False
 
 		return True
 
@@ -314,7 +307,7 @@ class GoBoardComponent():
 
 		if((b1_black - b2_black) == 1):
 			order.append("W")
-		else:
+		elif ((b1_white - b2_white) == 1):
 			order.append("B")						
 
 		return order
