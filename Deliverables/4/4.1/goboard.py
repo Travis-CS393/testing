@@ -316,12 +316,14 @@ class GoBoardComponent():
 		b1_black = len(self.get_points("B", boards_arr[1]))
 		b1_white = len(self.get_points("W", boards_arr[1]))
 
-		if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
+		if ((len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)) and (len(self.get_points(" ", boards[1])) != (self.board_size * self.boards_size))):
 			return order
 		elif((b1_black - b2_black) == 1):
 			order.append("W")
+		elif((b1_white - b1_white) == 1):
+			order.append("B")
 		else:
-			order.append("B")						
+			order.append(order[1])						
 
 		return order
 

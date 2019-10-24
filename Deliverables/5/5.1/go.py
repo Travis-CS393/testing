@@ -142,8 +142,12 @@ class GoBoard():
 
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
-			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
-				return False
+			if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
+				if ((player_order[0] != player_order[2]) or (player_order[0] == player_order[1]) or (player_order[1] == player_order[2])):
+					return False
+			else:
+				if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
+					return False
 
 			# Check Board history contains only valid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
@@ -409,7 +413,9 @@ class GoBoard():
 		b2_black = len(self.get_points("B", boards_arr[2]))
 
 		# If oldest move has less black, then black moved, otherwise white
-		if((b1_black - b2_black) == 1):
+		if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
+			return order
+		elif((b1_black - b2_black) == 1):
 			order.append("W")
 		else:
 			order.append("B")
