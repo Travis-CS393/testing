@@ -117,26 +117,33 @@ class GoBoardComponent():
 		if (len(boards_arr) == 1):
 			# Black must go first
 			if (stone != "B"):
+				print(1)
 				return False
 
 			# Board should contain no stones
 			if (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size)):
+				print(2)
 				return False
 		
 
 		# Board history has len 2, first is empty board, black moved once, it's white's turn 
 		if (len(boards_arr) == 2):
 			if (len(self.get_points(" ", boards_arr[1])) != (self.board_size * self.board_size)):
+				print(3)
 				return False
 			if ((len(self.get_points("B", boards_arr[0])) > 1) or (len(self.get_points("W", boards_arr[0])) != 0)):
+				print(4)
 				return False
 			if (stone != "W"):
+				print(5)
 				return False
 			try_place = self.place(stone, point, boards_arr[0])
 			if (try_place == "This seat is taken!"):
+				print(6)
 				return False
 			else:			
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
+					print(7)
 					return False
 
 		
@@ -146,32 +153,39 @@ class GoBoardComponent():
 
 			# Check Ko rule, cannot repeat immediate position on play w/out pass
 			if (boards_arr[0] == boards_arr[2]):
+				print(8)
 				return False
 
 			# Game Over you cannot make a play because players have passed consecutively already
 			if ((boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
+				print(9)
 				return False
 
 			if ((boards_arr[1] == boards_arr[2]) and (len (self.get_points(" ", boards_arr[1])) == (self.board_size * self.board_size)) and (len (self.get_points(" ", boards_arr[2])) == (self.board_size * self. board_size)) and (len (self.get_points("W", boards_arr[0])) != 1)):
+				print(10)
 				return False
 
 			# Board history contains dead stones
 			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
+				print(11)
 				return False
 
 			# Board history contains other invalid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
+				print(12)
 				return False
 
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
 			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
+				print(13)
 				return False
 
 
 			# See if the requested play is valid 
 			try_place = self.place(stone, point, boards_arr[0])
 			if (try_place == "This seat is taken!"):
+				print(14)
 				return False
 			elif (not self.reachable(point, " ", try_place)):
 				visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -190,15 +204,19 @@ class GoBoardComponent():
 							visited[check_point[0]][check_point[1]] = True
 							q.put(n)
 
-				if (not self.reachable(point, " ", try_place)):				
+				if (not self.reachable(point, " ", try_place)):
+					print(15)			
 					return False
 				if (not self.get_move_validity(boards_arr[0],try_place)):
+					print(16)
 					return False
 			else:
 				if (not self.get_move_validity(boards_arr[0], try_place)):
+					print(17)
 					return False
 
 			if (boards_arr[1] == try_place):
+				print(18)
 				return False
 
 
@@ -221,19 +239,24 @@ class GoBoardComponent():
 						removed.append([curr_board[row][col], (row, col)])	
 					# Unexplained changes in board state
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
+						print(19)
 						return False
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == "B")):
+						print(20)
 						return False
 
 		# Can only add one stone every turn or pass
 		if (len(placed) > 1):
+			print(21)
 			return False
 
 		# Move was a pass, boards should be identical 
 		if (len(placed) == 0):
 			if (len(removed) != 0):
+				print(22)
 				return False
 			if (prev_board != curr_board):
+				print(23)
 				return False
 
 		# Check if place on board has liberties, and for removed dead stones
@@ -258,11 +281,13 @@ class GoBoardComponent():
 						visited[check_point[0]][check_point[1]] = True
 						q.put(n)
 
-			if (not self.reachable(placed[0][1], " ", try_place)):				
+			if (not self.reachable(placed[0][1], " ", try_place)):
+				print(24)				
 				return False
 
 			# Did not remove all or only the ones that are dead after play
 			if (removed.sort() != dead_removed.sort()):
+				print(25)
 				return False
 
 
@@ -272,6 +297,7 @@ class GoBoardComponent():
 		for element in removed_arr:
 			if (element == stone_point):
 				return True
+		print(26)
 		return False
 
 	def get_player_order(self, boards_arr, curr_player):
@@ -327,8 +353,10 @@ class GoBoardComponent():
 		for row in range(self.board_size):
 			for col in range(self.board_size):
 				if (board[row][col] == "B" and (not self.reachable((row, col), " ", board))):
+					print(27)
 					return False
 				elif (board[row][col] == "W" and (not self.reachable((row, col), " ", board))):
+					print(28)
 					return False
 
 		return True 
