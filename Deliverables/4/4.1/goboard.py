@@ -163,11 +163,13 @@ class GoBoardComponent():
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
+			"""
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
 			if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
 				print(13)
 				return False
+			"""
 
 
 			# See if the requested play is valid 
@@ -260,12 +262,10 @@ class GoBoardComponent():
 						q.put(n)
 
 			if (not self.reachable(placed[0][1], " ", try_place)):
-				print(24)				
 				return False
 
 			# Did not remove all or only the ones that are dead after play
 			if (removed.sort() != dead_removed.sort()):
-				print(25)
 				return False
 
 
