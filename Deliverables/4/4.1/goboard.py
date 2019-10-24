@@ -137,7 +137,6 @@ class GoBoardComponent():
 				return False
 			else:			
 				if ((not self.get_move_validity(boards_arr[0], try_place))):
-					print(7)
 					return False
 
 		
@@ -162,7 +161,6 @@ class GoBoardComponent():
 
 			# Board history contains other invalid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
-				print(12)
 				return False
 
 			# Check that players are alternating plays between "B" and "W"
@@ -196,11 +194,9 @@ class GoBoardComponent():
 				if (not self.reachable(point, " ", try_place)):
 					return False
 				if (not self.get_move_validity(boards_arr[0],try_place)):
-					print(16)
 					return False
 			else:
 				if (not self.get_move_validity(boards_arr[0], try_place)):
-					print(17)
 					return False
 
 			if (boards_arr[1] == try_place):
