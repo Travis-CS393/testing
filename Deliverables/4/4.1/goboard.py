@@ -208,7 +208,7 @@ class GoBoardComponent():
 	def get_move_validity(self, prev_board, curr_board):
 		placed = []
 		removed = []
-		check_removed = []
+		dead_removed = []
 
 		for row in range(self.board_size):
 			for col in range(self.board_size):
