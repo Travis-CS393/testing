@@ -163,16 +163,11 @@ class GoBoardComponent():
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
-			"""
+		
 			# Check that players are alternating plays between "B" and "W"
 			player_order = self.get_player_order(boards_arr, stone)
-			if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
-				if (player_order[0] != player_order[2]):
-					return False
-			else:
-				if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
-					return False
-			"""
+			if (player_order[0] != player_order[2]):
+				return False
 
 
 			# See if the requested play is valid 
@@ -200,12 +195,15 @@ class GoBoardComponent():
 					return False
 				if (not self.get_move_validity(boards_arr[0],try_place)):
 					return False
+				if (boards_arr[1] == try_place):
+				return False
 			else:
 				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
-
-			if (boards_arr[1] == try_place):
+				if (boards_arr[1] == try_place):
 				return False
+
+			
 
 
 		return True
@@ -285,19 +283,6 @@ class GoBoardComponent():
 		last_move = curr_player
 		
 		order = []
-		order.append(last_move)
-
-		if (boards_arr[0] == boards_arr[1]):
-			order.append(self.get_other_player(last_move))
-			last_move = self.get_other_player(last_move)
-		else:
-			for row in range(self.board_size):
-				for col in range(self.board_size):
-					if (boards_arr[1][row][col] != boards_arr[0][row][col]):
-						if (boards_arr[1][row][col] == " "):
-							order.append(boards_arr[0][row][col])
-							last_move = boards_arr[0][row][col]
-
 
 		if (boards_arr[1] == boards_arr[2]):
 			order.append(self.get_other_player(last_move))
@@ -310,21 +295,18 @@ class GoBoardComponent():
 							order.append(boards_arr[1][row][col])
 							last_move = boards_arr[1][row][col]
 
-		b2_black = len(self.get_points("B", boards_arr[2]))
-		b2_white = len(self.get_points("W", boards_arr[2]))
-
-		b1_black = len(self.get_points("B", boards_arr[1]))
-		b1_white = len(self.get_points("W", boards_arr[1]))
-
-		if ((len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)) and (len(self.get_points(" ", boards[1])) != (self.board_size * self.boards_size))):
-			return order
-		elif((b1_black - b2_black) == 1):
-			order.append("W")
-		elif((b1_white - b1_white) == 1):
-			order.append("B")
+		if (boards_arr[0] == boards_arr[1]):
+			order.append(self.get_other_player(last_move))
+			last_move = self.get_other_player(last_move)
 		else:
-			order.append(order[1])						
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					if (boards_arr[1][row][col] != boards_arr[0][row][col]):
+						if (boards_arr[1][row][col] == " "):
+							order.append(boards_arr[0][row][col])
+							last_move = boards_arr[0][row][col]		
 
+		order.append(last_move)
 		return order
 
 	def get_other_player(self, curr_player):
