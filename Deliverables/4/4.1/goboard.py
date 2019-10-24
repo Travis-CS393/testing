@@ -285,7 +285,7 @@ class GoBoardComponent():
 
 			for row in range(self.board_size):
 				for col in range(self.board_size):
-					if ((board_size[1][row][col] == " ") and (boards_arr[0][row][col] != " ")):
+					if ((boards_arr[1][row][col] == " ") and (boards_arr[0][row][col] != " ")):
 						order.append(boards_arr[0][row][col])
 			order.append(curr_player)
 
