@@ -201,7 +201,7 @@ class GoBoardComponent():
 				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
 
-			if (try_place == temp_board):
+			if (try_place == temp_board[1]):
 				return False
 
 		return True
