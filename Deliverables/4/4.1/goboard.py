@@ -1,4 +1,5 @@
 import Queue
+import copy 
 
 class GoBoardComponent():
 	def __init__(self, board_size=None):
@@ -165,17 +166,15 @@ class GoBoardComponent():
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
 				return False
 
-			temp_board = boards_arr
+			temp_board = copy.deepcopy(boards_arr)
 
 			# Board history contains other invalid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 			
-			#print(temp_board)
 
 			# See if the requested play is valid 
 			try_place = self.place(stone, point, boards_arr[0])				
-			#print(temp_board)
 
 			if (try_place == "This seat is taken!"):
 				return False
@@ -198,13 +197,12 @@ class GoBoardComponent():
 				if (not self.reachable(point, " ", try_place)):				
 					return False
 
-				if (boards_arr[0] == try_place):
-					return False
 			else:
 				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
-				if (boards_arr[0] == try_place):
-					return False
+
+			if (try_place == temp_board):
+				return False
 
 		return True
 
