@@ -209,9 +209,9 @@ class GoBoard():
 					if (prev_board[row][col] == " "):
 						placed.append([curr_board[row][col], (row, col)])
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == " ")):
-						removed.append([curr_board[row][col], (row, col)])
+						removed.append([prev_board[row][col], (row, col)])
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
-						removed.append([curr_board[row][col], (row, col)])
+						removed.append([prev_board[row][col], (row, col)])
 					# Unexplained changes in board state
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
 						return False
