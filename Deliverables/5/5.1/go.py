@@ -1,8 +1,92 @@
 import Queue
 import copy
 
+class GoPlayerMin():
+	def __init__(self, player_name=None, player_stone=None, board_size=None, go_board=None):
+		"""
+		This class implements a Go Player component that will make
+		a legal move as a given stone given the board history. 
+
+		It will internally store the player name, player stone, and have 
+		operations to check that legal moves are valid. In the case that it is valid
+		the player will play at the legal smallest col index primarily and 
+		legal smallest row index primarily. If there are no legal moves, it will
+		pass. If the history is invalid, it will reply with "This history makes no sense!". 
+
+		If there are two consecutive passes, the player is given the score and the winner
+		of the game. 
+		"""
+		self.player_name = "no name" if None else player_name
+		self.player_stone = "B" if None else player_stone
+		self.board_size = 19 if None else board_size
+		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
+
+	################################
+	# GAMEPLAY RESPONSES
+	################################
+
+	# Returns appropriate responses given valid input 
+	def get_response(self, input):
+		if ((len(input) == 1) and (input == ["register"])):
+			return self.register()
+		elif ((len(input) == 2) and (input[0] == "receive-stones") and ((input[1] == "B") or (input[1] == "W"))):
+			self.receive(input[1])
+		elif ((len(input) == 2) and (input[0] == "make-a-move") and ((len(input[1]) == 1) or (len(input[1]) == 2) or (len(input[1]) == 3))):
+			return self.make_move(input[1])
+		else:
+			raise Exception("Invalid input has no appropriate response")
+
+	# Internally stores player name, default "no name"
+	def register(self):
+		return self.player_name		
+
+	# Initiates game, assigns player a stone and clears previous game board
+	def receive_stone(self, stone):
+		self.player_stone = stone
+		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
+
+	# Finds first valid move in a min col, row coordinate, otherwise "pass"
+	def find_move(self, stone, board):
+		board_checker = GoBoard()
+		for row in range(self.board_size):
+			for col in range(self.board_size):
+				# Searches col first and then row 
+				if (board[col][row] == " "):
+					try_place = board_checker.place(stone, (col, row), board)
+					if (try_place != "This seat is taken!"):
+						visited = [ [False] * self.board_size for row in range(self.board_size) ]
+						neighbors = board_checker.find_neighbors((col, row))
+						q = Queue.Queue()
+						for n in neighbors:
+							if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
+								q.put(n)
+
+						while (q.empty() != True):
+							check_point = q.get()					
+							try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+							n_neighbors = board_checker.find_neighbors(check_point)
+							for n in n_neighbors:
+								if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
+									visited[check_point[0]][check_point[1]] = True
+									q.put(n)
+
+						# If liberties present then valid move 
+						if (board_checker.reachable((col, row), " ", try_place)):
+							return board_checker.idx_to_point(row, col)
+		return "pass"
+
+	# Update go_board state if board history is valid 
+	def make_move(self, boards_arr):
+		board_checker = GoBoard()
+		if (board_checker.validate_history(self.player_stone, boards_arr)):
+			self.go_board = boards_arr[0]
+			return self.find_move(self.player_stone, self.go_board)
+		else:
+			return "This history makes no sense!"
+
+
 class GoBoard():
-	def __init__(self, board_size=None):
+	def __init__(self, board_size=None, go_board=None):
 		"""
 		This class implements a Go board component that returns a response
 		based on a statement executed on a given 19 x 19 Go board. The 
@@ -26,6 +110,8 @@ class GoBoard():
 						sorted in increasing lexicographic order. 
 		"""
 		self.board_size = 19 if board_size is None else board_size
+		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
+
 
 	###############################
 	# BOARD RESPONSES 
@@ -92,7 +178,57 @@ class GoBoard():
 	10. The player with the higher score wins, otherwise drawn game. 
 	"""
 
-	# Returns the validity of a Move gen a [Stone, [Point, Boards]] valid input
+	# Validates history only, independent of requested move 
+	def validate_history(self, stone, boards_arr):
+
+		# Board history len 1 means just started, board is empty, black to move
+		if (len(boards_arr) == 1):
+			if (stone != "B"):
+				return False
+			if (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size)):
+				return False
+
+		# Board history len 2, first is empty board, black moved once, it's white's turn 
+		elif (len(boards_arr) == 2):
+			if (stone != "W"):
+				return False
+			if ((len(self.get_points("B", boards_arr[0])) > 1) or (len(self.get_points("W", boards_arr[0])) != 0)):
+				return False
+			if (len(self.get_points(" ", boards_arr[1])) != (self.board_size * self.board_size)):
+				return False
+
+		# Board history len 3
+		elif (len(boards_arr) == 3):
+
+			# Check board history for Ko rule
+			if (boards_arr[0] == boards_arr[2]):
+				return False
+
+			# Check game over because 2 consecutive passes
+			if ((boards_arr[0] == boards_arr[1]) and (boards_arr[0] == boards_arr[2])):
+				return False
+			if ((boards_arr[1] == boards_arr[2]) and (len (self.get_points(" ", boards_arr[1])) == (self.board_size * self.board_size)) and (len (self.get_points(" ", boards_arr[2])) == (self.board_size * self. board_size)) and (len (self.get_points("W", boards_arr[0])) != 1)):
+				return False
+
+			# Check Board history contains no dead stones
+			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
+				return False
+
+			# Check that players are alternating plays between "B" and "W"
+			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
+				return False
+
+			# Check Board history contains only valid moves
+			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
+				return False
+
+		else:
+			raise Exception("Board history length should be 1 to 3.")		
+
+		return True
+
+
+	# Returns the validity of a Move given a [Stone, [Point, Boards]] valid input w/ board history 
 	def get_validity(self, stone, point, boards_arr):
 
 		# Board history len 1 means just started, board is empty, black to move
@@ -209,9 +345,9 @@ class GoBoard():
 					if (prev_board[row][col] == " "):
 						placed.append([curr_board[row][col], (row, col)])
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == " ")):
-						removed.append([curr_board[row][col], (row, col)])
+						removed.append([prev_board[row][col], (row, col)])
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
-						removed.append([curr_board[row][col], (row, col)])
+						removed.append([prev_board[row][col], (row, col)])
 					# Unexplained changes in board state
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
 						return False
