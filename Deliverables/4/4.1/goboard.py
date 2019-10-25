@@ -218,9 +218,9 @@ class GoBoardComponent():
 					if (prev_board[row][col] == " "):
 						placed.append([curr_board[row][col], (row,col)])
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == " ")):
-						removed.append([curr_board[row][col], (row, col)])
+						removed.append([prev_board[row][col], (row, col)])
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == " ")):
-						removed.append([curr_board[row][col], (row, col)])	
+						removed.append([prev_board[row][col], (row, col)])	
 					# Unexplained changes in board state
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
 						return False
@@ -240,20 +240,24 @@ class GoBoardComponent():
 			if (try_place == "This seat is taken!"):
 				return False
 			else:
+				dup_try_place = copy.deepcopy(try_place)
+				stone = placed[0][0]
+
 				visited = [ [False] * self.board_size for row in range(self.board_size) ]
 				neighbors = self.find_neighbors(placed[0][1])
 				q = Queue.Queue()
 				for n in neighbors:
-					if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
+					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
 						q.put(n)
 
 				while (q.empty() != True):
-					check_point = q.get()
+					check_point = q.get()					
+					check_removed.append([dup_try_place[check_point[0]][check_point[1]], check_point])					
 					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-					check_removed.append([try_place[check_point[0]][check_point[1]], check_point])
 					n_neighbors = self.find_neighbors(check_point)
+					#print(n_neighbors)
 					for n in n_neighbors:
-						if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
+						if ((try_place[n[0]][n[1]] == self.get_other_player(stone)) and (not visited[check_point[0]][check_point[1]])):
 							visited[check_point[0]][check_point[1]] = True
 							q.put(n)
 
@@ -261,6 +265,8 @@ class GoBoardComponent():
 				removed_sorted = sorted(removed)
 				check_removed_sorted = sorted(check_removed)
 				if (removed_sorted != check_removed_sorted):
+					#print(removed_sorted)
+					#print(check_removed)
 					return False
 
 				# If still no liberties present after removal of dead, then invalid move 
