@@ -159,7 +159,7 @@ class GoBoardComponent():
 			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
 				return False
 			
-			print(boards_arr)
+			#print(boards_arr)
 
 			# Check that players are alternating plays between "B" and "W"
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
@@ -277,41 +277,41 @@ class GoBoardComponent():
 		return False
 
 	def get_player_order(self, board0, board1, board2, curr_player):
-		print(board0)
-		print(board1)
-		print(board2)
+		#print(board0)
+		#print(board1)
+		#print(board2)
 		order = []
 		if (board1 == board2):
 			order.append(curr_player)
-			print("fourth")
-			print(curr_player)
+			#print("fourth")
+			#print(curr_player)
 		else:
 			for row in range(self.board_size):
 				for col in range(self.board_size):
 					if (board2[row][col] != board1[row][col]):
 						if (board2[row][col] == " "):
 							order.append(board1[row][col])
-							print("fifth")
-							print(board1[row][col])
+							#print("fifth")
+							#print(board1[row][col])
 
 
 		if (self.get_points(" ", board0) == self.get_points(" ", board1)):
 			order.append(self.get_other_player(curr_player))
-			print("sixth")
-			print(self.get_other_player(curr_player))
+			#print("sixth")
+			#print(self.get_other_player(curr_player))
 		else:
 			for row in range(self.board_size):
 				for col in range(self.board_size):
 					if (board1[row][col] != board0[row][col]):
 						if (board1[row][col] == " "):
 							order.append(board0[row][col])
-							print("seventh")
-							print(board0[row][col])
+							#print("seventh")
+							#print(board0[row][col])
 		order.append(curr_player)
-		print("eigth")
-		print(curr_player)
+		#print("eigth")
+		#print(curr_player)
 
-		print(order)
+		#print(order)
 		if (len(order) == 3):
 			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
 				return False
