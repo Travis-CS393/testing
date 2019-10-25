@@ -1,7 +1,8 @@
 import Queue
+import copy
 
 class GoBoard():
-	def __init__(self, board_size=None, go_board=None):
+	def __init__(self, board_size=None):
 		"""
 		This class implements a Go board component that returns a response
 		based on a statement executed on a given 19 x 19 Go board. The 
@@ -25,7 +26,6 @@ class GoBoard():
 						sorted in increasing lexicographic order. 
 		"""
 		self.board_size = 19 if board_size is None else board_size
-		self.go_board = [ " " * 19 for row in range(self.board_size) ]
 
 	###############################
 	# BOARD RESPONSES 
@@ -140,25 +140,23 @@ class GoBoard():
 			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
 				return False
 
+			# Check that players are alternating plays between "B" and "W"
+			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
+				return False
+
+			temp_board = copy.deepcopy(boards_arr)
+
 			# Check Board history contains only valid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
 
-
-			# Check that players are alternating plays between "B" and "W"
-			player_order = self.get_player_order(boards_arr, stone)
-			if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
-				if ((player_order[0] != player_order[2]) or (player_order[0] == player_order[1]) or (player_order[1] == player_order[2])):
-					return False
-			else:
-				if ((player_order[0] != player_order[2]) or (player_order[1] != player_order[3])):
-					return False
 
 			#############################
 			# Check move against history
 			#############################
 
 			try_place = self.place(stone, point, boards_arr[0])
+
 			if (try_place == "This seat is taken!"):
 				return False
 			elif (not self.reachable(point, " ", try_place)):
@@ -189,7 +187,7 @@ class GoBoard():
 					return False
 
 			# Check that requested move doesn't violate Ko rule 
-			if (boards_arr[1] == try_place):
+			if (temp_board[1] == try_place):
 				return False
 
 		else:
@@ -229,32 +227,38 @@ class GoBoard():
 
 		# Check if place on board has liberties, and for removed dead stones
 		if (len(placed) == 1):
-			try_place = self.place(placed[0][0], placed[0][1], prev_board)
+			if (try_place == "This seat is taken!"):
+				return False
+			else:
+				dup_try_place = copy.deepcopy(try_place)
+				stone = placed[0][0]
 
-			visited = [ [False] * self.board_size for row in range(self.board_size) ]
-			neighbors = self.find_neighbors(placed[0][1])
-			
-			q = Queue.Queue()
-			for n in neighbors:
-				if ((try_place[n[0]][n[1]] != placed[0][0]) and (not self.reachable(n, " ", try_place))):
-					q.put(n)
-
-			while (q.empty() != True):
-				check_point = q.get()
-				try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-				dead_removed.append([try_place[check_point[0]][check_point[1]], check_point])
-				n_neighbors = self.find_neighbors(check_point)
-				for n in n_neighbors:
-					if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
-						visited[check_point[0]][check_point[1]] = True
+				visited = [ [False] * self.board_size for row in range(self.board_size) ]
+				neighbors = self.find_neighbors(placed[0][1])
+				q = Queue.Queue()
+				for n in neighbors:
+					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
 						q.put(n)
 
-			if (not self.reachable(point, " ", try_place)):				
-				return False
+				while (q.empty() != True):
+					check_point = q.get()					
+					dead_removed.append([dup_try_place[check_point[0]][check_point[1]], check_point])					
+					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+					n_neighbors = self.find_neighbors(check_point)
+					for n in n_neighbors:
+						if ((try_place[n[0]][n[1]] == self.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
+							visited[check_point[0]][check_point[1]] = True
+							q.put(n)
 
-			# Did not remove all or only the ones that are dead after play
-			if (removed.sort() != dead_removed.sort()):
-				return False
+				# Check that all things that things that shouldn't be removed weren't removed
+				removed_sorted = sorted(removed)
+				dead_removed_sorted = sorted(dead_removed)
+				if (removed_sorted != dead_removed_sorted):
+					return False
+
+				# If still no liberties present after removal of dead, then invalid move 
+				if (not self.reachable(placed[0][1], " ", try_place)):
+					return False
 
 		# Can only add one stone every turn or pass
 		if (len(placed) > 1):
@@ -378,51 +382,34 @@ class GoBoard():
 		return "W" if (curr_player == "B") else "B"
 
 	# Gets player move order
-	def get_player_order(self, boards_arr, curr_player):
-		# Assumes that other invalid boards are caught before calling this check
-
-		last_move = curr_player
-
+	def get_player_order(self, board0, board1, board2, curr_player):
 		order = []
-		order.append(last_move)
 
-		# Check if last move was a pass 
-		if (boards_arr[0] == boards_arr[1]):
-			order.append(self.get_opponent(last_move))
-		else:
-			# Determine which stone was last played
-			for row in range(self.board_size):
-				for col in range(self.board_size):
-					if (boards_arr[1][row][col] != boards_arr[0][row[col]]):
-						if (boards_arr[1][row][col] == " "):
-							order.append(boards_arr[0][row][col])
-							last_move = boards_arr[0][row][col]
-
-		# Repeat for rest of history
-		if (boards_arr[1] == boards_arr[2]):
-			order.append(self.get_opponent(last_move))
+		if (board1 == board2):
+			order.append(curr_player)
 		else:
 			for row in range(self.board_size):
 				for col in range(self.board_size):
-					if (boards_arr[2][row][col] != boards_arr[1][row[col]]):
-						if (boards_arr[2][row][col] == " "):
-							order.append(boards_arr[1][row][col])
-							last_move = boards_arr[1][row][col]
+					if (board2[row][col] != board1[row][col]):
+						if (board2[row][col] == " "):
+							order.append(board1[row][col])
 
-		# Determine oldest move player
-		b1_black = len(self.get_points("B", boards_arr[1]))
-		b2_black = len(self.get_points("B", boards_arr[2]))
 
-		# If oldest move has less black, then black moved, otherwise white
-		if (len(self.get_points(" ", boards_arr[2])) == (self.board_size * self.board_size)):
-			return order
-		elif((b1_black - b2_black) == 1):
-			order.append("W")
+		if (self.get_points(" ", board0) == self.get_points(" ", board1)):
+			order.append(self.get_opponent(curr_player))
 		else:
-			order.append("B")
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					if (board1[row][col] != board0[row][col]):
+						if (board1[row][col] == " "):
+							order.append(board0[row][col])
+		order.append(curr_player)
 
-		return order 
+		if (len(order) == 3):
+			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
+				return False
 
+		return True 
 
 	# Checks that all stones w/out liberties removed from board
 	def check_dead_removed(self, board):

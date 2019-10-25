@@ -160,8 +160,6 @@ class GoBoardComponent():
 			if ((not self.check_dead_removed(boards_arr[0])) or (not self.check_dead_removed(boards_arr[1])) or (not self.check_dead_removed(boards_arr[2]))):
 				return False
 			
-			#print(boards_arr)
-
 			# Check that players are alternating plays between "B" and "W"
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
 				return False
@@ -195,6 +193,9 @@ class GoBoardComponent():
 							visited[check_point[0]][check_point[1]] = True
 							q.put(n)
 				if (not self.reachable(point, " ", try_place)):				
+					return False
+
+				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
 
 			else:
@@ -255,7 +256,6 @@ class GoBoardComponent():
 					check_removed.append([dup_try_place[check_point[0]][check_point[1]], check_point])					
 					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
 					n_neighbors = self.find_neighbors(check_point)
-					#print(n_neighbors)
 					for n in n_neighbors:
 						if ((try_place[n[0]][n[1]] == self.get_other_player(stone)) and (not visited[check_point[0]][check_point[1]])):
 							visited[check_point[0]][check_point[1]] = True
@@ -265,8 +265,6 @@ class GoBoardComponent():
 				removed_sorted = sorted(removed)
 				check_removed_sorted = sorted(check_removed)
 				if (removed_sorted != check_removed_sorted):
-					#print(removed_sorted)
-					#print(check_removed)
 					return False
 
 				# If still no liberties present after removal of dead, then invalid move 
@@ -280,48 +278,28 @@ class GoBoardComponent():
 
 		return True
 
-	def check_removed(self, removed_arr, stone_point):
-		for element in removed_arr:
-			if (element == stone_point):
-				return True
-		return False
-
 	def get_player_order(self, board0, board1, board2, curr_player):
-		#print(board0)
-		#print(board1)
-		#print(board2)
 		order = []
 		if (board1 == board2):
 			order.append(curr_player)
-			#print("fourth")
-			#print(curr_player)
 		else:
 			for row in range(self.board_size):
 				for col in range(self.board_size):
 					if (board2[row][col] != board1[row][col]):
 						if (board2[row][col] == " "):
 							order.append(board1[row][col])
-							#print("fifth")
-							#print(board1[row][col])
-
 
 		if (self.get_points(" ", board0) == self.get_points(" ", board1)):
 			order.append(self.get_other_player(curr_player))
-			#print("sixth")
-			#print(self.get_other_player(curr_player))
 		else:
 			for row in range(self.board_size):
 				for col in range(self.board_size):
 					if (board1[row][col] != board0[row][col]):
 						if (board1[row][col] == " "):
 							order.append(board0[row][col])
-							#print("seventh")
-							#print(board0[row][col])
+	
 		order.append(curr_player)
-		#print("eigth")
-		#print(curr_player)
 
-		#print(order)
 		if (len(order) == 3):
 			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
 				return False
