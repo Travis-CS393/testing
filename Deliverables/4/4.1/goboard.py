@@ -164,11 +164,6 @@ class GoBoardComponent():
 			# Check that players are alternating plays between "B" and "W"
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
 				return False
-
-			# Board history contains other invalid moves
-			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
-				return False
-
 			
 
 			# See if the requested play is valid 
@@ -198,8 +193,15 @@ class GoBoardComponent():
 				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
 
+			#print(try_place)
+			#print(boards_arr[1])
 			if (boards_arr[1] == try_place):
 				return False
+
+			# Board history contains other invalid moves
+			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
+				return False
+
 
 
 		return True
