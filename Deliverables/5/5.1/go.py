@@ -37,7 +37,7 @@ class GoBoard():
 			return self.get_score(input)
 		elif ((len(input) == 2) and (input[1] == "pass")):
 			return self.pass_turn(input[0])
-		elif (len(input == 2)):
+		elif (len(input) == 2):
 			return self.get_validity(input[0], self.point_to_idx(input[1][0]), input[1][1])
 		else:
 			raise Exception("Invalid input has no appropriate response")
@@ -227,6 +227,7 @@ class GoBoard():
 
 		# Check if place on board has liberties, and for removed dead stones
 		if (len(placed) == 1):
+			try_place = self.place(placed[0][0], placed[0][1], prev_board)
 			if (try_place == "This seat is taken!"):
 				return False
 			else:
