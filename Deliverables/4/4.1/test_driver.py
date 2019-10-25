@@ -1,4 +1,4 @@
-from goboard import GoBoardComponent
+from goboard import GoBoard
 import json
 import sys
 
@@ -89,7 +89,7 @@ def check_board(board, board_size):
 def test_driver():
 	inputs = read_input()
 	outputs = []
-	goboard = GoBoardComponent()
+	goboard = GoBoard()
 
 	for element in inputs:
 		if(check_input(element, 19)):
