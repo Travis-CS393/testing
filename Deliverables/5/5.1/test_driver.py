@@ -1,4 +1,4 @@
-from go import GoBoard
+from go import GoBoard, GoPlayerMin
 import json
 import sys
 
