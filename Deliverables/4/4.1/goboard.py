@@ -227,6 +227,7 @@ class GoBoard():
 
 		# Check if place on board has liberties, and for removed dead stones
 		if (len(placed) == 1):
+			try_place = self.place(placed[0][0], placed[0][1], prev_board)
 			if (try_place == "This seat is taken!"):
 				return False
 			else:
