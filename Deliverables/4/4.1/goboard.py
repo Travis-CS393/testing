@@ -164,10 +164,19 @@ class GoBoardComponent():
 			# Check that players are alternating plays between "B" and "W"
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
 				return False
+
+			temp_board = boards_arr
+
+			# Board history contains other invalid moves
+			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
+				return False
 			
+			#print(temp_board)
 
 			# See if the requested play is valid 
-			try_place = self.place(stone, point, boards_arr[0])
+			try_place = self.place(stone, point, boards_arr[0])				
+			#print(temp_board)
+
 			if (try_place == "This seat is taken!"):
 				return False
 			elif (not self.reachable(point, " ", try_place)):
@@ -186,23 +195,16 @@ class GoBoardComponent():
 						if ((try_place[n[0]][n[1]] == try_place[check_point[0]][check_point[1]]) and (not visited[check_point[0]][check_point[1]])):
 							visited[check_point[0]][check_point[1]] = True
 							q.put(n)
-
 				if (not self.reachable(point, " ", try_place)):				
+					return False
+
+				if (boards_arr[0] == try_place):
 					return False
 			else:
 				if (not self.get_move_validity(boards_arr[0], try_place)):
 					return False
-
-			#print(try_place)
-			#print(boards_arr[1])
-			if (boards_arr[1] == try_place):
-				return False
-
-			# Board history contains other invalid moves
-			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
-				return False
-
-
+				if (boards_arr[0] == try_place):
+					return False
 
 		return True
 
