@@ -258,7 +258,9 @@ class GoBoardComponent():
 							q.put(n)
 
 				# Check that all things that things that shouldn't be removed weren't removed
-				if (removed.sort() != check_removed.sort()):
+				removed_sorted = sorted(removed)
+				check_removed_sorted = sorted(check_removed)
+				if (removed_sorted != check_removed_sorted):
 					return False
 
 				# If still no liberties present after removal of dead, then invalid move 
