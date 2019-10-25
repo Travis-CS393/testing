@@ -1,4 +1,4 @@
-import Queue
+import queue as Queue
 import copy 
 
 class GoBoardComponent():
