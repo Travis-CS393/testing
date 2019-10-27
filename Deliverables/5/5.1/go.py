@@ -19,7 +19,7 @@ class GoPlayerMin():
 		self.player_name = "no name" if None else player_name
 		self.player_stone = "B" if None else player_stone
 		self.board_size = 19 if None else board_size
-		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
+		self.go_board = [ " " * 19 for row in range(19)]
 
 	################################
 	# GAMEPLAY RESPONSES
