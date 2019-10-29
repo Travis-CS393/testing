@@ -30,7 +30,7 @@ class GoPlayerMin():
 		if ((len(input) == 1) and (input == ["register"])):
 			return self.register()
 		elif ((len(input) == 2) and (input[0] == "receive-stones") and ((input[1] == "B") or (input[1] == "W"))):
-			self.receive(input[1])
+			self.receive_stone(input[1])
 		elif ((len(input) == 2) and (input[0] == "make-a-move") and ((len(input[1]) == 1) or (len(input[1]) == 2) or (len(input[1]) == 3))):
 			return self.make_move(input[1])
 		else:
