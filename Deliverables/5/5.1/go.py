@@ -375,22 +375,23 @@ class GoBoard():
 				neighbors = self.find_neighbors(placed[0][1])
 				q = Queue.Queue()
 				for n in neighbors:
-					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
+					if ((try_place[n[0]][n[1]] == self.get_opponent(stone)) and (not self.reachable(n, " ", try_place))):
+						visited[n[0]][n[1]] = True
 						q.put(n)
 
 				while (q.empty() != True):
-					check_point = q.get()					
-					dead_removed.append([dup_try_place[check_point[0]][check_point[1]], check_point])					
+					check_point = q.get()
+					dead_removed.append([dup_try_place[check_point[0]][check_point[1]], check_point])	
 					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
 					n_neighbors = self.find_neighbors(check_point)
 					for n in n_neighbors:
-						if ((try_place[n[0]][n[1]] == self.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
-							visited[check_point[0]][check_point[1]] = True
+						if ((try_place[n[0]][n[1]] == self.get_opponent(stone)) and (not visited[n[0]][n[1]])):
+							visited[n[0]][n[1]] = True
 							q.put(n)
-
 				# Check that all things that things that shouldn't be removed weren't removed
 				removed_sorted = sorted(removed)
 				dead_removed_sorted = sorted(dead_removed)
+
 				if (removed_sorted != dead_removed_sorted):
 					return False
 
