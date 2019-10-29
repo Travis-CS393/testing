@@ -2,7 +2,7 @@ import Queue
 import copy
 
 class GoPlayerMin():
-	def __init__(self, player_stone=None, go_board=None):
+	def __init__(self, player_name=None, player_stone=None, board_size=None, go_board=None):
 		"""
 		This class implements a Go Player component that will make
 		a legal move as a given stone given the board history. 
@@ -16,10 +16,10 @@ class GoPlayerMin():
 		If there are two consecutive passes, the player is given the score and the winner
 		of the game. 
 		"""
-		self.player_name = "no name"
-		self.player_stone = "B" if None else player_stone
-		self.board_size = 19 
-		self.go_board = [ " " * 19 for row in range(19)]
+		self.player_name = "no name" if player_name is None else player_name
+		self.player_stone = "B" if player_stone is None else player_stone
+		self.board_size = 19 if board_size is None else board_size
+		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
 
 	################################
 	# GAMEPLAY RESPONSES
@@ -59,6 +59,7 @@ class GoPlayerMin():
 						q = Queue.Queue()
 						for n in neighbors:
 							if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
+								visited[n[0]][n[1]] = True
 								q.put(n)
 
 						while (q.empty() != True):
