@@ -2,7 +2,7 @@ from go import GoBoard, GoPlayerMin
 import json
 import sys
 
-# comment for hopefully two
+# comment for hopefully five
 
 ##########################################
 # HELPER FUNCTIONS
