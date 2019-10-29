@@ -2,11 +2,13 @@ from go import GoBoard, GoPlayerMin
 import json
 import sys
 
+# comment for another run
+
 ##########################################
 # HELPER FUNCTIONS
 ##########################################
 
-# Reads and returns array of [Board, Statement] JSON array elements from STDIN 
+# Reads and returns array of [Board, Statement] JSON array elements from STDIN
 def read_input():
 	inputs = []
 	reading_frame = ""
@@ -31,7 +33,7 @@ def print_output(output):
 # TYPE ASSERTIONS PREDICATES
 ###########################################
 
-# Checks that input is one of the valid types of input 
+# Checks that input is one of the valid types of input
 # ["register"]
 # ["receive-stones", Stone]
 # ["make-a-move", Boards]
@@ -54,7 +56,7 @@ def check_stone(stone):
 def check_maybe_stone(maybe_stone):
 	return (check_stone(maybe_stone) or (maybe_stone == " "))
 
-# Board must be 19 x 19 represented by an array of 19 rows 
+# Board must be 19 x 19 represented by an array of 19 rows
 # where each row contains 19 elements of type MaybeStone
 def check_board(board, board_size):
 	check_all_stones = True
@@ -86,7 +88,3 @@ def test_driver():
 	print(print_output(outputs))
 
 test_driver()
-
-
-
-
