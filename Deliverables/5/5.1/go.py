@@ -1,4 +1,4 @@
-import Queue
+import queue as Queue
 import copy
 
 class GoPlayerMin():
@@ -81,6 +81,7 @@ class GoPlayerMin():
 		board_checker = GoBoard()
 		if (board_checker.validate_history(self.player_stone, boards_arr)):
 			move = self.find_move(self.player_stone, boards_arr[0])
+			print(move)
 			return move
 		else:
 			return "This history makes no sense!"

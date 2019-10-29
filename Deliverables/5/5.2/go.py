@@ -69,6 +69,7 @@ class GoPlayerCapture():
 						q = Queue.Queue()
 						for n in neighbors:
 							if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
+								visited[n[0]][n[1]] = True
 								q.put(n)
 
 						while (q.empty() != True):
@@ -76,8 +77,8 @@ class GoPlayerCapture():
 							try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
 							n_neighbors = board_checker.find_neighbors(check_point)
 							for n in n_neighbors:
-								if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
-									visited[check_point[0]][check_point[1]] = True
+								if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[n[0]][n[1]])):
+									visited[n[0]][n[1]] = True
 									q.put(n)
 
 						# If liberties present then valid move 
@@ -119,9 +120,9 @@ class GoPlayerCapture():
 			elif (board_checker.reachable(" ", check_point, board)):
 				neighbors = board_checker.find_neighbors(check_point)
 				for n in neighbors:
-				if ((n != self.player_stone) and (not visited[n[0]][n[1]])):
-					visited[n[0]][n[1]] = True
-					q.put(n)
+					if ((n != self.player_stone) and (not visited[n[0]][n[1]])):
+						visited[n[0]][n[1]] = True
+						q.put(n)
 
 		place_points = sorted(place_points)
 		return liberties, place_points[0]
