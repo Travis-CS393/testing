@@ -79,7 +79,8 @@ def test_driver():
 
 	for element in inputs:
 		if(check_input(element, 19)):
-			outputs.append(go_player.get_response(element))
+			if(go_player.get_response(element) != null):
+				outputs.append(go_player.get_response(element))
 		else:
 			raise Exception("Invalid Input.")
 

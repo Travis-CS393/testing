@@ -64,11 +64,12 @@ class GoPlayerMin():
 						while (q.empty() != True):
 							check_point = q.get()					
 							try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-							n_neighbors = board_checker.find_neighbors(check_point)
-							for n in n_neighbors:
-								if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
-									visited[check_point[0]][check_point[1]] = True
-									q.put(n)
+							if (try_place != "I am just a board! I cannot remove what is not there!"):
+								n_neighbors = board_checker.find_neighbors(check_point)
+								for n in n_neighbors:
+									if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
+										visited[check_point[0]][check_point[1]] = True
+										q.put(n)
 
 						# If liberties present then valid move 
 						if (board_checker.reachable((col, row), " ", try_place)):
