@@ -2,7 +2,7 @@ import Queue
 import copy
 
 class GoPlayerMin():
-	def __init__(self, player_name=None, player_stone=None, board_size=None, go_board=None):
+	def __init__(self, player_name=None, player_stone=None, go_board=None):
 		"""
 		This class implements a Go Player component that will make
 		a legal move as a given stone given the board history. 
@@ -18,7 +18,7 @@ class GoPlayerMin():
 		"""
 		self.player_name = "no name" if None else player_name
 		self.player_stone = "B" if None else player_stone
-		self.board_size = 19 if None else board_size
+		self.board_size = 19 
 		self.go_board = [ " " * 19 for row in range(19)]
 
 	################################
