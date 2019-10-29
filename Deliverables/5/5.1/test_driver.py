@@ -84,6 +84,8 @@ def test_driver():
 		else:
 			raise Exception("Invalid Input.")
 
+	outputs = list(filter(None, outputs))
+
 	print(print_output(outputs))
 
 test_driver()
