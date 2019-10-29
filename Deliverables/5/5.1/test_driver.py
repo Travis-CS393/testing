@@ -2,6 +2,8 @@ from go import GoBoard, GoPlayerMin
 import json
 import sys
 
+#  this is a comment
+
 ##########################################
 # HELPER FUNCTIONS
 ##########################################
