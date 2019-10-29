@@ -59,7 +59,7 @@ class GoPlayerMin():
 						q = Queue.Queue()
 						for n in neighbors:
 							if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
-								#visited[n[0]][n[1]] = True
+								visited[n[0]][n[1]] = True
 								q.put(n)
 
 						while (q.empty() != True):
