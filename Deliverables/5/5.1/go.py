@@ -53,28 +53,38 @@ class GoPlayerMin():
 				# Searches col first and then row 
 				if (board[col][row] == " "):
 					try_place = board_checker.place(stone, (col, row), board)
-					if (try_place != "This seat is taken!"):
-						visited = [ [False] * self.board_size for row in range(self.board_size) ]
-						neighbors = board_checker.find_neighbors((col, row))
-						q = Queue.Queue()
-						for n in neighbors:
-							if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
-								visited[n[0]][n[1]] = True
+					visited = [ [False] * self.board_size for row in range(self.board_size) ]
+					neighbors = board_checker.find_neighbors((col, row))
+					q = Queue.Queue()
+					for n in neighbors:
+						if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
+							visited[n[0]][n[1]] = True
+							q.put(n)
+
+					while (q.empty() != True):
+						check_point = q.get()					
+						try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+						n_neighbors = board_checker.find_neighbors(check_point)
+						for n in n_neighbors:
+							if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
+								visited[check_point[0]][check_point[1]] = True
 								q.put(n)
 
-						while (q.empty() != True):
-							check_point = q.get()					
-							try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-							n_neighbors = board_checker.find_neighbors(check_point)
-							for n in n_neighbors:
-								if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[check_point[0]][check_point[1]])):
-									visited[check_point[0]][check_point[1]] = True
-									q.put(n)
+					# If liberties present then valid move 
+					if ((board_checker.reachable((col, row), " ", try_place)) and (self.count_adj_liberties((col, row), board) > 0)):
+						return board_checker.idx_to_point(row, col)
 
-						# If liberties present then valid move 
-						if (board_checker.reachable((col, row), " ", try_place)):
-							return board_checker.idx_to_point(row, col)
 		return "pass"
+
+	def count_adj_liberties(self, point, board):
+		point_lib = 0
+		board_checker = GoBoard()
+		neighbors = board_checker.find_neighbors(point)
+		for n in neighbors:
+			if (board[n[0]][n[1]] == " "):
+				point_lib += 1
+
+		return point_lib
 
 	# Update go_board state if board history is valid 
 	def make_move(self, boards_arr):
