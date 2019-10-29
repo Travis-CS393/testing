@@ -81,7 +81,8 @@ class GoPlayerMin():
 		board_checker = GoBoard()
 		if (board_checker.validate_history(self.player_stone, boards_arr)):
 			self.go_board = boards_arr[0]
-			return self.find_move(self.player_stone, self.go_board)
+			move = self.find_move(self.player_stone, self.go_board)
+			return move
 		else:
 			return "This history makes no sense!"
 
