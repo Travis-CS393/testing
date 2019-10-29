@@ -2,7 +2,7 @@ import Queue
 import copy
 
 class GoPlayerMin():
-	def __init__(self, player_name=None, player_stone=None, board_size=None, go_board=None):
+	def __init__(self, player_name=None, player_stone=None, board_size=None):
 		"""
 		This class implements a Go Player component that will make
 		a legal move as a given stone given the board history. 
@@ -19,7 +19,8 @@ class GoPlayerMin():
 		self.player_name = "no name" if player_name is None else player_name
 		self.player_stone = "B" if player_stone is None else player_stone
 		self.board_size = 19 if board_size is None else board_size
-		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
+
+
 
 	################################
 	# GAMEPLAY RESPONSES
@@ -43,7 +44,6 @@ class GoPlayerMin():
 	# Initiates game, assigns player a stone and clears previous game board
 	def receive_stone(self, stone):
 		self.player_stone = stone
-		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
 
 	# Finds first valid move in a min col, row coordinate, otherwise "pass"
 	def find_move(self, stone, board):
@@ -80,15 +80,14 @@ class GoPlayerMin():
 	def make_move(self, boards_arr):
 		board_checker = GoBoard()
 		if (board_checker.validate_history(self.player_stone, boards_arr)):
-			self.go_board = boards_arr[0]
-			move = self.find_move(self.player_stone, self.go_board)
+			move = self.find_move(self.player_stone, boards_arr[0])
 			return move
 		else:
 			return "This history makes no sense!"
 
 
 class GoBoard():
-	def __init__(self, board_size=None, go_board=None):
+	def __init__(self, board_size=None):
 		"""
 		This class implements a Go board component that returns a response
 		based on a statement executed on a given 19 x 19 Go board. The 
@@ -112,7 +111,6 @@ class GoBoard():
 						sorted in increasing lexicographic order. 
 		"""
 		self.board_size = 19 if board_size is None else board_size
-		self.go_board = [ " " * self.board_size for row in range(self.board_size)]
 
 
 	###############################

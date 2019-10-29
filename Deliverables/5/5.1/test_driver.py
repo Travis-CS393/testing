@@ -2,7 +2,8 @@ from go import GoBoard, GoPlayerMin
 import json
 import sys
 
-# final for out 5
+
+
 ##########################################
 # HELPER FUNCTIONS
 ##########################################
@@ -66,6 +67,7 @@ def check_board(board, board_size):
 			if (check_maybe_stone(board[row][col]) == False):
 				check_all_stones = False
 	return check_all_stones
+
 
 
 ##########################################
