@@ -68,17 +68,17 @@ class GoPlayerCapture():
 	# Find first col, row point play that captures piece within strategy n moves
 	def find_capture(self, stone, history):
 		board_checker = GoBoard()
-		#last_history = copy.deepcopy(history)
+		last_history = copy.deepcopy(history)
 
 		all_opponent = self.smallest_colrow(board_checker.get_points(board_checker.get_opponent(stone), history[0]))
 
 		for point in all_opponent:
 			col = point[0]
 			row = point[1]	
-			#keep_history = copy.deepcopy(history)
-			liberties, point = self.find_liberties((col, row), history[0])
+			keep_history = last_history
+			liberties, point = self.find_liberties((col, row), keep_history[0])
 
-			try_place = board_checker.place(stone, point, history[0])
+			try_place = board_checker.place(stone, point, keep_history[0])
 
 			# Remove stones captured after play
 			visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -98,12 +98,12 @@ class GoPlayerCapture():
 						visited[n[0]][n[1]] = True
 						q.put(n)
 
-			if (len(history) == 3):
+			if (len(last_history) == 3):
 				if (try_place != history[1]):
 					if (liberties <= self.strategy):
 						return board_checker.idx_to_point(point[1], point[0])
 
-			elif (len(history) != 3):
+			elif (len(last_history) != 3):
 				if (liberties <= self.strategy):
 						return board_checker.idx_to_point(point[1], point[0])
 
