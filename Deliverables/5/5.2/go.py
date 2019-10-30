@@ -70,41 +70,42 @@ class GoPlayerCapture():
 		board_checker = GoBoard()
 		last_history = copy.deepcopy(history)
 
-		for row in range(self.board_size):
-			for col in range(self.board_size):		
-				keep_history = copy.deepcopy(history)
+		all_opponent = self.smallest_colrow(board_checker.get_points(board_checker.get_opponent(stone), last_history[0]))
 
-				if (history[0][col][row] == board_checker.get_opponent(stone)):
-					liberties, point = self.find_liberties((col, row), keep_history[0])
+		for point in all_opponent:
+			col = point[0]
+			row = point[1]	
+			keep_history = copy.deepcopy(history)
+			liberties, point = self.find_liberties((col, row), keep_history[0])
 
-					try_place = board_checker.place(stone, point, keep_history[0])
+			try_place = board_checker.place(stone, point, keep_history[0])
 
-					# Remove stones captured after play
-					visited = [ [False] * self.board_size for row in range(self.board_size) ]
-					neighbors = board_checker.find_neighbors(point)
-					q = Queue.Queue()
-					for n in neighbors:
-						if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
-							visited[n[0]][n[1]] = True
-							q.put(n)
+			# Remove stones captured after play
+			visited = [ [False] * self.board_size for row in range(self.board_size) ]
+			neighbors = board_checker.find_neighbors(point)
+			q = Queue.Queue()
+			for n in neighbors:
+				if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
+					visited[n[0]][n[1]] = True
+					q.put(n)
 
-					while (q.empty() != True):
-						check_point = q.get()
-						try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-						n_neighbors = board_checker.find_neighbors(check_point)
-						for n in n_neighbors:
-							if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[n[0]][n[1]])):
-								visited[n[0]][n[1]] = True
-								q.put(n)
+			while (q.empty() != True):
+				check_point = q.get()
+				try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+				n_neighbors = board_checker.find_neighbors(check_point)
+				for n in n_neighbors:
+					if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[n[0]][n[1]])):
+						visited[n[0]][n[1]] = True
+						q.put(n)
 
-					if (len(keep_history) == 3):
-						if (try_place != keep_history[1]):
-							if (liberties <= self.strategy):
-								return board_checker.idx_to_point(point[1], point[0])
+			if (len(keep_history) == 3):
+				if (try_place != keep_history[1]):
+					if (liberties <= self.strategy):
+						return board_checker.idx_to_point(point[1], point[0])
 
-					elif (len(keep_history) != 3):
-						if (liberties <= self.strategy):
-								return board_checker.idx_to_point(point[1], point[0])
+			elif (len(keep_history) != 3):
+				if (liberties <= self.strategy):
+						return board_checker.idx_to_point(point[1], point[0])
 
 
 		return self.find_move(stone, last_history)
@@ -176,6 +177,16 @@ class GoPlayerCapture():
 							return board_checker.idx_to_point(row, col)
 
 		return "pass"
+
+	def smallest_colrow(self, points):
+		board_checker = GoBoard()
+		idx_arr = []
+		for p in points:
+			col, row = board_checker.point_to_idx(p)
+			idx_arr.append((col, row))
+
+		idx_arr = sorted(idx_arr)
+		return idx_arr
 
 
 class GoPlayerMin():
