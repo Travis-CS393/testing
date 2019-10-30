@@ -110,6 +110,7 @@ class GoPlayerCapture():
 		else:
 			return "This history makes no sense!"
 
+	"""
 	# Given strategy n, find first col, row point to capture within n moves given board
 	def find_capture(self, stone, board, history):
 		board_checker = GoBoard()
@@ -118,24 +119,35 @@ class GoPlayerCapture():
 		for s in opponent_stones:
 			row, col = board_checker.point_to_idx(s)
 			liberties, point = self.find_liberties((row, col), board)
+			print(liberties)
 			if (liberties <= self.strategy):
-				return board_checker.idx_to_point(col, row)
+				print(point)
+				return board_checker.idx_to_point(point[0], point[1])
 
 		return self.find_move(stone, board, dup_history)
+	"""
+	def find_capture(self, stone, board, history):
+		board_checker = GoBoard()
+		dup_history = copy.deepcopy(history)
+		for row in range(self.board_size):
+			for col in range(self.board_size):
+				if (board[col][row] == board_checker.get_opponent(stone)):
+					liberties, point = self.find_liberties((col, row), board)
+					if (liberties <= self.strategy):
+						return board_checker.idx_to_point(point[1], point[0])
+
+		return self.find_move(stone, board, dup_history)
+
 
 	# Implements BFS to find number of liberties of stone at point,
 	# Returns the liberties, and min (col,row) point to start capture
 	def find_liberties(self, idx, board):
-		print(idx)
 		board_checker = GoBoard()
 		visited = [ [False] * self.board_size for row in range(self.board_size)]
 		liberties = 0
 		place_points = []
 
 		q = Queue.Queue()
-		print(visited)
-		print(type(visited))
-		visited[idx[0]][idx[1]] = True
 		q.put(idx)
 
 		while (q.empty() != True):
@@ -143,10 +155,10 @@ class GoPlayerCapture():
 			if (board[check_point[0]][check_point[1]] == " "):
 				liberties += 1
 				place_points.append(check_point)
-			elif (board_checker.reachable(" ", board_checker.point_to_idx(check_point), board)):
+			elif (board_checker.reachable(check_point, " ", board)):
 				neighbors = board_checker.find_neighbors(check_point)
 				for n in neighbors:
-					if ((n != self.player_stone) and (not visited[n[0]][n[1]])):
+					if ((board[n[0]][n[1]] != self.player_stone) and (not visited[n[0]][n[1]])):
 						visited[n[0]][n[1]] = True
 						q.put(n)
 
@@ -503,6 +515,7 @@ class GoBoard():
 	def reachable(self, idx, maybe_stone, board):
 		visited = [ [False] * self.board_size for row in range(self.board_size)]
 
+		start_type = "B"
 		start_type = board[idx[0]][idx[1]]
 		if (start_type == maybe_stone):
 			return True
