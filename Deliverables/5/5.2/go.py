@@ -19,7 +19,7 @@ class GoPlayerCapture():
 		self.player_name = "no name" if player_name is None else player_name
 		self.player_stone = "B" if player_stone is None else player_stone
 		self.board_size = 19 if board_size is None else board_size
-		self.strategy = 3 if strategy is None else strategy
+		self.strategy = 1 if strategy is None else strategy
 
 
 
