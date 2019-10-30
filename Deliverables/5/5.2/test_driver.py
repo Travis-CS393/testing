@@ -2,11 +2,13 @@ from go import GoBoard, GoPlayerCapture
 import json
 import sys
 
+
+
 ##########################################
 # HELPER FUNCTIONS
 ##########################################
 
-# Reads and returns array of [Board, Statement] JSON array elements from STDIN 
+# Reads and returns array of [Board, Statement] JSON array elements from STDIN
 def read_input():
 	inputs = []
 	reading_frame = ""
@@ -31,7 +33,7 @@ def print_output(output):
 # TYPE ASSERTIONS PREDICATES
 ###########################################
 
-# Checks that input is one of the valid types of input 
+# Checks that input is one of the valid types of input
 # ["register"]
 # ["receive-stones", Stone]
 # ["make-a-move", Boards]
@@ -41,8 +43,8 @@ def check_input(input, board_size):
 		return True
 	elif ((len(input) == 2) and (input[0] == "receive-stones") and check_stone(input[1])):
 		return True
-	elif ((len(input) == 2) and (input[0] == "make-a-move") and ((len(input[1][1]) == 3) or (len(input[1][1]) == 2) or (len(input[1][1]) == 1))):
-		return all(check_board(board, board_size) for board in input[1][1])
+	elif ((len(input) == 2) and (input[0] == "make-a-move") and ((len(input[1]) == 3) or (len(input[1]) == 2) or (len(input[1]) == 1))):
+		return all(check_board(board, board_size) for board in input[1])
 	else:
 		return False
 
@@ -54,7 +56,7 @@ def check_stone(stone):
 def check_maybe_stone(maybe_stone):
 	return (check_stone(maybe_stone) or (maybe_stone == " "))
 
-# Board must be 19 x 19 represented by an array of 19 rows 
+# Board must be 19 x 19 represented by an array of 19 rows
 # where each row contains 19 elements of type MaybeStone
 def check_board(board, board_size):
 	check_all_stones = True
@@ -65,6 +67,7 @@ def check_board(board, board_size):
 			if (check_maybe_stone(board[row][col]) == False):
 				check_all_stones = False
 	return check_all_stones
+
 
 
 ##########################################
@@ -83,10 +86,8 @@ def test_driver():
 		else:
 			raise Exception("Invalid Input.")
 
+	outputs = list(filter(None, outputs))
+
 	print(print_output(outputs))
 
 test_driver()
-
-
-
-

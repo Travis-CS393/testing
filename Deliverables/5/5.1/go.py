@@ -72,11 +72,17 @@ class GoPlayerMin():
 								visited[n[0]][n[1]] = True
 								q.put(n)
 
-					if (try_place != dup_history[1]):
-						# If liberties present then valid move 
+					if (len(dup_history) == 3):
+						if (try_place != dup_history[1]):
+							# If liberties present then valid move 
+							if (board_checker.reachable((col, row), " ", try_place)):
+								if ( (self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
+									return board_checker.idx_to_point(row, col)
+									
+					if (len(dup_history) != 3):
 						if (board_checker.reachable((col, row), " ", try_place)):
-							if ( (self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
-								return board_checker.idx_to_point(row, col)
+								if ( (self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
+									return board_checker.idx_to_point(row, col)
 
 		return "pass"
 
