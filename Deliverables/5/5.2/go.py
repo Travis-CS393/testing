@@ -59,26 +59,26 @@ class GoPlayerCapture():
 	# Makes a legal move if possible, given board history 
 	def make_move(self, history):
 		board_checker = GoBoard()
-		keep_history = copy.deepcopy(history)
+		#keep_history = copy.deepcopy(history)
 		if (board_checker.validate_history(self.player_stone, history)):
-			return self.find_capture(self.player_stone, keep_history)
+			return self.find_capture(self.player_stone, history)
 		else:
 			return "This history makes no sense!"
 
 	# Find first col, row point play that captures piece within strategy n moves
 	def find_capture(self, stone, history):
 		board_checker = GoBoard()
-		last_history = copy.deepcopy(history)
+		#last_history = copy.deepcopy(history)
 
-		all_opponent = self.smallest_colrow(board_checker.get_points(board_checker.get_opponent(stone), last_history[0]))
+		all_opponent = self.smallest_colrow(board_checker.get_points(board_checker.get_opponent(stone), history[0]))
 
 		for point in all_opponent:
 			col = point[0]
 			row = point[1]	
-			keep_history = copy.deepcopy(history)
-			liberties, point = self.find_liberties((col, row), keep_history[0])
+			#keep_history = copy.deepcopy(history)
+			liberties, point = self.find_liberties((col, row), history[0])
 
-			try_place = board_checker.place(stone, point, keep_history[0])
+			try_place = board_checker.place(stone, point, history[0])
 
 			# Remove stones captured after play
 			visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -98,17 +98,17 @@ class GoPlayerCapture():
 						visited[n[0]][n[1]] = True
 						q.put(n)
 
-			if (len(keep_history) == 3):
+			if (len(history) == 3):
 				if (try_place != keep_history[1]):
 					if (liberties <= self.strategy):
 						return board_checker.idx_to_point(point[1], point[0])
 
-			elif (len(keep_history) != 3):
+			elif (len(history) != 3):
 				if (liberties <= self.strategy):
 						return board_checker.idx_to_point(point[1], point[0])
 
 
-		return self.find_move(stone, last_history)
+		return self.find_move(stone, history)
 
 	# Implements BFS to find number of liberties of stone at point,
 	# Returns the liberties, and min (col,row) point to start capture
@@ -143,10 +143,10 @@ class GoPlayerCapture():
 		# Traverses matrix by column first
 		for row in range(self.board_size):
 			for col in range(self.board_size):
-				keep_history = copy.deepcopy(history)
+				#keep_history = copy.deepcopy(history)
 
 				if (history[0][col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), keep_history[0])
+					try_place = board_checker.place(stone, (col, row), history[0])
 
 					# Remove stones captured after play
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -167,12 +167,12 @@ class GoPlayerCapture():
 								q.put(n)
 
 					# Continue if this move would violate Ko rule
-					if (len(keep_history) == 3):
+					if (len(history) == 3):
 						if (try_place != keep_history[1]):
 							if (board_checker.reachable((col, row), " ", try_place)):
 								return board_checker.idx_to_point(row, col)
 
-					elif (len(keep_history) != 3):
+					elif (len(history) != 3):
 						if (board_checker.reachable((col, row), " ", try_place)):
 							return board_checker.idx_to_point(row, col)
 
@@ -245,9 +245,9 @@ class GoPlayerMin():
 	# Makes a legal move if possible, given board history 
 	def make_move(self, history):
 		board_checker = GoBoard()
-		keep_history = copy.deepcopy(history)
+		#keep_history = copy.deepcopy(history)
 		if (board_checker.validate_history(self.player_stone, history)):
-			return self.find_move(self.player_stone, keep_history)
+			return self.find_move(self.player_stone, history)
 		else:
 			return "This history makes no sense!"
 
@@ -258,10 +258,10 @@ class GoPlayerMin():
 		# Traverses matrix by column first
 		for row in range(self.board_size):
 			for col in range(self.board_size):
-				keep_history = copy.deepcopy(history)
+				#keep_history = copy.deepcopy(history)
 
 				if (history[0][col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), keep_history[0])
+					try_place = board_checker.place(stone, (col, row), history[0])
 
 					# Remove stones captured after play
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -282,12 +282,12 @@ class GoPlayerMin():
 								q.put(n)
 
 					# Continue if this move would violate Ko rule
-					if (len(keep_history) == 3):
-						if (try_place != keep_history[1]):
+					if (len(history) == 3):
+						if (try_place != history[1]):
 							if (board_checker.reachable((col, row), " ", try_place)):
 								return board_checker.idx_to_point(row, col)
 
-					elif (len(keep_history) != 3):
+					elif (len(history) != 3):
 						if (board_checker.reachable((col, row), " ", try_place)):
 							return board_checker.idx_to_point(row, col)
 
