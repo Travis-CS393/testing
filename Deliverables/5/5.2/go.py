@@ -139,14 +139,15 @@ class GoPlayerCapture():
 	# Finds first legal move in min col, row coordinates, otherwise "pass"
 	def find_move(self, stone, history):
 		board_checker = GoBoard()
+		keep_history = copy.deepcopy(history)
+
 
 		# Traverses matrix by column first
 		for row in range(self.board_size):
 			for col in range(self.board_size):
-				#keep_history = copy.deepcopy(history)
-
+				last_history = keep_history
 				if (history[0][col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), history[0])
+					try_place = board_checker.place(stone, (col, row), last_history[0])
 
 					# Remove stones captured after play
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -167,12 +168,12 @@ class GoPlayerCapture():
 								q.put(n)
 
 					# Continue if this move would violate Ko rule
-					if (len(history) == 3):
-						if (try_place != history[1]):
+					if (len(keep_history) == 3):
+						if (try_place != keep_history[1]):
 							if (board_checker.reachable((col, row), " ", try_place)):
 								return board_checker.idx_to_point(row, col)
 
-					elif (len(history) != 3):
+					elif (len(keep_history) != 3):
 						if (board_checker.reachable((col, row), " ", try_place)):
 							return board_checker.idx_to_point(row, col)
 
@@ -254,14 +255,15 @@ class GoPlayerMin():
 	# Finds first legal move in min col, row coordinates, otherwise "pass"
 	def find_move(self, stone, history):
 		board_checker = GoBoard()
+		keep_history = copy.deepcopy(history)
+
 
 		# Traverses matrix by column first
 		for row in range(self.board_size):
 			for col in range(self.board_size):
-				#keep_history = copy.deepcopy(history)
-
+				last_history = keep_history
 				if (history[0][col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), history[0])
+					try_place = board_checker.place(stone, (col, row), last_history[0])
 
 					# Remove stones captured after play
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -282,12 +284,12 @@ class GoPlayerMin():
 								q.put(n)
 
 					# Continue if this move would violate Ko rule
-					if (len(history) == 3):
-						if (try_place != history[1]):
+					if (len(keep_history) == 3):
+						if (try_place != keep_history[1]):
 							if (board_checker.reachable((col, row), " ", try_place)):
 								return board_checker.idx_to_point(row, col)
 
-					elif (len(history) != 3):
+					elif (len(keep_history) != 3):
 						if (board_checker.reachable((col, row), " ", try_place)):
 							return board_checker.idx_to_point(row, col)
 
