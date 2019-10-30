@@ -51,8 +51,9 @@ class GoPlayerMin():
 		for row in range(self.board_size):
 			for col in range(self.board_size):
 				# Searches col first and then row 
+				try_place = copy.deepcopy(board)
 				if (board[col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), board)
+					try_place = board_checker.place(stone, (col, row), try_place)
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
 					neighbors = board_checker.find_neighbors((col, row))
 					q = Queue.Queue()
@@ -71,8 +72,9 @@ class GoPlayerMin():
 								q.put(n)
 
 					# If liberties present then valid move 
-					if ((board_checker.reachable((col, row), " ", try_place)) and (self.count_adj_liberties((col, row), board) > 0)):
+					if ((self.count_adj_liberties((col, row), try_place) > 0) and board_checker.reachable((col, row), " ", try_place)):
 						return board_checker.idx_to_point(row, col)
+
 
 		return "pass"
 
