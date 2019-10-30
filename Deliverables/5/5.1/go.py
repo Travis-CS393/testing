@@ -72,8 +72,9 @@ class GoPlayerMin():
 								q.put(n)
 
 					# If liberties present then valid move 
-					if ((self.count_adj_liberties((col, row), try_place) > 0) and board_checker.reachable((col, row), " ", try_place)):
-						return board_checker.idx_to_point(row, col)
+					if (board_checker.reachable((col, row), " ", try_place)):
+						if ( (self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
+							return board_checker.idx_to_point(row, col)
 
 
 		return "pass"
@@ -87,6 +88,15 @@ class GoPlayerMin():
 				point_lib += 1
 
 		return point_lib
+
+	def count_same_stone(self, point, stone, board):
+		same_stone = 0
+		board_checker = GoBoard()
+		neighbors = board_checker.find_neighbors(point)
+		for n in neighbors:
+			if (board[n[0]][n[1]] == stone):
+				same_stone += 1
+		return same_stone
 
 	# Update go_board state if board history is valid 
 	def make_move(self, boards_arr):
