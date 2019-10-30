@@ -99,7 +99,7 @@ class GoPlayerCapture():
 						q.put(n)
 
 			if (len(history) == 3):
-				if (try_place != keep_history[1]):
+				if (try_place != history[1]):
 					if (liberties <= self.strategy):
 						return board_checker.idx_to_point(point[1], point[0])
 
@@ -168,7 +168,7 @@ class GoPlayerCapture():
 
 					# Continue if this move would violate Ko rule
 					if (len(history) == 3):
-						if (try_place != keep_history[1]):
+						if (try_place != history[1]):
 							if (board_checker.reachable((col, row), " ", try_place)):
 								return board_checker.idx_to_point(row, col)
 
