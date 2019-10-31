@@ -19,6 +19,7 @@ class GoPlayerMin():
 		self.player_name = "no name" if player_name is None else player_name
 		self.player_stone = "B" if player_stone is None else player_stone
 		self.board_size = 19 if board_size is None else board_size
+		self.rules = GoBoard(self.board_size)
 
 
 
@@ -45,9 +46,19 @@ class GoPlayerMin():
 	def receive_stone(self, stone):
 		self.player_stone = stone
 
+	# Update go_board state if board history is valid
+	def make_move(self, boards_arr):
+		#board_checker = GoBoard()
+		#dup_history = copy.deepcopy(boards_arr)
+		if (self.rules.validate_history(self.player_stone, boards_arr)):
+			return self.find_move(self.player_stone, boards_arr[0], boards_arr)
+			#return move
+		else:
+			return "This history makes no sense!"
+
 	# Finds first valid move in a min col, row coordinate, otherwise "pass"
 	def find_move(self, stone, board, history):
-		board_checker = GoBoard()
+		#board_checker = GoBoard()
 		for row in range(self.board_size):
 			for col in range(self.board_size):
 				# Searches col first and then row
@@ -55,42 +66,42 @@ class GoPlayerMin():
 				try_place = board
 				#dup_history = copy.deepcopy(history)
 				if (board[col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), history[0])
+					try_place = self.rules.place(stone, (col, row), history[0])
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
-					neighbors = board_checker.find_neighbors((col, row))
+					neighbors = self.rules.find_neighbors((col, row))
 					q = Queue.Queue()
 					for n in neighbors:
-						if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
+						if ((try_place[n[0]][n[1]] != stone) and (not self.rules.reachable(n, " ", try_place))):
 							visited[n[0]][n[1]] = True
 							q.put(n)
 
 					while (q.empty() != True):
 						check_point = q.get()
-						try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-						n_neighbors = board_checker.find_neighbors(check_point)
+						try_place = self.rules.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+						n_neighbors = self.rules.find_neighbors(check_point)
 						for n in n_neighbors:
-							if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[n[0]][n[1]])):
+							if ((try_place[n[0]][n[1]] == self.rules.get_opponent(stone)) and (not visited[n[0]][n[1]])):
 								visited[n[0]][n[1]] = True
 								q.put(n)
 
 					if (len(history) == 3):
 						if (try_place != history[1]):
 							# If liberties present then valid move
-							if (board_checker.reachable((col, row), " ", try_place)):
+							if (self.rules.reachable((col, row), " ", try_place)):
 								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
-								return board_checker.idx_to_point(row, col)
+								return self.rules.idx_to_point(row, col)
 
 					if (len(history) != 3):
-						if (board_checker.reachable((col, row), " ", try_place)):
+						if (self.rules.reachable((col, row), " ", try_place)):
 								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
-								return board_checker.idx_to_point(row, col)
+								return self.rules.idx_to_point(row, col)
 
 		return "pass"
 
 	def count_adj_liberties(self, point, board):
 		point_lib = 0
-		board_checker = GoBoard()
-		neighbors = board_checker.find_neighbors(point)
+		#board_checker = GoBoard()
+		neighbors = self.rules.find_neighbors(point)
 		for n in neighbors:
 			if (board[n[0]][n[1]] == " "):
 				point_lib += 1
@@ -99,22 +110,14 @@ class GoPlayerMin():
 
 	def count_same_stone(self, point, stone, board):
 		same_stone = 0
-		board_checker = GoBoard()
-		neighbors = board_checker.find_neighbors(point)
+		#board_checker = GoBoard()
+		neighbors = self.rules.find_neighbors(point)
 		for n in neighbors:
 			if (board[n[0]][n[1]] == stone):
 				same_stone += 1
 		return same_stone
 
-	# Update go_board state if board history is valid
-	def make_move(self, boards_arr):
-		board_checker = GoBoard()
-		#dup_history = copy.deepcopy(boards_arr)
-		if (board_checker.validate_history(self.player_stone, boards_arr)):
-			move = self.find_move(self.player_stone, boards_arr[0], boards_arr)
-			return move
-		else:
-			return "This history makes no sense!"
+	
 
 
 class GoBoard():
