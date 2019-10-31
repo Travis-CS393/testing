@@ -353,7 +353,6 @@ class GoBoard():
 						removed.append([prev_board[row][col], (row, col)])
 					# Unexplained changes in board state
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
-						print(1)
 						return False
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == "B")):
 						return False

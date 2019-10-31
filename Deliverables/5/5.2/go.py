@@ -66,12 +66,9 @@ class GoPlayerCapture():
 	def find_capture(self, stone, history):
 
 		all_opponent = self.smallest_colrow(self.rules.get_points(self.rules.get_opponent(stone), history[0]))
-		print(self.rules.get_opponent(stone))
-		print(all_opponent[1])
 		for point in all_opponent:
 			col = point[0]
 			row = point[1]
-			print("hi")  
 			liberties, point = self.find_liberties((col, row), history[0])
 
 			try_place = self.rules.place(stone, point, history[0])
@@ -129,7 +126,6 @@ class GoPlayerCapture():
 						q.put(n)
 
 		place_points = sorted(place_points)
-		print(place_points)
 		return liberties, place_points[0]
 
 	# Finds first legal move in min col, row coordinates, otherwise "pass"
@@ -179,8 +175,6 @@ class GoPlayerCapture():
 			idx_arr.append((row, col))
 
 		idx_arr = sorted(idx_arr, key= lambda x : x[1])
-		print(idx_arr)
-		print("done")
 		return idx_arr
 
 
@@ -538,7 +532,6 @@ class GoBoard():
 						removed.append([prev_board[row][col], (row, col)])
 					# Unexplained changes in board state
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
-						print(1)
 						return False
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == "B")):
 						return False
