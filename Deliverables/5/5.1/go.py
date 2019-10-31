@@ -592,12 +592,12 @@ class GoBoard():
 	def check_dead_removed(self, board):
 		for row in range(self.board_size):
 			for col in range(self.board_size):
-				if (board[row][col] == "B" and (not self.reachable((row, col), " ", board))):
+				if ((board[row][col] == "B") and (not self.reachable((row, col), " ", board))):
 					return False
-				elif (board[row][col] == "W" and (not self.reachable((row, col), " ", board))):
+				elif ((board[row][col] == "W") and (not self.reachable((row, col), " ", board))):
 					return False
 
-			return True
+		return True
 
 
 
