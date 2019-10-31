@@ -581,7 +581,7 @@ class GoBoard():
 
 				while (q.empty() != True):
 					check_point = q.get()
-					dead_removed.append([dup_try_place[check_point[0]][check_point[1]], check_point])	
+					dead_removed.append([try_place[check_point[0]][check_point[1]], check_point])	
 					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
 					n_neighbors = self.find_neighbors(check_point)
 					for n in n_neighbors:
