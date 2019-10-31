@@ -76,7 +76,7 @@ class GoPlayerCapture():
 
 	            # Remove stones captured after play
 	            visited = [ [False] * self.board_size for row in range(self.board_size) ]
-	            neighbors = board_checker.find_neighbors(point)
+	            neighbors = self.rules.find_neighbors(point)
 	            q = Queue.Queue()
 	            for n in neighbors:
 	                if ((try_place[n[0]][n[1]] != stone) and (not self.rules.reachable(n, " ", try_place))):
@@ -226,23 +226,17 @@ class GoPlayerMin():
 
 	# Update go_board state if board history is valid
 	def make_move(self, boards_arr):
-		#board_checker = GoBoard()
-		#dup_history = copy.deepcopy(boards_arr)
 		if (self.rules.validate_history(self.player_stone, boards_arr)):
 			return self.find_move(self.player_stone, boards_arr[0], boards_arr)
-			#return move
 		else:
 			return "This history makes no sense!"
 
 	# Finds first valid move in a min col, row coordinate, otherwise "pass"
 	def find_move(self, stone, board, history):
-		#board_checker = GoBoard()
 		for row in range(self.board_size):
 			for col in range(self.board_size):
 				# Searches col first and then row
-				#try_place = copy.deepcopy(board)
 				try_place = board
-				#dup_history = copy.deepcopy(history)
 				if (board[col][row] == " "):
 					try_place = self.rules.place(stone, (col, row), history[0])
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
@@ -266,38 +260,16 @@ class GoPlayerMin():
 						if (try_place != history[1]):
 							# If liberties present then valid move
 							if (self.rules.reachable((col, row), " ", try_place)):
-								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
 								return self.rules.idx_to_point(row, col)
 
 					if (len(history) != 3):
 						if (self.rules.reachable((col, row), " ", try_place)):
-								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
-								return self.rules.idx_to_point(row, col)
+							return self.rules.idx_to_point(row, col)
 
 		return "pass"
 
-	def count_adj_liberties(self, point, board):
-		point_lib = 0
-		#board_checker = GoBoard()
-		neighbors = self.rules.find_neighbors(point)
-		for n in neighbors:
-			if (board[n[0]][n[1]] == " "):
-				point_lib += 1
-
-		return point_lib
-
-	def count_same_stone(self, point, stone, board):
-		same_stone = 0
-		#board_checker = GoBoard()
-		neighbors = self.rules.find_neighbors(point)
-		for n in neighbors:
-			if (board[n[0]][n[1]] == stone):
-				same_stone += 1
-		return same_stone
 
 	
-
-
 class GoBoard():
 	def __init__(self, board_size=None):
 		"""
@@ -493,8 +465,6 @@ class GoBoard():
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
 				return False
 
-			#temp_board = copy.deepcopy(boards_arr)
-
 			# Check Board history contains only valid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
@@ -581,7 +551,6 @@ class GoBoard():
 			if (try_place == "This seat is taken!"):
 				return False
 			else:
-				#dup_try_place = copy.deepcopy(try_place)
 				white_b4 = len(self.get_points("W", prev_board))
 				black_b4 = len(self.get_points("B", prev_board))
 				stone = placed[0][0]
