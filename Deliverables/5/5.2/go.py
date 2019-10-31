@@ -66,10 +66,12 @@ class GoPlayerCapture():
 	def find_capture(self, stone, history):
 
 		all_opponent = self.smallest_colrow(self.rules.get_points(self.rules.get_opponent(stone), history[0]))
-
+		print(self.rules.get_opponent(stone))
+		print(all_opponent[1])
 		for point in all_opponent:
 			col = point[0]
-			row = point[1]  
+			row = point[1]
+			print("hi")  
 			liberties, point = self.find_liberties((col, row), history[0])
 
 			try_place = self.rules.place(stone, point, history[0])
@@ -127,6 +129,7 @@ class GoPlayerCapture():
 						q.put(n)
 
 		place_points = sorted(place_points)
+		print(place_points)
 		return liberties, place_points[0]
 
 	# Finds first legal move in min col, row coordinates, otherwise "pass"
@@ -172,10 +175,12 @@ class GoPlayerCapture():
 	def smallest_colrow(self, points):
 		idx_arr = []
 		for p in points:
-			col, row = self.rules.point_to_idx(p)
-			idx_arr.append((col, row))
+			row, col = self.rules.point_to_idx(p)
+			idx_arr.append((row, col))
 
-		idx_arr = sorted(idx_arr)
+		idx_arr = sorted(idx_arr, key= lambda x : x[1])
+		print(idx_arr)
+		print("done")
 		return idx_arr
 
 
