@@ -1,325 +1,335 @@
 import queue as Queue
-import copy 
+import copy
 
 class GoPlayerCapture():
 	def __init__(self, player_name=None, player_stone=None, board_size=None, strategy=None):
-		"""
-		This class implements a Go Player component that will make 
-		a legal move as a given stone based on its board history. 
+        """
+        This class implements a Go Player component that will make 
+        a legal move as a given stone based on its board history. 
 
-		It will internally store the player's name, stone color, and have
-		operations to check that the next move it makes is legal while
-		its board history is valid. 
+        It will internally store the player's name, stone color, and have
+        operations to check that the next move it makes is legal while
+        its board history is valid. 
 
-		If the history is invalid, player  will reply with "This history makes no sense!". 
+        If the history is invalid, player  will reply with "This history makes no sense!". 
 
-		In the case that it is valud, the player will make a play to capture if 
-		the number of liberties of opponent piece is less than our strategy n, otherwise
-		it will make a play at the legal smallest col index primarily and legal smallest 
-		row index primarily. If there are no legal moves, it will pass. 
-		"""
-		self.player_name = "no name" if player_name is None else player_name
-		self.player_stone = "B" if player_stone is None else player_stone
-		self.board_size = 19 if board_size is None else board_size
-		self.strategy = 1 if strategy is None else strategy
+        In the case that it is valud, the player will make a play to capture if 
+        the number of liberties of opponent piece is less than our strategy n, otherwise
+        it will make a play at the legal smallest col index primarily and legal smallest 
+        row index primarily. If there are no legal moves, it will pass. 
+        """
+        self.player_name = "no name" if player_name is None else player_name
+        self.player_stone = "B" if player_stone is None else player_stone
+        self.board_size = 19 if board_size is None else board_size
+        self.rules = GoBoard(self.board_size)
+        self.strategy = 1 if strategy is None else strategy
 
+        ##############################
+		# GAMEPLAY RESPONSES DRIVER
+		##############################
 
-
-	##############################
-	# GAMEPLAY RESPONSES DRIVER
-	##############################
-
-	# Returns appropriate play response given valid input 
-	# Input is one of:
-	# 	- ["register"]
-	#	- ["receive-stones", "B"], ["receive-stones", "W"]
-	#	- ["make-a-move", Boards], where Boards is of length 1,  2, or 3 and
-	#	  describes the gameplay history for past three moves 
-	def get_response(self, input):
-		if ((len(input) == 1) and (input == ["register"])):
-			return self.register()
-		elif ((len(input) == 2) and (input[0] == "receive-stones") and \
-			((input[1] == "B") or (input[1] == "W"))):
-			return self.receive_stone(input[1])
-		elif ((len(input) == 2) and (input[0] == "make-a-move") and \
-			((len(input[1]) == 1) or (len(input[1]) == 2) or (len(input[1]) == 3))):
-			return self.make_move(input[1])
-		else:
-			raise Exception("Invalid input has no appropriate response.")
-
-
-	# Returns the default player name, "no name"
-	def register(self):
-		return self.player_name
-
-	# Assigns player a stone 
-	def receive_stone(self, stone):
-		self.player_stone = stone
-
-	# Makes a legal move if possible, given board history 
-	def make_move(self, history):
-		board_checker = GoBoard()
-		if (board_checker.validate_history(self.player_stone, history)):
-			return self.find_capture(self.player_stone, history)
-		else:
-			return "This history makes no sense!"
-
-	# Find first col, row point play that captures piece within strategy n moves
-	def find_capture(self, stone, history):
-		board_checker = GoBoard()
-
-		all_opponent = self.smallest_colrow(board_checker.get_points(board_checker.get_opponent(stone), history[0]))
-
-		for point in all_opponent:
-			col = point[0]
-			row = point[1]	
-			liberties, point = self.find_liberties((col, row), history[0])
-
-			try_place = board_checker.place(stone, point, history[0])
-
-			# Remove stones captured after play
-			visited = [ [False] * self.board_size for row in range(self.board_size) ]
-			neighbors = board_checker.find_neighbors(point)
-			q = Queue.Queue()
-			for n in neighbors:
-				if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
-					visited[n[0]][n[1]] = True
-					q.put(n)
-
-			while (q.empty() != True):
-				check_point = q.get()
-				try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-				n_neighbors = board_checker.find_neighbors(check_point)
-				for n in n_neighbors:
-					if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[n[0]][n[1]])):
-						visited[n[0]][n[1]] = True
-						q.put(n)
-
-			if (len(history) == 3):
-				if (try_place != history[1]):
-					if (liberties <= self.strategy):
-						return board_checker.idx_to_point(point[1], point[0])
-
-			elif (len(history) != 3):
-				if (liberties <= self.strategy):
-						return board_checker.idx_to_point(point[1], point[0])
+		# Returns appropriate play response given valid input 
+		# Input is one of:
+		#   - ["register"]
+		#   - ["receive-stones", "B"], ["receive-stones", "W"]
+		#   - ["make-a-move", Boards], where Boards is of length 1,  2, or 3 and
+		#     describes the gameplay history for past three moves 
+		def get_response(self, input):
+		    if ((len(input) == 1) and (input == ["register"])):
+		        return self.register()
+		    elif ((len(input) == 2) and (input[0] == "receive-stones") and \
+		        ((input[1] == "B") or (input[1] == "W"))):
+		        return self.receive_stone(input[1])
+		    elif ((len(input) == 2) and (input[0] == "make-a-move") and \
+		        ((len(input[1]) == 1) or (len(input[1]) == 2) or (len(input[1]) == 3))):
+		        return self.make_move(input[1])
+		    else:
+		        raise Exception("Invalid input has no appropriate response.")
 
 
-		return self.find_move(stone, history)
+	    # Returns the default player name, "no name"
+	    def register(self):
+	        return self.player_name
 
-	# Implements BFS to find number of liberties of stone at point,
-	# Returns the liberties, and min (col,row) point to start capture
-	def find_liberties(self, idx, board):
-		board_checker = GoBoard()
-		visited = [ [False] * self.board_size for row in range(self.board_size)]
-		liberties = 0
-		place_points = []
+	    # Assigns player a stone 
+	    def receive_stone(self, stone):
+	        self.player_stone = stone
 
-		q = Queue.Queue()
-		q.put(idx)
+	    # Makes a legal move if possible, given board history 
+	    def make_move(self, history):
+	        if (self.rules.validate_history(self.player_stone, history)):
+	            return self.find_capture(self.player_stone, history)
+	        else:
+	            return "This history makes no sense!"
 
-		while (q.empty() != True):
-			check_point = q.get()
-			if (board[check_point[0]][check_point[1]] == " "):
-				liberties += 1
-				place_points.append(check_point)
-			elif (board_checker.reachable(check_point, " ", board)):
-				neighbors = board_checker.find_neighbors(check_point)
-				for n in neighbors:
-					if ((board[n[0]][n[1]] != self.player_stone) and (not visited[n[0]][n[1]])):
-						visited[n[0]][n[1]] = True
-						q.put(n)
+		# Find first col, row point play that captures piece within strategy n moves
+	    def find_capture(self, stone, history):
 
-		place_points = sorted(place_points)
-		return liberties, place_points[0]
+	        all_opponent = self.smallest_colrow(self.rules.get_points(self.rules.get_opponent(stone), history[0]))
 
-	# Finds first legal move in min col, row coordinates, otherwise "pass"
-	def find_move(self, stone, history):
-		board_checker = GoBoard()
+	        for point in all_opponent:
+	            col = point[0]
+	            row = point[1]  
+	            liberties, point = self.find_liberties((col, row), history[0])
 
-		# Traverses matrix by column first
-		for row in range(self.board_size):
-			for col in range(self.board_size):
+	            try_place = self.rules.place(stone, point, history[0])
 
-				if (history[0][col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), history[0])
+	            # Remove stones captured after play
+	            visited = [ [False] * self.board_size for row in range(self.board_size) ]
+	            neighbors = board_checker.find_neighbors(point)
+	            q = Queue.Queue()
+	            for n in neighbors:
+	                if ((try_place[n[0]][n[1]] != stone) and (not self.rules.reachable(n, " ", try_place))):
+	                    visited[n[0]][n[1]] = True
+	                    q.put(n)
 
-					# Remove stones captured after play
-					visited = [ [False] * self.board_size for row in range(self.board_size) ]
-					neighbors = board_checker.find_neighbors((col, row))
-					q = Queue.Queue()
-					for n in neighbors:
-						if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
-							visited[n[0]][n[1]] = True
-							q.put(n)
+	            while (q.empty() != True):
+	                check_point = q.get()
+	                try_place = self.rules.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+	                n_neighbors = self.rules.find_neighbors(check_point)
+	                for n in n_neighbors:
+	                    if ((try_place[n[0]][n[1]] == self.rules.get_opponent(stone)) and (not visited[n[0]][n[1]])):
+	                        visited[n[0]][n[1]] = True
+	                        q.put(n)
 
-					while (q.empty() != True):
-						check_point = q.get()
-						try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-						n_neighbors = board_checker.find_neighbors(check_point)
-						for n in n_neighbors:
-							if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[n[0]][n[1]])):
-								visited[n[0]][n[1]] = True
-								q.put(n)
+	            if (len(history) == 3):
+	                if (try_place != history[1]):
+	                    if (liberties <= self.strategy):
+	                        return self.rules.idx_to_point(point[1], point[0])
 
-					# Continue if this move would violate Ko rule
-					if (len(history) == 3):
-						if (try_place != history[1]):
-							if (board_checker.reachable((col, row), " ", try_place)):
-								return board_checker.idx_to_point(row, col)
+	            elif (len(history) != 3):
+	                if (liberties <= self.strategy):
+	                        return self.rules.idx_to_point(point[1], point[0])
 
-					elif (len(history) != 3):
-						if (board_checker.reachable((col, row), " ", try_place)):
-							return board_checker.idx_to_point(row, col)
 
-		return "pass"
+	        return self.find_move(stone, history)
 
-	def smallest_colrow(self, points):
-		board_checker = GoBoard()
-		idx_arr = []
-		for p in points:
-			col, row = board_checker.point_to_idx(p)
-			idx_arr.append((col, row))
+	    # Implements BFS to find number of liberties of stone at point,
+	    # Returns the liberties, and min (col,row) point to start capture
+	    def find_liberties(self, idx, board):
+	        visited = [ [False] * self.board_size for row in range(self.board_size)]
+	        liberties = 0
+	        place_points = []
 
-		idx_arr = sorted(idx_arr)
-		return idx_arr
+	        q = Queue.Queue()
+	        q.put(idx)
+
+	        while (q.empty() != True):
+	            check_point = q.get()
+	            if (board[check_point[0]][check_point[1]] == " "):
+	                liberties += 1
+	                place_points.append(check_point)
+	            elif (self.rules.reachable(check_point, " ", board)):
+	                neighbors = self.rules.find_neighbors(check_point)
+	                for n in neighbors:
+	                    if ((board[n[0]][n[1]] != self.player_stone) and (not visited[n[0]][n[1]])):
+	                        visited[n[0]][n[1]] = True
+	                        q.put(n)
+
+	        place_points = sorted(place_points)
+	        return liberties, place_points[0]
+
+	    # Finds first legal move in min col, row coordinates, otherwise "pass"
+	    def find_move(self, stone, history):
+
+	        # Traverses matrix by column first
+	        for row in range(self.board_size):
+	            for col in range(self.board_size):
+
+	                if (history[0][col][row] == " "):
+	                    try_place = self.rules.place(stone, (col, row), history[0])
+
+	                    # Remove stones captured after play
+	                    visited = [ [False] * self.board_size for row in range(self.board_size) ]
+	                    neighbors = self.rules.find_neighbors((col, row))
+	                    q = Queue.Queue()
+	                    for n in neighbors:
+	                        if ((try_place[n[0]][n[1]] != stone) and (not self.rules.reachable(n, " ", try_place))):
+	                            visited[n[0]][n[1]] = True
+	                            q.put(n)
+
+	                    while (q.empty() != True):
+	                        check_point = q.get()
+	                        try_place = self.rules.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+	                        n_neighbors = self.rules.find_neighbors(check_point)
+	                        for n in n_neighbors:
+	                            if ((try_place[n[0]][n[1]] == self.rules.get_opponent(stone)) and (not visited[n[0]][n[1]])):
+	                                visited[n[0]][n[1]] = True
+	                                q.put(n)
+
+	                    # Continue if this move would violate Ko rule
+	                    if (len(history) == 3):
+	                        if (try_place != history[1]):
+	                            if (self.rules.reachable((col, row), " ", try_place)):
+	                                return self.rules.idx_to_point(row, col)
+
+	                    elif (len(history) != 3):
+	                        if (self.rules.reachable((col, row), " ", try_place)):
+	                            return self.rules.idx_to_point(row, col)
+
+	        return "pass"
+
+	    def smallest_colrow(self, points):
+	        idx_arr = []
+	        for p in points:
+	            col, row = self.rules.point_to_idx(p)
+	            idx_arr.append((col, row))
+
+	        idx_arr = sorted(idx_arr)
+	        return idx_arr
 
 
 class GoPlayerMin():
 	def __init__(self, player_name=None, player_stone=None, board_size=None):
 		"""
-		This class implements a Go Player component that will make 
-		a legal move as a given stone based on its board history. 
+		This class implements a Go Player component that will make
+		a legal move as a given stone given the board history.
 
-		It will internally store the player's name, stone color, and have
-		operations to check that the next move it makes is legal while
-		its board history is valid. 
+		It will internally store the player name, player stone, and have
+		operations to check that legal moves are valid. In the case that it is valid
+		the player will play at the legal smallest col index primarily and
+		legal smallest row index primarily. If there are no legal moves, it will
+		pass. If the history is invalid, it will reply with "This history makes no sense!".
 
-		If the history is invalid, player  will reply with "This history makes no sense!". 
-
-		In the case that it is valud, the player will will make a play at the legal 
-		smallest col index primarily and legal smallest row index primarily. If there are 
-		no legal moves, it will pass. 
+		If there are two consecutive passes, the player is given the score and the winner
+		of the game.
 		"""
 		self.player_name = "no name" if player_name is None else player_name
 		self.player_stone = "B" if player_stone is None else player_stone
 		self.board_size = 19 if board_size is None else board_size
+		self.rules = GoBoard(self.board_size)
 
 
 
-	##############################
-	# GAMEPLAY RESPONSES DRIVER
-	##############################
+	################################
+	# GAMEPLAY RESPONSES
+	################################
 
-	# Returns appropriate play response given valid input 
-	# Input is one of:
-	# 	- ["register"]
-	#	- ["receive-stones", "B"], ["receive-stones", "W"]
-	#	- ["make-a-move", Boards], where Boards is of length 1,  2, or 3 and
-	#	  describes the gameplay history for past three moves 
+	# Returns appropriate responses given valid input
 	def get_response(self, input):
 		if ((len(input) == 1) and (input == ["register"])):
 			return self.register()
-		elif ((len(input) == 2) and (input[0] == "receive-stones") and \
-			((input[1] == "B") or (input[1] == "W"))):
-			return self.receive_stone(input[1])
-		elif ((len(input) == 2) and (input[0] == "make-a-move") and \
-			((len(input[1]) == 1) or (len(input[1]) == 2) or (len(input[1]) == 3))):
+		elif ((len(input) == 2) and (input[0] == "receive-stones") and ((input[1] == "B") or (input[1] == "W"))):
+			self.receive_stone(input[1])
+		elif ((len(input) == 2) and (input[0] == "make-a-move") and ((len(input[1]) == 1) or (len(input[1]) == 2) or (len(input[1]) == 3))):
 			return self.make_move(input[1])
 		else:
-			raise Exception("Invalid input has no appropriate response.")
+			raise Exception("Invalid input has no appropriate response")
 
-
-	# Returns the default player name, "no name"
+	# Internally stores player name, default "no name"
 	def register(self):
 		return self.player_name
 
-	# Assigns player a stone 
+	# Initiates game, assigns player a stone and clears previous game board
 	def receive_stone(self, stone):
 		self.player_stone = stone
 
-	# Makes a legal move if possible, given board history 
-	def make_move(self, history):
-		board_checker = GoBoard()
-		if (board_checker.validate_history(self.player_stone, history)):
-			return self.find_move(self.player_stone, history)
+	# Update go_board state if board history is valid
+	def make_move(self, boards_arr):
+		#board_checker = GoBoard()
+		#dup_history = copy.deepcopy(boards_arr)
+		if (self.rules.validate_history(self.player_stone, boards_arr)):
+			return self.find_move(self.player_stone, boards_arr[0], boards_arr)
+			#return move
 		else:
 			return "This history makes no sense!"
 
-	# Finds first legal move in min col, row coordinates, otherwise "pass"
-	def find_move(self, stone, history):
-		board_checker = GoBoard()
-
-		# Traverses matrix by column first
+	# Finds first valid move in a min col, row coordinate, otherwise "pass"
+	def find_move(self, stone, board, history):
+		#board_checker = GoBoard()
 		for row in range(self.board_size):
 			for col in range(self.board_size):
-
-				if (history[0][col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), history[0])
-
-					# Remove stones captured after play
+				# Searches col first and then row
+				#try_place = copy.deepcopy(board)
+				try_place = board
+				#dup_history = copy.deepcopy(history)
+				if (board[col][row] == " "):
+					try_place = self.rules.place(stone, (col, row), history[0])
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
-					neighbors = board_checker.find_neighbors((col, row))
+					neighbors = self.rules.find_neighbors((col, row))
 					q = Queue.Queue()
 					for n in neighbors:
-						if ((try_place[n[0]][n[1]] != stone) and (not board_checker.reachable(n, " ", try_place))):
+						if ((try_place[n[0]][n[1]] != stone) and (not self.rules.reachable(n, " ", try_place))):
 							visited[n[0]][n[1]] = True
 							q.put(n)
 
 					while (q.empty() != True):
 						check_point = q.get()
-						try_place = board_checker.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
-						n_neighbors = board_checker.find_neighbors(check_point)
+						try_place = self.rules.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
+						n_neighbors = self.rules.find_neighbors(check_point)
 						for n in n_neighbors:
-							if ((try_place[n[0]][n[1]] == board_checker.get_opponent(stone)) and (not visited[n[0]][n[1]])):
+							if ((try_place[n[0]][n[1]] == self.rules.get_opponent(stone)) and (not visited[n[0]][n[1]])):
 								visited[n[0]][n[1]] = True
 								q.put(n)
 
-					# Continue if this move would violate Ko rule
 					if (len(history) == 3):
 						if (try_place != history[1]):
-							if (board_checker.reachable((col, row), " ", try_place)):
-								return board_checker.idx_to_point(row, col)
+							# If liberties present then valid move
+							if (self.rules.reachable((col, row), " ", try_place)):
+								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
+								return self.rules.idx_to_point(row, col)
 
-					elif (len(history) != 3):
-						if (board_checker.reachable((col, row), " ", try_place)):
-							return board_checker.idx_to_point(row, col)
+					if (len(history) != 3):
+						if (self.rules.reachable((col, row), " ", try_place)):
+								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
+								return self.rules.idx_to_point(row, col)
 
 		return "pass"
+
+	def count_adj_liberties(self, point, board):
+		point_lib = 0
+		#board_checker = GoBoard()
+		neighbors = self.rules.find_neighbors(point)
+		for n in neighbors:
+			if (board[n[0]][n[1]] == " "):
+				point_lib += 1
+
+		return point_lib
+
+	def count_same_stone(self, point, stone, board):
+		same_stone = 0
+		#board_checker = GoBoard()
+		neighbors = self.rules.find_neighbors(point)
+		for n in neighbors:
+			if (board[n[0]][n[1]] == stone):
+				same_stone += 1
+		return same_stone
+
+	
 
 
 class GoBoard():
 	def __init__(self, board_size=None):
 		"""
 		This class implements a Go board component that returns a response
-		based on a statement executed on a given 19 x 19 Go board. The 
+		based on a statement executed on a given 19 x 19 Go board. The
 		statements are as follows:
 
 		Query Statements:
 			["occupied?", Point] - returns True if a Stone at point, else False
 			["occupies?", Stone, Point] - returns True if stone at point, else False
 			["reachable?", Point, MaybeStone] - returns True if exists path of vertical
-						or horizontal adjacent points of same Stone from Stone at Point to 
+						or horizontal adjacent points of same Stone from Stone at Point to
 						Maybestone, else False. Implemented BFS with queue
 
 		Command Statements:
-			["place", Stone, Point] - returns updated Board with Stone at Point, 
+			["place", Stone, Point] - returns updated Board with Stone at Point,
 						error if invalid move "This seat is taken!"
-			["remove", Stone, Point] - returns updated Board with Stone removed from 
-						Point, error if invalid "I am just a board! I cannot remove 
+			["remove", Stone, Point] - returns updated Board with Stone removed from
+						Point, error if invalid "I am just a board! I cannot remove
 						what is not there!"
 			["get-points", MaybeStone] - returns array of Points that has stored all
 						Point positions of the given MaybeStone input in the Go board,
-						sorted in increasing lexicographic order. 
+						sorted in increasing lexicographic order.
 		"""
 		self.board_size = 19 if board_size is None else board_size
 
 
 	###############################
-	# BOARD RESPONSES 
+	# BOARD RESPONSES
 	###############################
 
-	# Returns appropriate response given a valid input form 
+	# Returns appropriate response given a valid input form
 	def get_response(self, input):
 		if (len(input) == self.board_size):
 			return self.get_score(input)
@@ -359,28 +369,28 @@ class GoBoard():
 	# RULE CHECKER INVARIANTS
 	###############################
 	"""
-	1.  Go is a game between two players, called Black and White. 
+	1.  Go is a game between two players, called Black and White.
 	2.  Go is played on a plane grid of horizontal and vertical lines, called a board.
 		 - Points on the board are intersections between lines.
 		 - Points are adjacent if they are distinct and connected by a line
-		  with no other intersections between them. 
-	3.  Go is played with tokens know as stones. Each player has at their 
-		disposal an adequate supply of their color stone. 
+		  with no other intersections between them.
+	3.  Go is played with tokens know as stones. Each player has at their
+		disposal an adequate supply of their color stone.
 	4. 	At any time in the game, each intersection may only be Empty,
-		occupied by white or occupied by black stone. 
-	5.	At the beginning of the game, the board is empty. 
+		occupied by white or occupied by black stone.
+	5.	At the beginning of the game, the board is empty.
 	6.	Black moves first, the player then alternate moves.
 	7.	Moves are either "pass" or Play.
-		- Can only play at empty intersections. 
+		- Can only play at empty intersections.
 		- Can only play if stone will still have liberties after play.
 		- Liberties counted by chained stones.
-		- Stones without liberties after play are removed from board.  
-	8. A Play is illegal if it would repeat a previously played position (Ko). 
+		- Stones without liberties after play are removed from board.
+	8. A Play is illegal if it would repeat a previously played position (Ko).
 	9. The game ends when both players have pass consecutive.
-	10. The player with the higher score wins, otherwise drawn game. 
+	10. The player with the higher score wins, otherwise drawn game.
 	"""
 
-	# Validates history only, independent of requested move 
+	# Validates history only, independent of requested move
 	def validate_history(self, stone, boards_arr):
 
 		# Board history len 1 means just started, board is empty, black to move
@@ -390,7 +400,7 @@ class GoBoard():
 			if (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size)):
 				return False
 
-		# Board history len 2, first is empty board, black moved once, it's white's turn 
+		# Board history len 2, first is empty board, black moved once, it's white's turn
 		elif (len(boards_arr) == 2):
 			if (stone != "W"):
 				return False
@@ -425,22 +435,23 @@ class GoBoard():
 				return False
 
 		else:
-			raise Exception("Board history length should be 1 to 3.")		
+			raise Exception("Board history length should be 1 to 3.")
 
 		return True
 
 
-	# Returns the validity of a Move given a [Stone, [Point, Boards]] valid input w/ board history 
+	# Returns the validity of a Move given a [Stone, [Point, Boards]] valid input w/ board history
 	def get_validity(self, stone, point, boards_arr):
 
 		# Board history len 1 means just started, board is empty, black to move
 		if (len(boards_arr) == 1):
 			if (stone != "B"):
 				return False
+
 			if (len(self.get_points(" ", boards_arr[0])) != (self.board_size * self.board_size)):
 				return False
 
-		# Board history len 2, first is empty board, black moved once, it's white's turn 
+		# Board history len 2, first is empty board, black moved once, it's white's turn
 		elif (len(boards_arr) == 2):
 			if (stone != "W"):
 				return False
@@ -459,7 +470,7 @@ class GoBoard():
 
 		# Board history len 3, check moves valid between them, check current move
 		elif (len(boards_arr) == 3):
-			
+
 			################################
 			# Check board history
 			################################
@@ -482,6 +493,8 @@ class GoBoard():
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
 				return False
 
+			#temp_board = copy.deepcopy(boards_arr)
+
 			# Check Board history contains only valid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
 				return False
@@ -498,7 +511,7 @@ class GoBoard():
 			elif (not self.reachable(point, " ", try_place)):
 				visited = [ [False] * self.board_size for row in range(self.board_size) ]
 				neighbors = self.find_neighbors(point)
-				
+
 				q = Queue.Queue()
 				for n in neighbors:
 					if ((try_place[n[0]][n[1]] != stone) and (not self.reachable(n, " ", try_place))):
@@ -513,7 +526,7 @@ class GoBoard():
 							visited[check_point[0]][check_point[1]] = True
 							q.put(n)
 
-				if (not self.reachable(point, " ", try_place)):				
+				if (not self.reachable(point, " ", try_place)):
 					return False
 
 				if (not self.get_move_validity(boards_arr[0],try_place)):
@@ -522,12 +535,12 @@ class GoBoard():
 				if (not self.get_move_validity(boards_arr[0],try_place)):
 					return False
 
-			# Check that requested move doesn't violate Ko rule 
+			# Check that requested move doesn't violate Ko rule
 			if (boards_arr[1] == try_place):
 				return False
 
 		else:
-			raise Exception("Board history length should be 1 to 3.")		
+			raise Exception("Board history length should be 1 to 3.")
 
 		return True
 
@@ -550,11 +563,12 @@ class GoBoard():
 						removed.append([prev_board[row][col], (row, col)])
 					# Unexplained changes in board state
 					elif ((prev_board[row][col] == "B") and (curr_board[row][col] == "W")):
+						print(1)
 						return False
 					elif ((prev_board[row][col] == "W") and (curr_board[row][col] == "B")):
 						return False
 
-		# Move was a pass, boards should be identical 
+		# Move was a pass, boards should be identical
 		if (len(placed) == 0):
 			if (len(removed) != 0):
 				return False
@@ -567,6 +581,7 @@ class GoBoard():
 			if (try_place == "This seat is taken!"):
 				return False
 			else:
+				#dup_try_place = copy.deepcopy(try_place)
 				white_b4 = len(self.get_points("W", prev_board))
 				black_b4 = len(self.get_points("B", prev_board))
 				stone = placed[0][0]
@@ -581,7 +596,7 @@ class GoBoard():
 
 				while (q.empty() != True):
 					check_point = q.get()
-					dead_removed.append([try_place[check_point[0]][check_point[1]], check_point])	
+					dead_removed.append([try_place[check_point[0]][check_point[1]], check_point])
 					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
 					n_neighbors = self.find_neighbors(check_point)
 					for n in n_neighbors:
@@ -602,7 +617,7 @@ class GoBoard():
 					return False
 
 
-				# If still no liberties present after removal of dead, then invalid move 
+				# If still no liberties present after removal of dead, then invalid move
 				if (not self.reachable(placed[0][1], " ", try_place)):
 					return False
 
@@ -614,9 +629,9 @@ class GoBoard():
 
 
 
-	###################################
+	###############################
 	# QUERIES
-	###################################
+	###############################
 
 	# Occupied takes an index tuple and returns True
 	# if board at that point is not Empty (" "), else False
@@ -629,7 +644,7 @@ class GoBoard():
 		return (board[idx[0]][idx[1]] == stone)
 
 	# Return True if there is a path of adjacent points to Point
-	# that have the same kind of MaybeStone as the given point and 
+	# that have the same kind of MaybeStone as the given point and
 	# the path reaches the given MaybeStone, else False
 	def reachable(self, idx, maybe_stone, board):
 		visited = [ [False] * self.board_size for row in range(self.board_size)]
@@ -661,7 +676,7 @@ class GoBoard():
 	# COMMANDS
 	###############################
 
-	# Passes turn, always legal move 
+	# Passes turn
 	def pass_turn(self, player):
 		return True
 
@@ -671,11 +686,11 @@ class GoBoard():
 			return "This seat is taken!"
 		else:
 			new_board = [ [" "] * self.board_size for row in range(self.board_size)]
-			for i in range(self.board_size):
-				for j in range(self.board_size):
-					new_board[i][j] = board[i][j]
-
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					new_board[row][col] = board[row][col]
 			new_board[idx[0]][idx[1]] = stone
+			
 			return new_board
 
 	# Removes a stone from given point on go_board if occupied
@@ -684,11 +699,11 @@ class GoBoard():
 			return "I am just a board! I cannot remove what is not there!"
 		else:
 			new_board = [ [" "] * self.board_size for row in range(self.board_size)]
-			for i in range(self.board_size):
-				for j in range(self.board_size):
-					new_board[i][j] = board[i][j]
-			
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					new_board[row][col] = board[row][col]
 			new_board[idx[0]][idx[1]] = " "
+			
 			return new_board
 
 	# Returns array of points that maybe_stone occupies on go_board
@@ -702,7 +717,7 @@ class GoBoard():
 		return points
 
 
-			
+
 	###############################
 	# HELPER FUNCTIONS
 	###############################
@@ -765,22 +780,16 @@ class GoBoard():
 			if ((order[0] != order[2]) or (order[0] == order[1]) or (order[1] == order[2])):
 				return False
 
-		return True 
+		return True
 
 	# Checks that all stones w/out liberties removed from board
 	def check_dead_removed(self, board):
 		for row in range(self.board_size):
 			for col in range(self.board_size):
-				if (board[row][col] == "B" and (not self.reachable((row, col), " ", board))):
+				if ((board[row][col] == "B") and (not self.reachable((row, col), " ", board))):
 					return False
-				elif (board[row][col] == "W" and (not self.reachable((row, col), " ", board))):
+				elif ((board[row][col] == "W") and (not self.reachable((row, col), " ", board))):
 					return False
 
-			return True
-
-
-
-
-
-
+		return True
 
