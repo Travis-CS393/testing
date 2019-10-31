@@ -59,8 +59,8 @@ class GoPlayerCapture():
 	# Makes a legal move if possible, given board history 
 	def make_move(self, history):
 		board_checker = GoBoard()
-		#keep_history = copy.deepcopy(history)
-		if (board_checker.validate_history(self.player_stone, history)):
+		keep_history = copy.deepcopy(keep_history)
+		if (board_checker.validate_history(self.player_stone, keep_history)):
 			return self.find_capture(self.player_stone, history)
 		else:
 			return "This history makes no sense!"
