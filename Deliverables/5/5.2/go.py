@@ -614,9 +614,9 @@ class GoBoard():
 
 
 
-	###############################
+	###################################
 	# QUERIES
-	###############################
+	###################################
 
 	# Occupied takes an index tuple and returns True
 	# if board at that point is not Empty (" "), else False
