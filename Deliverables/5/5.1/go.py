@@ -5,7 +5,7 @@ class GoPlayerMin():
 	def __init__(self, player_name=None, player_stone=None, board_size=None):
 		"""
 		This class implements a Go Player component that will make
-		a legal move as a given stone given the board history.
+		a legal move as a given stone given the board's history.
 
 		It will internally store the player name, player stone, and have
 		operations to check that legal moves are valid. In the case that it is valid
