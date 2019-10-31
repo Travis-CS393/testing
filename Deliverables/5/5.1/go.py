@@ -51,10 +51,11 @@ class GoPlayerMin():
 		for row in range(self.board_size):
 			for col in range(self.board_size):
 				# Searches col first and then row
-				try_place = copy.deepcopy(board)
-				dup_history = copy.deepcopy(history)
+				#try_place = copy.deepcopy(board)
+				try_place = board
+				#dup_history = copy.deepcopy(history)
 				if (board[col][row] == " "):
-					try_place = board_checker.place(stone, (col, row), dup_history[0])
+					try_place = board_checker.place(stone, (col, row), history[0])
 					visited = [ [False] * self.board_size for row in range(self.board_size) ]
 					neighbors = board_checker.find_neighbors((col, row))
 					q = Queue.Queue()
@@ -72,14 +73,14 @@ class GoPlayerMin():
 								visited[n[0]][n[1]] = True
 								q.put(n)
 
-					if (len(dup_history) == 3):
-						if (try_place != dup_history[1]):
+					if (len(history) == 3):
+						if (try_place != history[1]):
 							# If liberties present then valid move
 							if (board_checker.reachable((col, row), " ", try_place)):
 								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
 								return board_checker.idx_to_point(row, col)
 
-					if (len(dup_history) != 3):
+					if (len(history) != 3):
 						if (board_checker.reachable((col, row), " ", try_place)):
 								#if ((self.count_adj_liberties((col, row), try_place) > 0) or (self.count_same_stone((col, row), stone, try_place))):
 								return board_checker.idx_to_point(row, col)
@@ -108,9 +109,9 @@ class GoPlayerMin():
 	# Update go_board state if board history is valid
 	def make_move(self, boards_arr):
 		board_checker = GoBoard()
-		dup_history = copy.deepcopy(boards_arr)
+		#dup_history = copy.deepcopy(boards_arr)
 		if (board_checker.validate_history(self.player_stone, boards_arr)):
-			move = self.find_move(self.player_stone, boards_arr[0], dup_history)
+			move = self.find_move(self.player_stone, boards_arr[0], boards_arr)
 			return move
 		else:
 			return "This history makes no sense!"
@@ -311,7 +312,7 @@ class GoBoard():
 			if (not self.get_player_order(boards_arr[0], boards_arr[1], boards_arr[2], stone)):
 				return False
 
-			temp_board = copy.deepcopy(boards_arr)
+			#temp_board = copy.deepcopy(boards_arr)
 
 			# Check Board history contains only valid moves
 			if ((not self.get_move_validity(boards_arr[2], boards_arr[1])) or (not self.get_move_validity(boards_arr[1], boards_arr[0]))):
@@ -354,7 +355,7 @@ class GoBoard():
 					return False
 
 			# Check that requested move doesn't violate Ko rule
-			if (temp_board[1] == try_place):
+			if (boards_arr[1] == try_place):
 				return False
 
 		else:
@@ -399,7 +400,7 @@ class GoBoard():
 			if (try_place == "This seat is taken!"):
 				return False
 			else:
-				dup_try_place = copy.deepcopy(try_place)
+				#dup_try_place = copy.deepcopy(try_place)
 				white_b4 = len(self.get_points("W", prev_board))
 				black_b4 = len(self.get_points("B", prev_board))
 				stone = placed[0][0]
@@ -414,7 +415,7 @@ class GoBoard():
 
 				while (q.empty() != True):
 					check_point = q.get()
-					dead_removed.append([dup_try_place[check_point[0]][check_point[1]], check_point])
+					dead_removed.append([try_place[check_point[0]][check_point[1]], check_point])
 					try_place = self.remove(try_place[check_point[0]][check_point[1]], check_point, try_place)
 					n_neighbors = self.find_neighbors(check_point)
 					for n in n_neighbors:
@@ -503,16 +504,26 @@ class GoBoard():
 		if (self.occupied(idx, board)):
 			return "This seat is taken!"
 		else:
-			board[idx[0]][idx[1]] = stone
-			return board
+			new_board = [ [" "] * self.board_size for row in range(self.board_size)]
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					new_board[row][col] = board[row][col]
+			new_board[idx[0]][idx[1]] = stone
+			
+			return new_board
 
 	# Removes a stone from given point on go_board if occupied
 	def remove(self, stone, idx, board):
 		if ((self.occupied(idx, board) == False) or (not self.occupies(stone, idx, board))):
 			return "I am just a board! I cannot remove what is not there!"
 		else:
-			board[idx[0]][idx[1]] = " "
-			return board
+			new_board = [ [" "] * self.board_size for row in range(self.board_size)]
+			for row in range(self.board_size):
+				for col in range(self.board_size):
+					new_board[row][col] = board[row][col]
+			new_board[idx[0]][idx[1]] = " "
+			
+			return new_board
 
 	# Returns array of points that maybe_stone occupies on go_board
 	def get_points(self, maybe_stone, board):
