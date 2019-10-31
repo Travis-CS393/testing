@@ -1,4 +1,6 @@
 import unittest
+from go import GoPlayerMin, GoBoard
+
 class TestFunctions(unittest.TestCase):
     def testRegister(self):
         gpm = GoPlayerMin()
@@ -22,17 +24,48 @@ class TestFunctions(unittest.TestCase):
 
     def testCountAdjLiberties(self):
         gpm = GoPlayerMin()
-        self.assertEqual(gpm.count_adj_liberties("3-2", gb1[0]), 0)
-        self.assertEqual(gpm.count_adj_liberties("3-1", gb1[0]), 2)
-        self.assertEqual(gpm.count_adj_liberties("6-2", gb1[0]), 4)
+        self.assertEqual(gpm.count_adj_liberties([1,2], gb1[0]), 0)
+        self.assertEqual(gpm.count_adj_liberties([0,2], gb1[0]), 2)
+        self.assertEqual(gpm.count_adj_liberties([1,5], gb1[0]), 4)
 
     def testCountSameStone(self):
         gpm = GoPlayerMin()
-        self.assertEqual(gpm.count_same_stone("3-2", "B", gb1[0]), 1)
-        self.assertEqual(gpm.count_same_stone("6-7", "B", gb1[0]), 3)
-        self.assertEqual(gpm.count_same_stone("3-1", "W", gb1[0]), 0)
-        self.assertEqual(gpm.count_same_stone("6-2", "W", gb1[0]), 0)
+        self.assertEqual(gpm.count_same_stone([1,2], "B", gb1[0]), 1)
+        self.assertEqual(gpm.count_same_stone([6,5], "B", gb1[0]), 3)
+        self.assertEqual(gpm.count_same_stone([0,2], "W", gb1[0]), 0)
+        self.assertEqual(gpm.count_same_stone([1,5], "W", gb1[0]), 0)
 
+    def testGetScore(self):
+        gb = GoBoard()
+        self.assertEqual(gb.get_score(gb1[0]), {"B": 34, "W": 11})
+        self.assertEqual(gb.get_score(gb1[2]), {"B": 32, "W": 10})
+        self.assertEqual(gb.get_score(gb2[0]), {"B": 11, "W": 8})
+        self.assertEqual(gb.get_score(gb2[2]), {"B": 10, "W": 7})
+
+    def testValidateHistory(self):
+        gb = GoBoard()
+        self.assertTrue(gb.validate_history("B", gb1))
+        self.assertTrue(gb.validate_history("W", gb1))
+        self.assertFalse(gb.validate_history("B", [gb1[0], gb1[1]]))
+        self.assertTrue(gb.validate_history("W", gb2))
+        self.assertFalse(gb.validate_history("B", [gb2[1]]))
+
+    # def testMoveValidity(self):
+    #     gb = GoBoard()
+    #     self.assertTrue(gb.get_move_validity(gb1[1], gb1[0]))
+        # self.assertTrue(gb.get_move_validity(gb1[2], gb1[1]))
+        # self.assertFalse(gb.get_move_validity(gb1[0], gb1[1]))
+        # self.assertFalse(gb.get_move_validity(gb1[2], gb1[0]))
+        # self.assertTrue(gb.get_move_validity(gb1[0], gb1[0]))
+
+    # def testGetValidity(self):
+    #     gb = GoBoard()
+        # self.assertTrue(gb.get_validity("B", [18, 18], gb1))
+        # self.assertFalse(gb.get_validity("W", [0,0], gb1))
+        # self.assertTrue(gb.get_validity("B", [3,4], gb1))
+        # self.assertFalse(gb.get_validity("B", [0,2], gb1))
+        # self.assertTrue(gb.get_validity("W", [0,2], gb2))
+        # self.assertFalse(gb.get_validity("B", [0,0], gb2))
 
 # ================ TEST BOARD =========================
 #  Black move
@@ -82,7 +115,7 @@ gb1 = [
 [" ", "B", "B", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 [" ", " ", " ", " ", "W", "W", " ", "B", "B", "B", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-["W", "B", " ", " ", "B", "B", " ", "B", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+[" ", "B", " ", " ", "B", "B", " ", "B", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 ["B", " ", " ", " ", " ", "B", "B", "B", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 [" ", " ", " ", " ", " ", "B", " ", "B", "B", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 [" ", " ", " ", " ", " ", " ", " ", "B", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
