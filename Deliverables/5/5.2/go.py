@@ -670,7 +670,11 @@ class GoBoard():
 		if (self.occupied(idx, board)):
 			return "This seat is taken!"
 		else:
-			new_board = copy.deepcopy(board)
+			new_board = [ [" "] * self.board_size for row in range(self.board_size)]
+			for i in range(self.board_size):
+				for j in range(self.board_size):
+					new_board[i][j] = board[i][j]
+
 			new_board[idx[0]][idx[1]] = stone
 			return new_board
 
@@ -679,7 +683,11 @@ class GoBoard():
 		if ((self.occupied(idx, board) == False) or (not self.occupies(stone, idx, board))):
 			return "I am just a board! I cannot remove what is not there!"
 		else:
-			new_board = copy.deepcopy(board)
+			new_board = [ [" "] * self.board_size for row in range(self.board_size)]
+			for i in range(self.board_size):
+				for j in range(self.board_size):
+					new_board[i][j] = board[i][j]
+			
 			new_board[idx[0]][idx[1]] = " "
 			return new_board
 
